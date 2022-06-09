@@ -8,7 +8,11 @@ fi
 cd jobs-periodic
 works=$(ls)
 for work in $works; do
-	./$work >> $1/"$work.txt" &
+	#if [ -x "$work" ]; then
+	#if [ -x "$work" -a -f "$work" ]; then
+	if [[ -x "$work" && -f "$work" ]]; then
+		./$work >> $1/"$work.txt" &
+	fi
 done
 trap "kill -TERM -$$" EXIT
 wait
