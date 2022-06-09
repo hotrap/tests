@@ -10,6 +10,7 @@ if __name__ == "__main__":
 		else:
 			cnts[line] = 1
 	cnt_cnts = {}
+	print("%d unique items." %len(cnts))
 	for i in cnts.items():
 		cnt = i[1]
 		if cnt in cnt_cnts:
