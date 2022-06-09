@@ -2,5 +2,6 @@
 
 # timestamp(ns) tps kB_read/s kB_wrtn/s
 while true; do
-	iostat 1 | awk '{if ("nvme0n1" == $1) printf "%s %s %s ",$2,$3,$4; if ("sda" == $1) print $2,$3,$4}'
+	# Use bash -c to ensure that "date" is executed for every line
+	iostat 1 | awk -f iostat.awk | xargs -I {} bash -c 'echo $(date +%s%N) {}'
 done
