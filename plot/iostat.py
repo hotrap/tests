@@ -25,18 +25,8 @@ mean_step = int(sys.argv[2])
 iostat_raw = pd.read_table(d + '/iostat.sh.txt', delim_whitespace=True)
 iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timestamp(ns)'][0]) / 1e9
 
-def range_mean(raw, start, end):
-	ret = raw[['sd_tps', 'cd_tps', 'sd_kB_read/s', 'sd_kB_wrtn/s', 'cd_kB_read/s', 'cd_kB_wrtn/s']][start:end].mean()
-	ret['Time(Seconds)'] = raw['Time(Seconds)'][start]
-	return ret
-
-iostat = pd.DataFrame()
-i = 0
-while i + mean_step < len(iostat_raw):
-	iostat = pd.concat([iostat, pd.DataFrame(range_mean(iostat_raw, i, i + mean_step)).T], ignore_index=True)
-	i += mean_step
-if i != len(iostat_raw):
-	iostat = pd.concat([iostat, pd.DataFrame(range_mean(iostat_raw, i, len(iostat_raw))).T], ignore_index=True)
+iostat = iostat_raw[['sd_tps', 'cd_tps', 'sd_kB_read/s', 'sd_kB_wrtn/s', 'cd_kB_read/s', 'cd_kB_wrtn/s']].groupby(iostat_raw.index // mean_step).mean()
+iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
 
 plt.plot(iostat['Time(Seconds)'], iostat['sd_tps'])
 plt.plot(iostat['Time(Seconds)'], iostat['cd_tps'])
