@@ -25,9 +25,11 @@ if n == 0:
 	exit(0)
 pivot = int(n * pivot_ratio)
 assert(0 <= pivot and pivot < n)
+
 n1 = min(pivot, n - pivot)
 l1 = keys_sorted[pivot-n1:pivot][::-1]
 l2 = keys_sorted[pivot:pivot+n1]
+# https://stackoverflow.com/questions/7946798/interleave-multiple-lists-of-the-same-length-in-python
 keys_closest = [ val for tup in zip(l1, l2) for val in tup ]
 if pivot > n1:
 	assert(pivot + n1 == n)
@@ -41,6 +43,7 @@ else:
 	l1 = keys_sorted[base:p2]
 	l2 = keys_sorted[p2:n][::-1]
 keys_closest.extend([ val for tup in zip(l1, l2) for val in tup ])
+
 remap = {}
 for i in range(0, n):
 	remap[keys_sorted_by_cnt[i][0]] = keys_closest[i]
