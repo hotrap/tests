@@ -21,7 +21,7 @@ indexes = []
 for key in keys:
 	indexes.append(keys_sorted.index(key))
 # plt.scatter(range(0, len(indexes)), indexes, marker='.')
-plt.scatter(range(0, len(indexes)), indexes, marker=',', s=0.5)
+plt.scatter(range(0, len(indexes)), indexes, marker=',', s=1)
 plt.xlabel('Time', fontdict=fonten)
 plt.ylabel('Key rank', fontdict=fonten)
 plt.title('Access pattern')
