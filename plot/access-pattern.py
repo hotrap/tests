@@ -3,6 +3,8 @@
 import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+# pip3 install mpl-scatter-density
+import mpl_scatter_density
 
 fontsize=9
 fonten = {'family': 'Times New Roman', 'size': fontsize}
@@ -20,10 +22,13 @@ keys_sorted = sorted(set(keys))
 indexes = []
 for key in keys:
 	indexes.append(keys_sorted.index(key))
-# plt.scatter(range(0, len(indexes)), indexes, marker='.')
-plt.scatter(range(0, len(indexes)), indexes, marker=',', s=1)
-plt.xlabel('Time', fontdict=fonten)
-plt.ylabel('Key rank', fontdict=fonten)
-plt.title('Access pattern')
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1, projection='scatter_density')
+ax.scatter_density(range(0, len(indexes)), indexes, color='black')
+ax.set_xlabel('Time', fontdict=fonten)
+ax.set_ylabel('Key rank', fontdict=fonten)
+# ax.set_xlim(-0.5, 1.5)
+# ax.set_ylim(-0.5, 1.5)
+fig.suptitle('Access pattern')
 plt.show()
 plt.close()
