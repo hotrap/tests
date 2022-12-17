@@ -121,7 +121,10 @@ for (_, key_segments) in counter_key_segments:
 			mapped_from[id].append(key)
 		else:
 			mapped_from[id] = [key]
-	for (id, keys) in mapped_from.items():
+	mapped_from = list(mapped_from.items())
+	random.shuffle(mapped_from)
+	for (id, keys) in mapped_from:
+		# print(id, file=sys.stderr)
 		cursors[id] = remap_in_segment(segments[id], cursors[id], set(keys))
 
 for i in range(0, num):
