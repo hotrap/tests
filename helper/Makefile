@@ -7,6 +7,7 @@ RUSTSRCS	:= $(wildcard *.rs)
 RUSTTARGETS	:= $(patsubst %.rs,bin/%,$(RUSTSRCS))
 
 all: ${RUSTTARGETS}
+	cd lru && cargo build --release && cd - > /dev/null
 
 clean:
 	${RM} ${RUSTTARGETS}
