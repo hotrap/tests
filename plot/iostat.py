@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
-import os
 import sys
+
+if len(sys.argv) != 3:
+	print('Usage: ' + sys.argv[0] + ' dir mean_step')
+	exit()
+
+import os
 import pandas as pd
 import numpy as np
 import matplotlib as mpl
@@ -15,10 +20,6 @@ mpl.rcParams.update({
     'font.sans-serif': ['Times New Roman'],
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
-
-if len(sys.argv) != 3:
-	print('Usage: ' + sys.argv[0] + ' dir mean_step')
-	exit()
 
 d = sys.argv[1]
 mean_step = int(sys.argv[2])
