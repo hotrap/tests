@@ -6,8 +6,8 @@ if len(sys.argv) != 2:
 	print('Usage: ' + sys.argv[0] + ' dir')
 	exit()
 
-import pandas as pd
-import numpy as np
+import os
+import subprocess
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -20,39 +20,24 @@ mpl.rcParams.update({
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
+abspath = os.path.abspath(sys.argv[0])
+dname = os.path.dirname(abspath)
+
 d = sys.argv[1]
-occurrences = pd.read_table(d + '/occurrences', names=['key', 'occurrences'], delim_whitespace=True)
-key_hit_level = pd.read_table(d + '/key_hit_level', names=['key', 'hit-level'], delim_whitespace=True)
-first_level_in_cd = int(open(d + '/first-level-in-cd').readline().strip())
+res_path = d + '/1'
+if not os.path.exists(res_path):
+	subprocess.call([dname + '/helper/hit', d])
+if not os.path.exists(res_path + '/hit.pdf'):
+	occurrences_cdf = [int(line) for line in open(res_path + '/occurrences_cdf')]
+	hits_cdf = [int(line) for line in open(res_path + '/hits_cdf')]
+	assert(len(occurrences_cdf) == len(hits_cdf))
 
-key_hits = {}
-for index, row in key_hit_level.iterrows():
-    if row['hit-level'] < first_level_in_cd:
-        key = row['key']
-        if key in key_hits:
-            key_hits[key] += 1
-        else:
-            key_hits[key] = 1
-
-n = len(occurrences)
-percentile=np.linspace(0, 1, n + 1)
-occurrences_sum = [0]
-for x in occurrences['occurrences']:
-	occurrences_sum.append(occurrences_sum[len(occurrences_sum)-1] + x)
-assert(len(occurrences_sum) == n + 1)
-
-hit_sum = [0]
-for key in occurrences['key']:
-    if key in key_hits:
-        hit = key_hits[key]
-    else:
-        hit = 0
-    hit_sum.append(hit_sum[len(hit_sum)-1] + hit)
-
-plt.plot(percentile, occurrences_sum)
-plt.plot(percentile, hit_sum)
-plt.legend(['# accessed', '# hit'], prop={'size': fontsize})
-plt.xlabel('Percentile of key ranked by hotness', fontdict=fonten)
-plt.ylabel('CDF', fontdict=fonten)
-plt.title('Accuracy of hot identification')
-plt.show()
+	plt.plot(occurrences_cdf)
+	plt.plot(hits_cdf)
+	plt.legend(['# accessed', '# hit'], prop={'size': fontsize})
+	plt.xlabel('Keys ranked by hotness', fontdict=fonten)
+	plt.ylabel('CDF', fontdict=fonten)
+	plt.title('Accuracy of hot identification')
+	plt.savefig(res_path + '/hit.pdf')
+if 'DISPLAY' in os.environ:
+	subprocess.call(['evince', res_path + '/hit.pdf'])
