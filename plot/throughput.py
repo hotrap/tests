@@ -6,6 +6,7 @@ if len(sys.argv) != 3:
 	print('Usage: ' + sys.argv[0] + ' dir mean_step')
 	exit()
 
+import os
 import pandas as pd
 import numpy as np
 import matplotlib as mpl
@@ -28,6 +29,11 @@ iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timesta
 iostat = iostat_raw[['sd_kB_read/s', 'sd_kB_wrtn/s', 'cd_kB_read/s', 'cd_kB_wrtn/s']].groupby(iostat_raw.index // mean_step).mean()
 iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
 
+plot_dir = d + '/plot'
+if not os.path.exists(plot_dir):
+	os.system('mkdir -p ' + plot_dir)
+pdf_path = plot_dir + '/throughput.pdf'
+
 plt.plot(iostat['Time(Seconds)'], iostat['sd_kB_read/s'] / 1e3)
 plt.plot(iostat['Time(Seconds)'], iostat['sd_kB_wrtn/s'] / 1e3)
 plt.plot(iostat['Time(Seconds)'], iostat['cd_kB_read/s'] / 1e3)
@@ -36,4 +42,7 @@ plt.legend(['read (SD)', 'write (SD)', 'read (CD)', 'write (CD)'], prop={'size':
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Throughput (MB/s)', fontdict=fonten)
 plt.title('Throughput of SD and CD')
-plt.show()
+plt.savefig(pdf_path)
+print('Plot saved to ' + pdf_path)
+if 'DISPLAY' in os.environ:
+	plt.show()
