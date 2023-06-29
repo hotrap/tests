@@ -62,7 +62,7 @@ fn main() {
         read_until_whitespace(&mut remap_reader, &mut k2).unwrap();
         assert!(!k2.is_empty());
         if k2.last().unwrap().is_ascii_whitespace() {
-            assert!(k2.pop().unwrap() == b'\n');
+            assert_eq!(k2.pop().unwrap(), b'\n');
         }
         remap.insert(k1, k2);
     }
@@ -79,11 +79,11 @@ fn main() {
             // usertable
             let ori_len = line.len();
             read_until_whitespace(&mut cin, &mut line).unwrap();
-            assert!(line.len() != ori_len);
+            assert_ne!(line.len(), ori_len);
         }
         let mut key = Vec::new();
         read_until_whitespace(&mut cin, &mut key).unwrap();
-        assert!(key.len() != 0);
+        assert_ne!(key.len(), 0);
         let line_ends = if key.last().unwrap().is_ascii_whitespace() {
             key.pop().unwrap() == b'\n'
         } else {
@@ -99,7 +99,7 @@ fn main() {
             line.push(b'\n');
         } else {
             line.push(b' ');
-            assert!(cin.read_until(b'\n', &mut line).unwrap() != 0);
+            assert_ne!(cin.read_until(b'\n', &mut line).unwrap(), 0);
         }
         print!("{}", String::from_utf8(line).unwrap());
     }
