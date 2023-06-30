@@ -7,7 +7,6 @@ if len(sys.argv) != 3:
 	exit()
 
 import os
-import subprocess
 import pandas as pd
 import numpy as np
 import matplotlib as mpl
