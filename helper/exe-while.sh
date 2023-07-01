@@ -16,6 +16,6 @@ if [ "$(ls -A $1)" ]; then
 	exit 1
 fi
 
-PID=$(set -m; ./periodic-exe.sh $1 > /dev/null & echo $!)
+PID=$(set -m; "$(dirname $0)"/periodic-exe.sh $1 > /dev/null & echo $!)
+trap "kill $PID" EXIT
 $2 "${@:3}"
-kill $PID

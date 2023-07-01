@@ -1,0 +1,10 @@
+{
+	"type": "uniform",
+	"operation_count": 40000000,
+	"read_proportion": 0.5,
+	"insert_proportion": 0.5,
+	"key_begin": 0,
+	"key_end": 1000000000,
+	"value_length": 1000,
+	"seed": 233
+}
