@@ -1,7 +1,9 @@
 cd ycsb
 bash zipfian.sh
 bash latest.sh
+cd ..
 cd hrtg
 bash hotspot.sh
 bash uniform.sh
 bash shifting-hotspot.sh
+cd ..
