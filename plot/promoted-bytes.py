@@ -21,9 +21,9 @@ mpl.rcParams.update({
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
-promoted_bytes_raw = pd.read_table(d + '/promoted-bytes', delim_whitespace=True)
+promoted_bytes_raw = pd.read_table(d + '/promoted-iter-bytes', delim_whitespace=True)
 time = (promoted_bytes_raw['Timestamp(ns)'] - promoted_bytes_raw['Timestamp(ns)'][0]) / 1e9
-promoted_bytes = promoted_bytes_raw['promoted-bytes']
+promoted_bytes = promoted_bytes_raw['num-bytes']
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
