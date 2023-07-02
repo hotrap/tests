@@ -24,7 +24,7 @@ du -sh db/ sd/ cd/ >> $DIR/log.txt
 cd - > /dev/null
 
 tmp_dir=$(mktemp -d)
-../helper/exe-while.sh $tmp_dir bash -c "(cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | $kvexe_dir/rocksdb-kvexe --switches=all --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" > /dev/null 2>> $3/log.txt"
+../helper/exe-while.sh $tmp_dir bash -c "set -e; set -o pipefail; (cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | $kvexe_dir/rocksdb-kvexe --switches=all --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" > /dev/null 2>> $3/log.txt"
 mv -n $tmp_dir/* $3/
 rm -r $tmp_dir
 bash ../helper/rocksdb-data.sh "$DIR"

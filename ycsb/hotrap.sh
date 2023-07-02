@@ -26,7 +26,7 @@ cd - > /dev/null
 
 tmp_dir=$(mktemp -d)
 occurrences=$(mktemp)
-../helper/exe-while.sh $tmp_dir bash -c "(cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | tee >(../helper/bin/trace-cleaner | awk '{if (\$1 == \"READ\") print \$3}' | ../helper/bin/occurrences > $occurrences) | $kvexe_dir/rocksdb-kvexe --compaction_pri=6 --max_hot_set_size=$max_hot_set_size --switches=all --db_path=$HOME/testdb/db/ --db_paths=\"{{$HOME/testdb/sd,$sd_size},{$HOME/testdb/cd,100000000000}}\" --viscnts_path=$HOME/testdb/viscnts > /dev/null 2>> $4/log.txt"
+../helper/exe-while.sh $tmp_dir bash -c "set -e; set -o pipefail; (cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | tee >(../helper/bin/trace-cleaner | awk '{if (\$1 == \"READ\") print \$3}' | ../helper/bin/occurrences > $occurrences) | $kvexe_dir/rocksdb-kvexe --compaction_pri=6 --max_hot_set_size=$max_hot_set_size --switches=all --db_path=$HOME/testdb/db/ --db_paths=\"{{$HOME/testdb/sd,$sd_size},{$HOME/testdb/cd,100000000000}}\" --viscnts_path=$HOME/testdb/viscnts > /dev/null 2>> $4/log.txt"
 sort -nk2 -r $occurrences > $4/occurrences
 rm $occurrences
 mv -n $tmp_dir/* $4/
