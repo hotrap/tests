@@ -4,9 +4,9 @@
 
 Place these repositories in the parent directory of this repository and compile them:
 
-- kvexe-rocksdb: The rocksdb branch of [kvexe](https://github.com/hotrap/kvexe).
+- kvexe-rocksdb: The `rocksdb` branch of [kvexe](https://github.com/hotrap/kvexe).
 
-- kvexe: The main branch of [kvexe](https://github.com/hotrap/kvexe).
+- kvexe: The `main` branch of [kvexe](https://github.com/hotrap/kvexe).
 
 - [trace-generator](https://github.com/hotrap/trace-generator)
 
