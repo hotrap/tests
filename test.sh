@@ -7,3 +7,13 @@ bash hotspot.sh
 bash uniform.sh
 bash shifting-hotspot.sh
 cd ..
+
+cd ycsb
+bash zipfian-4.sh
+bash latest-4.sh
+cd ..
+cd hrtg
+bash hotspot-4.sh
+bash uniform-4.sh
+bash shifting-hotspot-4.sh
+cd ..
