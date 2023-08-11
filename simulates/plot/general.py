@@ -22,10 +22,10 @@ ylabel = header[1]
 x = []
 y = []
 for line in sys.stdin:
-    line = line.strip().split(' ')
-    x.append(line[0])
-    y.append(line[1])
+    line = line.split(' ')
+    x.append(int(line[0]))
+    y.append(int(line[1]))
 plt.plot(x, y)
-plt.xlabel(xlabel)
-plt.ylabel(ylabel)
+plt.xlabel(xlabel, fontdict=fonten)
+plt.ylabel(ylabel, fontdict=fonten)
 plt.show()
