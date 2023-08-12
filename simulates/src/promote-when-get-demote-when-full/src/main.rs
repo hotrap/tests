@@ -10,8 +10,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut args = env::args();
     let arg0 = args.next().unwrap();
     // args.len(): Returns the exact remaining length of the iterator.
-    if args.len() != 3 {
-        eprintln!("{} num-hot cold-ratio num-op", arg0);
+    if args.len() < 3 || args.len() > 4 {
+        eprintln!("{} num-hot cold-ratio num-op [hot-size]", arg0);
         return Err(Box::new(io::Error::new(
             io::ErrorKind::Other,
             "Invalid arguments",
@@ -20,6 +20,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let num_hot: usize = args.next().unwrap().parse().unwrap();
     let cold_ratio: f64 = args.next().unwrap().parse().unwrap();
     let num_op: usize = args.next().unwrap().parse().unwrap();
+    let hot_size = if let Some(s) = args.next() {
+        s.parse().unwrap()
+    } else {
+        num_hot
+    };
 
     let mut rng = StdRng::seed_from_u64(233);
     let dist_0_1 = rand::distributions::Uniform::new(0.0, 1.0);
@@ -43,7 +48,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             ticks[id] = tick;
             assert!(tick_id.insert(tick, id).is_none());
         }
-        if tick_id.len() > num_hot {
+        if tick_id.len() > hot_size {
             let (_, id) = tick_id.pop_first().unwrap();
             // Not cold
             if id != num_hot {
@@ -51,7 +56,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 promoted -= 1;
                 println!("{} {}", tick, promoted);
             }
-            assert!(tick_id.len() == num_hot);
+            assert!(tick_id.len() == hot_size);
         }
     }
     Ok(())
