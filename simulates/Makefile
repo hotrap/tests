@@ -11,6 +11,7 @@ all: ${RUSTTARGETS}
 	cd src/promote-when-second-get && cargo build --release && cd - > /dev/null
 	cd src/promote-when-get-demote-when-full && cargo build --release && cd - > /dev/null
 	cd src/promote-when-second-get-demote-when-full && cargo build --release && cd - > /dev/null
+	cd src/promote-stable-hot && cargo build --release && cd - > /dev/null
 
 clean:
 	${RM} ${RUSTTARGETS}
