@@ -7,7 +7,7 @@ RUSTSRCS	:= $(wildcard *.rs)
 RUSTTARGETS	:= $(patsubst %.rs,bin/%,$(RUSTSRCS))
 
 all: ${RUSTTARGETS}
-	cd read-keys-from-dump && cargo build --release && cd - > /dev/null
+	cd src/read-keys-from-dump && cargo build --release && cd - > /dev/null
 
 clean:
 	${RM} ${RUSTTARGETS}
