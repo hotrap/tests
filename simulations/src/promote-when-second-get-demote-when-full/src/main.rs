@@ -33,6 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut tick_id = BTreeMap::new();
     let mut promoted = 0;
     let mut tick = 0;
+    println!("\"Number of operations\" \"Promoted\"");
     while tick < num_op {
         tick += 1;
         if dist_0_1.sample(&mut rng) < cold_ratio {

@@ -39,6 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut boundary_tick = 0; // The first probation tick
     let mut hot_region_size = 0;
     let mut probation_stable_hot = 0;
+    println!("\"Number of operations\" \"Promoted\"");
     while tick < num_op {
         tick += 1;
         if dist_0_1.sample(&mut rng) < cold_ratio {
