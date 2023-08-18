@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+if [ ! $3 ]; then
+	echo Usage: $0 'workload-kind(ycsb/hrtg)' workload-name version-name
+	exit 1
+fi
+set -e
+cd $(dirname $0)
+./checkout-$3
+mkdir ../../data/$2/$3
+cd ../$1
+bash $2-hotrap.sh
+cd ../../data
+mv $2-hotrap/* $2/$3/
