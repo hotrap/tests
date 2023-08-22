@@ -6,8 +6,7 @@ fi
 set -e
 cd $(dirname $0)
 ./checkout-$3
-mkdir ../../data/$2/$3
 cd ../$1
 bash $2-hotrap.sh
 cd ../../data
-mv $2-hotrap/* $2/$3/
+mv $2-hotrap/ $2/$3
