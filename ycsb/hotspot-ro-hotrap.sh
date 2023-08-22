@@ -1,7 +1,7 @@
 set -e
 workload_file=../workloads/workload_2e7_2e7_read_1_hotspot_hotspotdatafraction_0.1_hotspotopnfraction_0.9
 # hit_count, delta=2GB, SD=4GB, kAccurateHotSizePromotionSize
-DIR=../../data/hotspot-ro/hotrap
+DIR=../../data/hotspot-ro-hotrap
 ./hotrap.sh 4GB 2GB $workload_file $DIR
 mkdir -p $DIR/plot/
 ../plot/du.py $DIR &
