@@ -7,5 +7,5 @@ DIR=$(realpath "$1")
 cd $(dirname $0)
 bash rocksdb-data.sh "$DIR"
 cd ../../testdb
-mv db/{first-level-in-cd,promoted-iter-bytes,promoted-get-bytes} "$DIR"/
+mv db/{first-level-in-cd,promoted-2sdlast-bytes,promoted-flush-bytes} "$DIR"/
 mv viscnts/* "$DIR"/
