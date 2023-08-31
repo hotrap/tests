@@ -14,7 +14,7 @@ if [ "$res" ]; then
 fi
 sd_size=$(humanfriendly --parse-size=$1)
 max_hot_set_size=$(humanfriendly --parse-size=$2)
-kvexe_dir=../../kvexe/build/Release
+kvexe_dir=../../kvexe/build/
 workload_file=$(realpath "$3")
 DIR=$(realpath "$4")
 if [ $5 ]; then

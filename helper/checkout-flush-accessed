@@ -12,5 +12,5 @@ git checkout single-tier
 build_viscnts_splay_rs
 
 cd ../kvexe
-git checkout single-tier
+git checkout main
 build_kvexe

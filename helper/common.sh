@@ -9,5 +9,16 @@ function build_viscnts_splay_rs {
 	make ROCKSDB_INCLUDE=~/hotrap/include
 }
 function build_kvexe {
-	conan build . --options ROCKSDB_INCLUDE=$HOME/hotrap/include --options ROCKSDB_LIB=$HOME/hotrap/build --options VISCNTS_INCLUDE=$HOME/viscnts-splay-rs/include --options VISCNTS_LIB=$HOME/viscnts-splay-rs/target/release
+	mkdir -p build
+	cd build
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$HOME/hotrap/include -DROCKSDB_LIB=$HOME/hotrap/build-O3 -DVISCNTS_INCLUDE=$HOME/viscnts-splay-rs/include -DVISCNTS_LIB=$HOME/viscnts-splay-rs/target/release
+	make
+	cd ..
+}
+function build_kvexe_rocksdb {
+	mkdir -p build
+	cd build
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$HOME/rocksdb/include -DROCKSDB_LIB=$HOME/rocksdb/build-O3
+	make
+	cd ..
 }

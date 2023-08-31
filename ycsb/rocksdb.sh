@@ -13,7 +13,7 @@ if [ "$res" ]; then
         exit 1
 fi
 sd_size=$(humanfriendly --parse-size=$1)
-kvexe_dir=../../kvexe-rocksdb/build/Release
+kvexe_dir=../../kvexe-rocksdb/build/
 workload_file=$(realpath $2)
 DIR=$(realpath "$3")
 if [ $4 ]; then

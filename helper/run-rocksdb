@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+if [ ! $2 ]; then
+	echo Usage: $0 'workload-kind(ycsb/hrtg)' workload-name
+	exit 1
+fi
+set -e
+cd $(dirname $0)
+./checkout-rocksdb
+cd ../$1
+bash $2-rocksdb.sh
+cd ../../data
+mv $2-rocksdb/ $2/rocksdb
