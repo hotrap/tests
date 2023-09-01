@@ -9,4 +9,5 @@ cd $(dirname $0)
 cd ../$1
 bash $2-rocksdb.sh
 cd ../../data
+mkdir -p $2
 mv $2-rocksdb/ $2/rocksdb

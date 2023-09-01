@@ -9,4 +9,5 @@ cd $(dirname $0)
 cd ../$1
 bash $2-hotrap.sh
 cd ../../data
+mkdir -p $2
 mv $2-hotrap/ $2/$3
