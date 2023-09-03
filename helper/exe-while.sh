@@ -3,7 +3,7 @@
 set -e
 
 if [ ! $2 ]; then
-	echo Usage: $0 output-dir command [[args]]
+	echo Usage: $0 output-dir command [[args]] 2>&1
 	exit 1
 fi
 
@@ -12,10 +12,27 @@ if [ ! -d $1 ]; then
 fi
 
 if [ "$(ls -A $1)" ]; then
-	echo $1 is not empty!
+	echo $1 is not empty! 2>&1
 	exit 1
 fi
 
-PID=$(set -m; "$(dirname $0)"/periodic-exe.sh $1 > /dev/null & echo $!)
-trap "kill $PID" EXIT
-$2 "${@:3}"
+set -m
+(
+	pgid=$(exec sh -c 'echo "$PPID"')
+	(
+		set -m
+		"$(dirname $0)"/periodic-exe.sh $1 > /dev/null &
+		PID=$!
+		function exit_fn {
+			if [ $PID ]; then
+				kill $PID
+			fi
+		}
+		trap exit_fn EXIT
+		wait $PID
+		echo exe-while: periodic-exe exits early, exiting... 1>&2
+		unset PID
+		kill -TERM -$pgid
+	) &
+	$2 "${@:3}"
+)

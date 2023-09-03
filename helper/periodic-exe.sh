@@ -16,4 +16,5 @@ for work in $works; do
 	fi
 done
 trap "kill -TERM -$$" EXIT
-wait
+wait -n
+echo periodic-exe: one background job exits early, exiting... 1>&2
