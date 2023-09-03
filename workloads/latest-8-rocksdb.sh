@@ -1,12 +1,12 @@
 set -e
-workload_file=../workloads/workload_2e7_2e7_read_1_hotspot_hotspotdatafraction_0.1_hotspotopnfraction_0.9
+workload_file=../config/workload_1e6_4e7_read_0.5_insert_0.5_latest
 # SD=4GB
-DIR=../../data/hotspot-ro-rocksdb
-./rocksdb.sh 4GB $workload_file $DIR
+DIR=../../data/$(basename $0 .sh)
+./ycsb-rocksdb.sh 4GB $workload_file $DIR 8
 mkdir -p $DIR/plot/
+../plot/du.py $DIR &
 ../plot/ops.py $DIR 50 &
 ../plot/tps.py $DIR 50 &
 ../plot/throughput.py $DIR 100 &
 ../plot/latency.py < $DIR/latency > $DIR/plot/latency &
 wait
-
