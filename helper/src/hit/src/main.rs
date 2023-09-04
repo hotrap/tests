@@ -2,10 +2,9 @@ use std::{
     collections::HashMap,
     env,
     error::Error,
-    fs::{self, File},
-    io::{self, BufRead, BufReader, BufWriter, Read, Write},
+    fs::File,
+    io::{self, BufRead, BufReader, Read},
 };
-use tempfile::tempdir;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = env::args();
@@ -43,8 +42,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let occurrences =
-        BufReader::new(File::open(dir.join("occurrences")).unwrap());
+    let occurrences = BufReader::new(
+        File::open(dir.join("occurrences_sorted_by_count")).unwrap(),
+    );
     let mut occurrences_cdf = vec![0];
     let mut hits_cdf = vec![0];
     for line in occurrences.lines() {
@@ -59,19 +59,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         hits_cdf.push(hits_cdf.last().unwrap() + hit_count);
     }
 
-    let temp = tempdir().unwrap();
-    let mut writer =
-        BufWriter::new(File::create(temp.path().join("hits_cdf")).unwrap());
-    for cdf in hits_cdf {
-        writeln!(&mut writer, "{}", cdf).unwrap();
+    println!("key-rank occurrences hits");
+    let max_dots = 10000;
+    let n = hits_cdf.len();
+    if n == 0 {
+        return Ok(());
     }
-    let mut writer = BufWriter::new(
-        File::create(temp.path().join("occurrences_cdf")).unwrap(),
-    );
-    for cdf in occurrences_cdf {
-        writeln!(&mut writer, "{}", cdf).unwrap();
+    assert_eq!(occurrences_cdf.len(), n);
+    let step = (n + max_dots - 1) / max_dots;
+    let mut i = 0;
+    while i < n - 1 {
+        println!("{} {} {}", i + 1, occurrences_cdf[i], hits_cdf[i]);
+        i += step;
     }
-    fs::rename(temp.into_path(), dir.join("1")).unwrap();
+    println!("{} {} {}", n, occurrences_cdf[n - 1], hits_cdf[n - 1]);
 
     Ok(())
 }

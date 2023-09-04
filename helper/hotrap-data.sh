@@ -4,8 +4,13 @@ if [ ! $1 ]; then
 fi
 set -e
 DIR=$(realpath "$1")
-cd $(dirname $0)
+mydir=$(realpath $(dirname $0))
+cd $mydir
 bash rocksdb-data.sh "$DIR"
 cd ../../testdb
-mv db/{first-level-in-cd,promoted-2sdlast-bytes,promoted-flush-bytes} "$DIR"/
+cd db
+sort -nk2 -r occurrences > occurrences_sorted_by_count
+$mydir/hit . > "$DIR"/hit
+mv promoted-2sdlast-bytes promoted-flush-bytes "$DIR"/
+cd ..
 mv viscnts/* "$DIR"/
