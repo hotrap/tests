@@ -4,11 +4,13 @@ if [ ! $1 ]; then
 fi
 set -e
 DIR=$(realpath "$1")
-cd $(dirname $0)
+mydir=$(realpath $(dirname $0))
+cd $mydir
 cd ../../testdb
 du -sh db/ sd/ cd/ >> "$DIR"/log.txt
-mv db/{LOG,rocksdb-stats.txt,progress,latency,cpu} "$DIR"/
 cd db
+mv LOG rocksdb-stats.txt progress cpu "$DIR"/
+$mydir/latency-percentile latency "$DIR"/
 if [ -f ans_0 ]; then
 	sha256sum ans_* > "$DIR"/ans.sha256
 fi
