@@ -11,14 +11,16 @@ function build_viscnts_splay_rs {
 function build_kvexe {
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=../../hotrap/include -DROCKSDB_LIB=../../hotrap/build -DVISCNTS_INCLUDE=../../viscnts-splay-rs/include -DVISCNTS_LIB=../../viscnts-splay-rs/target/release
+	workspace=$(realpath ../..)
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build -DVISCNTS_INCLUDE=$workspace/viscnts-splay-rs/include -DVISCNTS_LIB=$workspace/viscnts-splay-rs/target/release
 	make
 	cd ..
 }
 function build_kvexe_rocksdb {
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=../../rocksdb/include -DROCKSDB_LIB=../../rocksdb/build
+	workspace=$(realpath ../..)
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/rocksdb/include -DROCKSDB_LIB=$workspace/rocksdb/build
 	make
 	cd ..
 }
