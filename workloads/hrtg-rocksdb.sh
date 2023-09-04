@@ -21,5 +21,5 @@ fi
 kvexe_dir=../../kvexe-rocksdb/build/
 # cache_size=0, SD=3GB
 ulimit -n 100000
-../helper/exe-while.sh $3 bash -c "set -e; set -o pipefail; ../../trace-generator/target/release/trace-generator $2 | $kvexe_dir/rocksdb-kvexe --cleanup --format=plain --switches=0x1 --num_threads=$num_threads --cache_size=0 --db_path=$HOME/testdb/db/ --db_paths=\"{{$HOME/testdb/sd,$sd_size},{$HOME/testdb/cd,100000000000}}\" 2>> $3/log.txt"
+../helper/exe-while.sh $3 bash -c "set -e; set -o pipefail; ../../trace-generator/target/release/trace-generator $2 | $kvexe_dir/rocksdb-kvexe --cleanup --format=plain --switches=0x1 --num_threads=$num_threads --cache_size=0 --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" 2>> $3/log.txt"
 bash ../helper/rocksdb-data.sh "$3"
