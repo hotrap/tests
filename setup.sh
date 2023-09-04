@@ -9,9 +9,6 @@ source ~/.cargo/env
 cd helper
 make
 cd ..
-cd plot/helper
-make
-cd ../..
 cd simulations
 make
 cd ..
