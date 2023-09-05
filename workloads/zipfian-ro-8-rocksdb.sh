@@ -7,5 +7,4 @@ mkdir -p $DIR/plot/
 ../plot/ops.py $DIR 50 &
 ../plot/tps.py $DIR 50 &
 ../plot/throughput.py $DIR 100 &
-../plot/latency.py < $DIR/latency > $DIR/plot/latency &
 wait

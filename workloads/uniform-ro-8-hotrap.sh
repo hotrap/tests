@@ -10,5 +10,4 @@ mkdir -p $DIR/plot/
 ../plot/throughput.py $DIR 10 &
 ../plot/hit.py $DIR &
 ../plot/promoted-bytes.py $DIR &
-../plot/latency.py < $DIR/latency > $DIR/plot/latency &
 wait
