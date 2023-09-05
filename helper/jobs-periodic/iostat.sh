@@ -18,18 +18,15 @@ if [ "$(iostat | grep $cd_dev)" == "" ]; then
 fi
 echo Timestamp\(ns\) sd_tps sd_kB_read/s sd_kB_wrtn/s cd_tps cd_kB_read/s cd_kB_wrtn/s
 awk_file=$(mktemp)
-cat > $awk_file <<EOF
+# mawk does not respect fflush(stdout)
+# Use bash -c to ensure that "date" is executed for every line
+iostat 1 | gawk "
 {
-        if ("$sd_dev" == \$1)
-                printf "%s %s %s ",\$2,\$3,\$4
-        if ("$cd_dev" == \$1) {
+        if (\"$sd_dev\" == \$1)
+                printf \"%s %s %s \",\$2,\$3,\$4
+        if (\"$cd_dev\" == \$1) {
                 print \$2,\$3,\$4
                 fflush(stdout)
         }
 }
-EOF
-while true; do
-	# Use bash -c to ensure that "date" is executed for every line
-	iostat 1 | awk -f $awk_file | xargs -I {} bash -c 'echo $(date +%s%N) {}'
-done
-rm $awk_file
+" | xargs -I {} bash -c 'echo $(date +%s%N) {}'
