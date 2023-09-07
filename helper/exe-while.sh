@@ -19,6 +19,7 @@ fi
 set -m
 (
 	pgid=$(exec sh -c 'echo "$PPID"')
+	trap "kill -TERM -$pgid" EXIT
 	(
 		set -m
 		"$(dirname $0)"/periodic-exe.sh $1 > /dev/null &
