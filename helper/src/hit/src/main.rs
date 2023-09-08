@@ -25,28 +25,33 @@ fn main() -> Result<(), Box<dyn Error>> {
     first_level_in_cd.read_to_string(&mut buf).unwrap();
     let first_level_in_cd: usize = buf.trim().parse().unwrap();
 
-    let key_hit_level =
-        BufReader::new(File::open(dir.join("key_hit_level")).unwrap());
-    let mut key_hits = HashMap::new();
-    for line in key_hit_level.lines() {
-        let line = line.unwrap();
-        let line = line.trim();
-        let mut s = line.split(' ');
-        let key = s.next().unwrap();
-        let level: usize = s.next().unwrap().parse().unwrap();
-        if level < first_level_in_cd {
-            key_hits
-                .entry(key.to_owned())
-                .and_modify(|v| *v += 1)
-                .or_insert(1usize);
-        }
-    }
+    let key_hits =
+        if let Ok(key_hit_level) = File::open(dir.join("key_hit_level")) {
+            let key_hit_level = BufReader::new(key_hit_level);
+            let mut key_hits = HashMap::new();
+            for line in key_hit_level.lines() {
+                let line = line.unwrap();
+                let line = line.trim();
+                let mut s = line.split(' ');
+                let key = s.next().unwrap();
+                let level: usize = s.next().unwrap().parse().unwrap();
+                if level < first_level_in_cd {
+                    key_hits
+                        .entry(key.to_owned())
+                        .and_modify(|v| *v += 1)
+                        .or_insert(1usize);
+                }
+            }
+            Some(key_hits)
+        } else {
+            None
+        };
 
     let occurrences = BufReader::new(
         File::open(dir.join("occurrences_sorted_by_count")).unwrap(),
     );
     let mut occurrences_cdf = vec![0];
-    let mut hits_cdf = vec![0];
+    let mut hits_cdf = vec![];
     for line in occurrences.lines() {
         let line = line.unwrap();
         let line = line.trim();
@@ -55,24 +60,40 @@ fn main() -> Result<(), Box<dyn Error>> {
         let count: usize = s.next().unwrap().parse().unwrap();
         occurrences_cdf.push(occurrences_cdf.last().unwrap() + count);
 
-        let hit_count = key_hits.get(key).map(|v| *v).unwrap_or(0);
-        hits_cdf.push(hits_cdf.last().unwrap() + hit_count);
+        if let Some(key_hits) = key_hits.as_ref() {
+            let hit_count = key_hits.get(key).map(|v| *v).unwrap_or(0);
+            hits_cdf.push(hits_cdf.last().unwrap() + hit_count);
+        }
     }
 
-    println!("key-rank occurrences hits");
+    print!("key-rank occurrences");
+    if hits_cdf.len() != 0 {
+        print!(" hits");
+    }
+    println!();
     let max_dots = 10000;
-    let n = hits_cdf.len();
+    let n = occurrences_cdf.len();
     if n == 0 {
         return Ok(());
     }
-    assert_eq!(occurrences_cdf.len(), n);
     let step = (n + max_dots - 1) / max_dots;
+    if hits_cdf.len() != 0 {
+        assert_eq!(hits_cdf.len(), n);
+    }
     let mut i = 0;
     while i < n - 1 {
-        println!("{} {} {}", i + 1, occurrences_cdf[i], hits_cdf[i]);
+        print!("{} {}", i + 1, occurrences_cdf[i]);
+        if hits_cdf.len() != 0 {
+            print!(" {}", hits_cdf[i]);
+        }
+        println!();
         i += step;
     }
-    println!("{} {} {}", n, occurrences_cdf[n - 1], hits_cdf[n - 1]);
+    print!("{} {}", n, occurrences_cdf[n - 1]);
+    if hits_cdf.len() != 0 {
+        print!(" {}", hits_cdf[n - 1]);
+    }
+    println!();
 
     Ok(())
 }
