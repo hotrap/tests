@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         File::open(dir.join("occurrences_sorted_by_count")).unwrap(),
     );
     let mut occurrences_cdf = vec![0];
-    let mut hits_cdf = vec![];
+    let mut hits_cdf = vec![0];
     for line in occurrences.lines() {
         let line = line.unwrap();
         let line = line.trim();
