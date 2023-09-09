@@ -67,7 +67,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     print!("key-rank occurrences");
-    if hits_cdf.len() != 0 {
+    if hits_cdf.len() != 1 {
         print!(" hits");
     }
     println!();
@@ -77,20 +77,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Ok(());
     }
     let step = (n + max_dots - 1) / max_dots;
-    if hits_cdf.len() != 0 {
+    if hits_cdf.len() != 1 {
         assert_eq!(hits_cdf.len(), n);
     }
     let mut i = 0;
     while i < n - 1 {
         print!("{} {}", i + 1, occurrences_cdf[i]);
-        if hits_cdf.len() != 0 {
+        if hits_cdf.len() != 1 {
             print!(" {}", hits_cdf[i]);
         }
         println!();
         i += step;
     }
     print!("{} {}", n, occurrences_cdf[n - 1]);
-    if hits_cdf.len() != 0 {
+    if hits_cdf.len() != 1 {
         print!(" {}", hits_cdf[n - 1]);
     }
     println!();
