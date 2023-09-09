@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [[ $# < 4 || $# > 5 ]]; then
-	echo Usage: $0 sd-size max-hot-size workload-file output-dir [num-threads]
+if [[ $# < 4 || $# > 6 ]]; then
+	echo Usage: $0 sd-size max-hot-size workload-file output-dir [num-threads] [switches]
 	exit 1
 fi
 set -e
@@ -18,6 +18,11 @@ if [ $5 ]; then
 	num_threads=$5
 else
 	num_threads=1
+fi
+if [ $6 ]; then
+	switches=$6
+else
+	switches=0x0
 fi
 kvexe_dir=../../kvexe/build/
 # hit_count, kAccurateHotSizePromotionSize

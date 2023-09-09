@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [[ $# < 3 || $# > 4 ]]; then
-	echo Usage: $0 sd-size workload-file output-dir [num-threads]
+if [[ $# < 3 || $# > 5 ]]; then
+	echo Usage: $0 sd-size workload-file output-dir [num-threads] [switches]
 	exit 1
 fi
 set -e
@@ -18,8 +18,13 @@ if [ $4 ]; then
 else
 	num_threads=1
 fi
+if [ $5 ]; then
+	switches=$5
+else
+	switches=0x0
+fi
 kvexe_dir=../../kvexe-rocksdb/build/
 # cache_size=0, SD=3GB
 ulimit -n 100000
-../helper/exe-while.sh $3 bash -c "set -e; set -o pipefail; ../../trace-generator/target/release/trace-generator $2 | $kvexe_dir/rocksdb-kvexe --cleanup --format=plain --switches=0x1 --num_threads=$num_threads --cache_size=0 --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" 2>> $3/log.txt"
+../helper/exe-while.sh $3 bash -c "set -e; set -o pipefail; ../../trace-generator/target/release/trace-generator $2 | $kvexe_dir/rocksdb-kvexe --cleanup --format=plain --switches=$switches --num_threads=$num_threads --cache_size=0 --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" 2>> $3/log.txt"
 bash ../helper/rocksdb-data.sh "$3"
