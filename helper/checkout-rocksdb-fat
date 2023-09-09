@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)
+source common.sh
+cd ..
+
+cd ../rocksdb
+build_rocksdb
+
+cd ../kvexe-rocksdb
+git checkout rocksdb-fat
+build_kvexe_rocksdb

@@ -15,6 +15,7 @@ if [ -e ../data/$1 ]; then
 		exit 1
 	fi
 fi
-helper/run-rocksdb $1
+helper/run-rocksdb $1 rocksdb-fat
+helper/run-rocksdb $1 rocksdb
 helper/run-hotrap $1 flush-accessed
 helper/run-hotrap $1 flush-stably-hot
