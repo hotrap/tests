@@ -36,7 +36,9 @@ du -sh db/ sd/ cd/ >> $DIR/log.txt
 cd - > /dev/null
 
 tmp_dir=$(mktemp -d)
-../helper/exe-while.sh $tmp_dir bash -c "set -e; set -o pipefail; (cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | tee >(../helper/bin/trace-cleaner | awk '{if (\$1 == \"READ\") print \$3}' | ../helper/bin/occurrences > ../../testdb/db/occurrences) | $kvexe_dir/rocksdb-kvexe --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=$num_threads --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts 2>> $4/log.txt"
+../helper/exe-while.sh $tmp_dir bash -c "set -e; set -o pipefail; (cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | tee >(
+	$kvexe_dir/rocksdb-kvexe --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=$num_threads --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts 2>> $4/log.txt
+) | ../helper/bin/trace-cleaner | awk '{if (\$1 == \"READ\") print \$3}' | ../helper/bin/occurrences > ../../testdb/db/occurrences"
 mv -n $tmp_dir/* $4/
 rm -r $tmp_dir
 bash ../helper/hotrap-data.sh "$DIR"
