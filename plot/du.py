@@ -22,14 +22,15 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
 du = pd.read_table(d + '/du.sh.txt', delim_whitespace=True)
+time = (du['Timestamp(ns)'] - du['Timestamp(ns)'][0]) / 1e9
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/du.pdf'
-plt.plot(du['Timestamp(ns)'] / 1e9, du['DB'])
-plt.plot(du['Timestamp(ns)'] / 1e9, du['SD'])
-plt.plot(du['Timestamp(ns)'] / 1e9, du['CD'])
+plt.plot(time, du['DB'])
+plt.plot(time, du['SD'])
+plt.plot(time, du['CD'])
 plt.legend(['DB', 'SD', 'CD'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Size (Bytes)', fontdict=fonten)
