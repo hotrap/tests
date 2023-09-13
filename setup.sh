@@ -28,6 +28,7 @@ git checkout rocksdb
 cd ..
 
 git clone git@github.com:hotrap/viscnts-splay-rs.git
+git clone --recursive git@github.com:hotrap/viscnts-lsm.git
 
 git clone git@github.com:hotrap/trace-generator.git
 cd trace-generator
