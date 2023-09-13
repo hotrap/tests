@@ -6,6 +6,7 @@ source common.sh
 cd ..
 
 cd ../rocksdb
+git checkout rocksdb
 build_rocksdb
 
 cd ../kvexe-rocksdb
