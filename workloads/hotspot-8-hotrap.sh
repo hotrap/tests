@@ -5,9 +5,9 @@ DIR=../../data/$(basename $0 .sh)
 ./hrtg-hotrap.sh 4GB 2GB $workload_file $DIR 8
 mkdir -p $DIR/plot/
 ../plot/du.py $DIR &
-../plot/ops.py $DIR 10 &
-../plot/tps.py $DIR 10 &
-../plot/throughput.py $DIR 100 &
+../plot/ops.py $DIR 1 &
+../plot/tps.py $DIR 1 &
+../plot/throughput.py $DIR 10 &
 ../plot/hit.py $DIR &
 ../plot/promoted-bytes.py $DIR &
 wait
