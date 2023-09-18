@@ -13,4 +13,4 @@ sort -nk2 -r occurrences > occurrences_sorted_by_count
 $mydir/hit . > "$DIR"/hit
 mv promoted-2sdlast-bytes promoted-flush-bytes "$DIR"/
 cd ..
-mv viscnts/* "$DIR"/
+find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
