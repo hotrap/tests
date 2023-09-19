@@ -9,7 +9,7 @@ cd $mydir
 cd ../../testdb
 du -sh db/ sd/ cd/ >> "$DIR"/log.txt
 cd db
-mv LOG rocksdb-stats.txt progress cpu "$DIR"/
+mv LOG rocksdb-stats.txt progress cpu mem "$DIR"/
 if [ -f latency ]; then
 	$mydir/latency-percentile latency "$DIR"/
 fi
