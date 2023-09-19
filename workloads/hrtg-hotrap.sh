@@ -22,7 +22,7 @@ fi
 if [ $6 ]; then
 	switches=$6
 else
-	switches=0x0
+	switches=0x1
 fi
 kvexe_dir=../../kvexe/build/
 # hit_count, kAccurateHotSizePromotionSize

@@ -10,9 +10,7 @@ cd ../../testdb
 du -sh db/ sd/ cd/ >> "$DIR"/log.txt
 cd db
 mv LOG rocksdb-stats.txt progress cpu mem "$DIR"/
-if [ -f latency ]; then
-	$mydir/latency-percentile latency "$DIR"/
-fi
+$mydir/latency-percentile . "$DIR"/
 if [ -f ans_0 ]; then
 	sha256sum ans_* > "$DIR"/ans.sha256
 fi

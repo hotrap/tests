@@ -15,31 +15,36 @@ fn main() -> Result<(), Box<dyn Error>> {
     let arg0 = args.next().unwrap();
     // args.len(): Returns the exact remaining length of the iterator.
     if args.len() != 2 {
-        eprintln!("{} latency-file output-directory", arg0);
+        eprintln!("{} input-directory output-directory", arg0);
         return Err(Box::new(io::Error::new(
             io::ErrorKind::Other,
             "Invalid arguments",
         )));
     }
-    let latency_path = PathBuf::from(args.next().unwrap());
+    let input_directory = PathBuf::from(args.next().unwrap());
     let output_directory = PathBuf::from(args.next().unwrap());
-    let latency_file =
-        File::open(&latency_path).expect("Fail to open latency file");
-    let latency_reader = BufReader::new(latency_file);
     let mut insert_stats = metrics_util::Summary::with_defaults();
     let mut read_stats = metrics_util::Summary::with_defaults();
-    for line in latency_reader.lines() {
-        let line = line?;
-        let mut s = line.split(' ');
-        let op = s.next().unwrap();
-        let latency: f64 = s.next().unwrap().parse().unwrap();
-        let latency_log10 = latency.log10();
-        match op {
-            "INSERT" => insert_stats.add(latency_log10),
-            "READ" => read_stats.add(latency_log10),
-            _ => panic!("Unrecognized operation {}", op),
+    let mut i = 0;
+    while let Ok(file) =
+        File::open(input_directory.join("latency_".to_owned() + &i.to_string()))
+    {
+        let latency_reader = BufReader::new(file);
+        for line in latency_reader.lines() {
+            let line = line?;
+            let mut s = line.split(' ');
+            let op = s.next().unwrap();
+            let latency: f64 = s.next().unwrap().parse().unwrap();
+            let latency_log10 = latency.log10();
+            match op {
+                "INSERT" => insert_stats.add(latency_log10),
+                "READ" => read_stats.add(latency_log10),
+                _ => panic!("Unrecognized operation {}", op),
+            }
         }
+        i += 1;
     }
+    println!("{} latency files processed", i);
 
     if !insert_stats.is_empty() {
         let mut insert_writer = BufWriter::new(
