@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if [ ! $1 ]; then
 	echo Usage: $0 output-dir
 	exit 1
