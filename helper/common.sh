@@ -1,7 +1,7 @@
 function build_rocksdb {
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_RTTI=true
+	cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="-Wall -O3" -DCMAKE_CXX_FLAGS="-Wall -O3" -DUSE_RTTI=true
 	make -j$(nproc) rocksdb-shared
 	cd ..
 }
