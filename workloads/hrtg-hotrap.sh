@@ -27,6 +27,6 @@ fi
 kvexe_dir=../../kvexe/build/
 # hit_count, kAccurateHotSizePromotionSize
 ulimit -n 100000
-../helper/exe-while.sh $4 bash -c "set -e; set -o pipefail; ../../trace-generator/target/release/trace-generator $3 | $kvexe_dir/rocksdb-kvexe --cleanup --format=plain --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" --viscnts_path=../../testdb/viscnts 2>> $4/log.txt"
-../../trace-generator/target/release/trace-generator $3 | awk '{if ($1 == "READ") print $2}' | ../helper/bin/occurrences > ../../testdb/db/occurrences
+../helper/exe-while.sh $4 bash -c "set -e; set -o pipefail; ../../trace-generator/target/release/trace-generator -c $3 | $kvexe_dir/rocksdb-kvexe --cleanup --format=plain --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --db_path=../../testdb/db/ --db_paths=\"{{../../testdb/sd,$sd_size},{../../testdb/cd,100000000000}}\" --viscnts_path=../../testdb/viscnts 2>> $4/log.txt"
+../../trace-generator/target/release/trace-generator --key-only -c $3 | awk '{if ($1 == "READ") print $2}' | ../helper/bin/occurrences > ../../testdb/db/occurrences
 bash ../helper/hotrap-data.sh "$4"
