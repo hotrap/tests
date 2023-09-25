@@ -25,27 +25,28 @@ fn main() -> Result<(), Box<dyn Error>> {
     first_level_in_cd.read_to_string(&mut buf).unwrap();
     let first_level_in_cd: usize = buf.trim().parse().unwrap();
 
-    let key_hits =
-        if let Ok(key_hit_level) = File::open(dir.join("key_hit_level")) {
-            let key_hit_level = BufReader::new(key_hit_level);
-            let mut key_hits = HashMap::new();
-            for line in key_hit_level.lines() {
-                let line = line.unwrap();
-                let line = line.trim();
-                let mut s = line.split(' ');
-                let key = s.next().unwrap();
-                let level: usize = s.next().unwrap().parse().unwrap();
-                if level < first_level_in_cd {
-                    key_hits
-                        .entry(key.to_owned())
-                        .and_modify(|v| *v += 1)
-                        .or_insert(1usize);
-                }
+    let mut key_hits = HashMap::new();
+    let mut i = 0;
+    while let Ok(key_hit_level) =
+        File::open(dir.join("key_hit_level_".to_owned() + &i.to_string()))
+    {
+        let key_hit_level = BufReader::new(key_hit_level);
+        for line in key_hit_level.lines() {
+            let line = line.unwrap();
+            let line = line.trim();
+            let mut s = line.split(' ');
+            let key = s.next().unwrap();
+            let level: usize = s.next().unwrap().parse().unwrap();
+            if level < first_level_in_cd {
+                key_hits
+                    .entry(key.to_owned())
+                    .and_modify(|v| *v += 1)
+                    .or_insert(1usize);
             }
-            Some(key_hits)
-        } else {
-            None
-        };
+        }
+        i += 1;
+    }
+    eprintln!("{} key_hit_level files processed", i);
 
     let occurrences = if let Ok(occurrences) =
         File::open(dir.join("occurrences_sorted_by_count"))
@@ -65,7 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let count: usize = s.next().unwrap().parse().unwrap();
         occurrences_cdf.push(occurrences_cdf.last().unwrap() + count);
 
-        if let Some(key_hits) = key_hits.as_ref() {
+        if !key_hits.is_empty() {
             let hit_count = key_hits.get(key).map(|v| *v).unwrap_or(0);
             hits_cdf.push(hits_cdf.last().unwrap() + hit_count);
         }

@@ -24,7 +24,7 @@ fi
 if [ $6 ]; then
 	switches=$6
 else
-	switches=0x1
+	switches=0x9
 fi
 workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe/build/
