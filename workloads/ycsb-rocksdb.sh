@@ -23,7 +23,7 @@ fi
 if [ $5 ]; then
 	switches=$5
 else
-	switches=0x0
+	switches=0x1
 fi
 workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-rocksdb/build/

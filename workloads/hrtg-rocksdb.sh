@@ -21,7 +21,7 @@ fi
 if [ $5 ]; then
 	switches=$5
 else
-	switches=0x0
+	switches=0x1
 fi
 kvexe_dir=../../kvexe-rocksdb/build/
 # cache_size=0, SD=3GB
