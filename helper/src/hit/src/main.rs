@@ -47,9 +47,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             None
         };
 
-    let occurrences = BufReader::new(
-        File::open(dir.join("occurrences_sorted_by_count")).unwrap(),
-    );
+    let occurrences = if let Ok(occurrences) =
+        File::open(dir.join("occurrences_sorted_by_count"))
+    {
+        occurrences
+    } else {
+        return Ok(());
+    };
+    let occurrences = BufReader::new(occurrences);
     let mut occurrences_cdf = vec![0];
     let mut hits_cdf = vec![0];
     for line in occurrences.lines() {

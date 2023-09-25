@@ -10,8 +10,10 @@ cd $mydir
 bash rocksdb-data.sh "$DIR"
 cd ../../testdb
 cd db
-sort -nk2 -r occurrences > occurrences_sorted_by_count
-$mydir/hit . > "$DIR"/hit
+if [ -f occurrences ]; then
+	sort -nk2 -r occurrences > occurrences_sorted_by_count
+	$mydir/hit . > "$DIR"/hit
+fi
 mv promoted-2sdlast-bytes promoted-flush-bytes "$DIR"/
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
