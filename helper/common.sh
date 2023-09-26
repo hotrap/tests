@@ -13,7 +13,7 @@ function build_viscnts_lsm {
 	mkdir -p build
 	cd build
 	cmake .. -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build/librocksdb.so
-	make
+	make viscnts
 	cd ..
 }
 function build_kvexe {
