@@ -29,13 +29,8 @@ workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-rocksdb/build/
 
 ulimit -n 100000
-(cd ../../YCSB && ./bin/ycsb load basic -P $workload_file) | $kvexe_dir/rocksdb-kvexe --cleanup --db_path=$workspace/testdb/db/ --db_paths="{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}" 2>> $3/log.txt
-cd ../../testdb/
-du -sh db/ sd/ cd/ >> $DIR/log.txt
-cd - > /dev/null
-
 tmp_dir=$(mktemp -d)
-../helper/exe-while.sh $tmp_dir bash -c "set -e; set -o pipefail; (cd ../../YCSB && ./bin/ycsb run basic -P $workload_file) | $kvexe_dir/rocksdb-kvexe --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" 2>> $3/log.txt"
+../helper/exe-while.sh $tmp_dir bash -c "$kvexe_dir/rocksdb-kvexe --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" 2>> $3/log.txt"
 mv -n $tmp_dir/* $3/
 rm -r $tmp_dir
 bash ../helper/rocksdb-data.sh "$DIR"
