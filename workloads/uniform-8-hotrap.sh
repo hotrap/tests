@@ -9,4 +9,5 @@ mkdir -p $DIR/plot/
 ../plot/tps.py $DIR 1 &
 ../plot/throughput.py $DIR 10 &
 ../plot/hit.py $DIR &
+../plot/promoted-bytes.py $DIR &
 wait
