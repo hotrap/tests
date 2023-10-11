@@ -14,6 +14,6 @@ if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count
 	$mydir/hit . > "$DIR"/hit
 fi
-mv promoted-2sdlast-bytes promoted-flush-bytes "$DIR"/
+mv first-level-in-cd promoted-2sdlast-bytes promoted-flush-bytes num-accesses "$DIR"/
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
