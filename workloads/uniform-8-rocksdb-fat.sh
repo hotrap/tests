@@ -1,7 +1,7 @@
 set -e
-workload_file=../config/config_4e7_read_0.5_insert_0.5_uniform
+workload_file=../config/workload_2e7_2e7_read_0.5_insert_0.5_uniform
 DIR=../../data/$(basename $0 .sh)
-./hrtg-rocksdb.sh 6GB $workload_file $DIR 8
+./ycsb-rocksdb.sh 6GB $workload_file $DIR 8
 mkdir -p $DIR/plot/
 ../plot/du.py $DIR &
 ../plot/ops.py $DIR 1 &
