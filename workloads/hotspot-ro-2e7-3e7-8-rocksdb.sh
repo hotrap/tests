@@ -1,5 +1,5 @@
 set -e
-workload_file=../config/workload_2e7_3e7_read_1_hotspot_hotspotdatafraction_0.1_hotspotopnfraction_0.9
+workload_file=../config/ycsbc_hotspot0.1_2e7_3e7
 DIR=../../data/$(basename $0 .sh)
 ./ycsb-rocksdb.sh 4GB $workload_file $DIR 8
 mkdir -p $DIR/plot/

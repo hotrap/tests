@@ -1,5 +1,5 @@
 set -e
-workload_file=../config/workload_2e7_2e7_read_1_zipfian
+workload_file=../config/ycsbc_zipfian_20GB
 # SD=4GB
 DIR=../../data/$(basename $0 .sh)
 ./ycsb-rocksdb.sh 4GB $workload_file $DIR 8

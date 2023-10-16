@@ -1,5 +1,5 @@
 set -e
-workload_file=../config/workload_1e6_4e7_read_0.5_insert_0.5_latest
+workload_file=../config/latest_2e7_2e7_read_0.5_insert_0.5
 # SD=4GB
 DIR=../../data/$(basename $0 .sh)
 ./ycsb-rocksdb.sh 4GB $workload_file $DIR 8
