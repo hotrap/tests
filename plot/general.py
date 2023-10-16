@@ -18,14 +18,24 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 header = shlex.split(sys.stdin.readline())
 xlabel = header[0]
-ylabel = header[1]
+legends = header[1:]
+n = len(legends)
 x = []
-y = []
+ys = []
+for _ in range(0, n):
+    ys.append([])
 for line in sys.stdin:
     line = line.split(' ')
-    x.append(int(line[0]))
-    y.append(int(line[1]))
-plt.plot(x, y)
+    x.append(float(line[0]))
+    for i in range(0, n):
+        ys[i].append(int(line[i+1]))
+for y in ys:
+    plt.plot(x, y)
 plt.xlabel(xlabel, fontdict=fonten)
-plt.ylabel(ylabel, fontdict=fonten)
-plt.show()
+plt.legend(legends, prop={'size': fontsize})
+if len(sys.argv) == 2:
+    pdf_path = sys.argv[1]
+    plt.savefig(pdf_path)
+    print('Plot saved to ' + pdf_path)
+if 'DISPLAY' in os.environ:
+	plt.show()
