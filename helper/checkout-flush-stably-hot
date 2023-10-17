@@ -9,9 +9,10 @@ cd ../hotrap
 git checkout main
 build_rocksdb
 
-cd ../viscnts-lsm
-build_viscnts_lsm
+cd ../viscnts-splay-rs
+git checkout main
+build_viscnts_splay_rs
 
 cd ../kvexe
 git checkout main
-build_kvexe_viscnts_lsm
+build_kvexe
