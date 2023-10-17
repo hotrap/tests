@@ -26,12 +26,13 @@ if [ $6 ]; then
 else
 	switches=0x9
 fi
+cd "$(dirname $0)"
 workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe/build/
 
 ulimit -n 100000
 tmp_dir=$(mktemp -d)
-../helper/exe-while.sh $tmp_dir bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --export_key_only_trace --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts 2>> $4/log.txt"
-mv -n $tmp_dir/* $4/
+../helper/exe-while.sh $tmp_dir bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --export_key_only_trace --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts 2>> $DIR/log.txt"
+mv -n $tmp_dir/* $DIR/
 rm -r $tmp_dir
 bash ../helper/hotrap-data.sh "$DIR"

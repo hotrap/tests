@@ -25,12 +25,13 @@ if [ $5 ]; then
 else
 	switches=0x1
 fi
+cd "$(dirname $0)"
 workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-rocksdb/build/
 
 ulimit -n 100000
 tmp_dir=$(mktemp -d)
-../helper/exe-while.sh $tmp_dir bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" 2>> $3/log.txt"
-mv -n $tmp_dir/* $3/
+../helper/exe-while.sh $tmp_dir bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=$num_threads --max_background_jobs=4 --level0_file_num_compaction_trigger=1 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" 2>> $DIR/log.txt"
+mv -n $tmp_dir/* $DIR/
 rm -r $tmp_dir
 bash ../helper/rocksdb-data.sh "$DIR"
