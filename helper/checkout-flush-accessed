@@ -10,7 +10,7 @@ git checkout main
 build_rocksdb
 
 cd ../viscnts-splay-rs
-git checkout main
+git checkout all-stably-hot
 build_viscnts_splay_rs
 
 cd ../kvexe
