@@ -11,11 +11,6 @@ if [ ! -d $1 ]; then
 	mkdir -p $1
 fi
 
-if [ "$(ls -A $1)" ]; then
-	echo $1 is not empty! 2>&1
-	exit 1
-fi
-
 set -m
 (
 	pgid=$(exec sh -c 'echo "$PPID"')
