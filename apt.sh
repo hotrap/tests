@@ -1,4 +1,6 @@
 sudo apt install -y cmake
+# iostat
+sudo apt install -y sysstat
 # RocksDB
 sudo apt install -y libgflags-dev
 # YCSB
