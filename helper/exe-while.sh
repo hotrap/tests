@@ -14,7 +14,6 @@ fi
 set -m
 (
 	pgid=$(exec sh -c 'echo "$PPID"')
-	trap "kill -TERM -$pgid" EXIT
 	(
 		set -m
 		"$(dirname $0)"/periodic-exe.sh $1 > /dev/null &
@@ -30,5 +29,7 @@ set -m
 		unset PID
 		kill -TERM -$pgid
 	) &
+	bgpid=$!
 	$2 "${@:3}"
+	kill -TERM $bgpid
 )
