@@ -12,3 +12,4 @@ insertproportion=0.05
 
 requestdistribution=zipfian
 zipfianconstant=0.99
+loadsleep=1500
