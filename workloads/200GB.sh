@@ -1,6 +1,7 @@
 workloads=(
 	"latest_200GB_read_0.5_insert_0.5"
 	"hotspot0.1_200GB_read_0.5_insert_0.5"
+	"hotspot0.01_200GB_read_0.5_insert_0.5"
 	"uniform_200GB_read_0.5_insert_0.5"
 	"zipfian_200GB_read_0.5_insert_0.5"
 	"ycsbc_hotspot0.1_200GB"
