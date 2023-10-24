@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ ! $1 ]; then
+	echo Usage: $0 output-dir
+	exit 1
+fi
 if [ ! $sd_dev ]; then
 	echo Environment variable \"sd_dev\" is not set.
 	exit 1
@@ -16,17 +20,20 @@ if [ "$(iostat | grep $cd_dev)" == "" ]; then
 	echo /dev/$cd_dev does not exist in the output of iostat!
 	exit 1
 fi
-echo Timestamp\(ns\) sd_tps sd_kB_read/s sd_kB_wrtn/s cd_tps cd_kB_read/s cd_kB_wrtn/s
-awk_file=$(mktemp)
-# mawk does not respect fflush(stdout)
-# Use bash -c to ensure that "date" is executed for every line
-iostat 1 | gawk "
-{
-        if (\"$sd_dev\" == \$1)
-                printf \"%s %s %s \",\$2,\$3,\$4
-        if (\"$cd_dev\" == \$1) {
-                print \$2,\$3,\$4
-                fflush(stdout)
-        }
+
+function process {
+	# mawk does not respect fflush(stdout)
+	# Use bash -c to ensure that "date" is executed for every line
+	gawk "
+	{
+			if (\"$1\" == \$1) {
+					print \$2,\$3,\$8,\$9,\$23
+					fflush(stdout)
+			}
+	}
+	" | xargs -I {} bash -c 'echo $(date +%s%N) {}'
 }
-" | xargs -I {} bash -c 'echo $(date +%s%N) {}'
+
+echo Timestamp\(ns\) r/s rkB/s w/s wkB/s %util > $1/iostat-sd.txt
+echo Timestamp\(ns\) r/s rkB/s w/s wkB/s %util > $1/iostat-cd.txt
+iostat 1 -x | tee >(process $sd_dev >> $1/iostat-sd.txt) | process $cd_dev >> $1/iostat-cd.txt

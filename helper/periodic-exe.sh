@@ -12,7 +12,7 @@ for work in $works; do
 	#if [ -x "$work" ]; then
 	#if [ -x "$work" -a -f "$work" ]; then
 	if [[ -x "$work" && -f "$work" ]]; then
-		./$work > "$DIR"/"$work.txt" &
+		./$work $DIR &
 	fi
 done
 trap "kill -TERM -$$" EXIT

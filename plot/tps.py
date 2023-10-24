@@ -23,23 +23,28 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
 mean_step = int(sys.argv[2])
-iostat_raw = pd.read_table(d + '/iostat.sh.txt', delim_whitespace=True)
-iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timestamp(ns)'][0]) / 1e9
 
-iostat = iostat_raw[['sd_tps', 'cd_tps']].groupby(iostat_raw.index // mean_step).mean()
-iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
+def read_table(file):
+    iostat_raw = pd.read_table(file, delim_whitespace=True)
+    iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timestamp(ns)'][0]) / 1e9
+    iostat = iostat_raw[['r/s', 'w/s']].groupby(iostat_raw.index // mean_step).mean()
+    iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
+    return iostat
+sd = read_table(d + '/iostat-sd.txt')
+cd = read_table(d + '/iostat-cd.txt')
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/tps.pdf'
 
-plt.plot(iostat['Time(Seconds)'], iostat['sd_tps'])
-plt.plot(iostat['Time(Seconds)'], iostat['cd_tps'])
-plt.legend(['SD', 'CD'], prop={'size': fontsize})
+plt.plot(sd['Time(Seconds)'], sd['r/s'])
+plt.plot(sd['Time(Seconds)'], sd['w/s'])
+plt.plot(cd['Time(Seconds)'], cd['r/s'])
+plt.plot(cd['Time(Seconds)'], cd['w/s'])
+plt.legend(['r/s (SD)', 'w/s (SD)', 'r/s (CD)', 'w/s (CD)'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
-plt.ylabel('TPS', fontdict=fonten)
-plt.title('TPS of SD and CD')
+plt.title('Read/Write per second of SD and CD')
 plt.savefig(pdf_path)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:

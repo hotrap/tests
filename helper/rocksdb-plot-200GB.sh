@@ -9,5 +9,6 @@ mkdir -p $DIR/plot/
 ../plot/du.py $DIR &
 ../plot/ops.py $DIR 10 &
 ../plot/tps.py $DIR 10 &
+../plot/util.py $DIR 10 &
 ../plot/throughput.py $DIR 50 &
 wait
