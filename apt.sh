@@ -3,8 +3,6 @@ sudo apt install -y cmake
 sudo apt install -y sysstat
 # RocksDB
 sudo apt install -y libgflags-dev
-# YCSB
-sudo apt install -y python2 maven
 # kvexe
 sudo apt install -y liburcu-dev libboost-program-options-dev libboost-fiber-dev
 # iostat.sh

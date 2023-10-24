@@ -8,10 +8,6 @@ Place these repositories in the parent directory of this repository and compile 
 
 - kvexe: The `main` branch of [kvexe](https://github.com/hotrap/kvexe).
 
-- [trace-generator](https://github.com/hotrap/trace-generator)
-
-- [YCSB](https://github.com/brianfrankcooper/YCSB/)
-
 These directories should be manually created in the parent directory of this repository:
 
 - `testdb/db`: Store the basic database files
@@ -25,11 +21,6 @@ These directories should be manually created in the parent directory of this rep
 ## Run tests
 
 ```shell
-cd helper
-make -j$(nproc)
-cd ..
-cd plot/helper
-make -j$(nproc)
-cd ../..
-bash test.sh
+cd workloads
+bash 200GB.sh
 ```

@@ -15,7 +15,6 @@ cd ..
 
 cd ..
 mkdir data
-git clone https://github.com/brianfrankcooper/YCSB.git
 
 git clone git@github.com:hotrap/hotrap.git rocksdb
 cp -r rocksdb hotrap
@@ -30,13 +29,8 @@ cd ..
 git clone git@github.com:hotrap/viscnts-splay-rs.git
 git clone --recursive git@github.com:hotrap/viscnts-lsm.git
 
-git clone git@github.com:hotrap/trace-generator.git
-cd trace-generator
-cargo build --release
-
 echo Need to setup manually:
 echo 1. testdb/{db,sd,cd,viscnts}
-echo 2. Make python points to python2 \(Needed by YCSB\)
-echo 3. export sd_dev=the device in \"iostat\" that is used as SD.
-echo 4. export cd_dev=the device in \"iostat\" that is used as CD.
-echo 5. It is recommended to restart your shell to make changes take effect
+echo 2. export sd_dev=the device in \"iostat\" that is used as SD.
+echo 3. export cd_dev=the device in \"iostat\" that is used as CD.
+echo 4. It is recommended to restart your shell to make changes take effect
