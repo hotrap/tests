@@ -53,6 +53,7 @@ pdf_path = plot_dir + '/hit-rate.pdf'
 plt.plot(time, hit_rates)
 plt.xlabel('Time')
 plt.ylabel('Hit rate')
+plt.yticks(np.linspace(0, 1, 11))
 plt.title('Hit rate')
 plt.savefig(pdf_path)
 print('Plot saved to ' + pdf_path)
