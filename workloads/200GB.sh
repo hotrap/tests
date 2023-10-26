@@ -13,14 +13,14 @@ function run_rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-rocksdb-200GB.sh ../config/$1 $DIR
+	./test-rocksdb-200GB.sh ../config/$1 $DIR 40GB
 	../helper/rocksdb-plot-200GB.sh $DIR
 }
 function run_hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-hotrap-200GB.sh 20GB ../config/$1 $DIR
+	./test-hotrap-200GB.sh ../config/$1 $DIR 20GB 40GB
 	../helper/hotrap-plot-200GB.sh $DIR
 }
 for workload in "${workloads[@]}"; do

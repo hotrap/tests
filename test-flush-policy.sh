@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Execute this script in the root of hotrap-tests
+# Execute this script in the root of this repo
 if [ ! $1 ]; then
 	echo Usage: $0 workload-name
 	exit 1
