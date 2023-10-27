@@ -1,0 +1,17 @@
+recordcount=288000000
+operationcount=288000000
+phase1operationcount=288000000
+workload=site.ycsb.workloads.CoreWorkload
+
+readallfields=true
+
+readproportion=1
+updateproportion=0
+scanproportion=0
+insertproportion=0
+
+requestdistribution=hotspotshifting
+
+hotspotdatafraction=0.1
+hotspotopnfraction=0.9
+
