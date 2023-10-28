@@ -3,8 +3,8 @@ workloads=(
 	"hotspot0.01_288GB_read_0.5_insert_0.5"
 	"uniform_288GB_read_0.5_insert_0.5"
 	"zipfian_288GB_read_0.5_insert_0.5"
-	"ycsbc_hotspot0.1_288GB"
-	"ycsbc_hotspotshifting0.1_288GB"
+	"ycsbc_hotspot0.01_288GB"
+	"ycsbc_hotspotshifting0.01_288GB"
 	"ycsbc_uniform_288GB"
 	"ycsbc_zipfian_288GB"
 )

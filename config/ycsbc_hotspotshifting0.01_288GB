@@ -12,6 +12,6 @@ insertproportion=0
 
 requestdistribution=hotspotshifting
 
-hotspotdatafraction=0.1
-hotspotopnfraction=0.9
+hotspotdatafraction=0.01
+hotspotopnfraction=0.99
 
