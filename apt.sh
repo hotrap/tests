@@ -9,8 +9,3 @@ sudo apt install -y liburcu-dev libboost-program-options-dev libboost-fiber-dev
 sudo apt install -y gawk
 # viscnts-lsm
 sudo apt install -y liburing-dev
-
-# non-free is required here
-# Times New Roman
-sudo apt install -y ttf-mscorefonts-installer
-rm ~/.cache/matplotlib -rf
