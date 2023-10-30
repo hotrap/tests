@@ -16,7 +16,7 @@ set -m
 	pgid=$(exec sh -c 'echo "$PPID"')
 	(
 		set -m
-		"$(dirname $0)"/periodic-exe.sh $1 > /dev/null &
+		"$(dirname $0)"/periodic-exe.sh $1 1>&2 &
 		PID=$!
 		function exit_fn {
 			if [ $PID ]; then
