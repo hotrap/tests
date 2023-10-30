@@ -7,6 +7,10 @@ workloads=(
 	"ycsbc_hotspotshifting0.01_144GB"
 	"ycsbc_uniform_144GB"
 	"ycsbc_zipfian_144GB"
+	"ycsba_hotspot0.01_144GB"
+	"ycsba_hotspotshifting0.01_144GB"
+	"ycsba_uniform_144GB"
+	"ycsba_zipfian_144GB"
 )
 function run_rocksdb {
 	../helper/checkout-$2
