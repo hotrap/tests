@@ -12,7 +12,7 @@ if [ "$res" ]; then
         echo "$2" is not empty!
         exit 1
 fi
-workload_file=$(realpath $1)
+workload_file=$(realpath -s $1)
 DIR=$(realpath "$2")
 sd_size=$(humanfriendly --parse-size=$3)
 if [ $4 ]; then
