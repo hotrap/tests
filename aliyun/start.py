@@ -23,6 +23,9 @@ if __name__ == '__main__':
     client = Client(config['access_key_id'], config['access_key_secret'], config['region_id'])
     instance = Instance(client, instance_id)
 
+    if instance.get_status() == "Running":
+        exit(0)
+
     instance.wait_to_be('Stopped')
 
     request = StartInstanceRequest()
