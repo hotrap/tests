@@ -44,10 +44,10 @@ function create_instance_if_none {
 	if [ $1 ]; then
 		instance_id=$1
 	else
-		while ! ./instance-name-unused.py $config_file "$instance_name_base-$suffix"; do
+		while ! ./instance-name-unused.py $config_file "$instance_name_base$suffix"; do
 			suffix=$(($suffix+1))
 		done
-		instance_id=$(./create.py $config_file "$instance_name_base-$suffix")
+		instance_id=$(./create.py $config_file "$instance_name_base$suffix")
 		suffix=$(($suffix+1))
 	fi
 }
