@@ -1,9 +1,14 @@
-if [ ! $1 ]; then
-	echo Usage: $0 config-file output-dir
+if [[ $# < 2 || $# > 3 ]]; then
+	echo Usage: $0 config-file output-dir [instance-name-base]
 	exit 1
 fi
 config_file=$(realpath $1)
 output_dir=$(realpath $2)
+if [ $3 ]; then
+	instance_name_base=$3
+else
+	instance_name_base=hotrap-auto-
+fi
 cd $(dirname $0)
 
 workloads=(
@@ -39,10 +44,10 @@ function create_instance_if_none {
 	if [ $1 ]; then
 		instance_id=$1
 	else
-		while ! ./instance-name-unused.py $config_file "jiansheng-auto-$suffix"; do
+		while ! ./instance-name-unused.py $config_file "$instance_name_base-$suffix"; do
 			suffix=$(($suffix+1))
 		done
-		instance_id=$(./create.py $config_file "jiansheng-auto-$suffix")
+		instance_id=$(./create.py $config_file "$instance_name_base-$suffix")
 		suffix=$(($suffix+1))
 	fi
 }
