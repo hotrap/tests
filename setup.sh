@@ -1,4 +1,5 @@
 pip3 install pandas matplotlib humanfriendly
+pip3 install aliyun-python-sdk-ecs
 
 tmp=$(mktemp)
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf > $tmp
