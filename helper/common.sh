@@ -16,7 +16,7 @@ function build_viscnts_lsm {
 	make viscnts
 	cd ..
 }
-function build_kvexe {
+function build_kvexe_viscnts_splay_rs {
 	mkdir -p build
 	cd build
 	workspace=$(realpath ../..)
