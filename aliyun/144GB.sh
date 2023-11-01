@@ -16,6 +16,10 @@ workloads=(
 	"ycsbc_hotspotshifting0.01_144GB"
 	"ycsbc_uniform_144GB"
 	"ycsbc_zipfian_144GB"
+	"hotspot0.01_144GB_read_0.5_insert_0.5"
+	"latest_144GB_read_0.5_insert_0.5"
+	"uniform_144GB_read_0.5_insert_0.5"
+	"zipfian_144GB_read_0.5_insert_0.5"
 )
 function setup {
 	instance_id=$3
