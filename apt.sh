@@ -1,4 +1,6 @@
 sudo apt install -y cmake
+# tests
+sudo apt install -y jq
 # iostat
 sudo apt install -y sysstat
 # RocksDB
