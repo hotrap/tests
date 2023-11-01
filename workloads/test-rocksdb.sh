@@ -25,5 +25,5 @@ workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-rocksdb/build/
 
 ulimit -n 100000
-../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=8 --max_background_jobs=4 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,1000000000000}}\" 2>> $DIR/log.txt"
+../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=8 --max_background_jobs=4 --block_size=16384 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,1000000000000}}\" 2>> $DIR/log.txt"
 bash ../helper/rocksdb-data.sh "$DIR"

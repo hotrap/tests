@@ -26,5 +26,5 @@ workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe/build/
 
 ulimit -n 100000
-../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=8 --max_background_jobs=4 --max_bytes_for_level_base=134217728 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --export_key_only_trace --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts 2>> $DIR/log.txt"
+../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --switches=$switches --num_threads=8 --max_background_jobs=4 --block_size=16384 --max_bytes_for_level_base=134217728 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --export_key_only_trace --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts 2>> $DIR/log.txt"
 bash ../helper/hotrap-data.sh "$DIR"
