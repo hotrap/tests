@@ -1,6 +1,13 @@
 workloads=(
 	"ycsbc_hotspot0.1_20GB_100B"
 	"ycsbc_hotspot0.1_20GB"
+	"ycsbc_hotspotshifting0.1_20GB"
+	"ycsbc_uniform_20GB"
+	"ycsbc_zipfian_20GB"
+	"hotspot0.1_20GB_read_0.5_insert_0.5"
+	"latest_20GB_read_0.5_insert_0.5"
+	"uniform_20GB_read_0.5_insert_0.5"
+	"zipfian_20GB_read_0.5_insert_0.5"
 )
 function run_rocksdb {
 	../helper/checkout-$2
@@ -17,6 +24,8 @@ function run_hotrap {
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${workloads[@]}"; do
+	run_rocksdb $workload rocksdb
 	run_rocksdb $workload rocksdb-fat
+	run_hotrap $workload flush-accessed
 	run_hotrap $workload flush-stably-hot
 done
