@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 if [ ! $2 ]; then
 	echo Usage: $0 output-dir command [[args]] 2>&1
 	exit 1
