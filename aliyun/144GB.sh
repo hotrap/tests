@@ -42,9 +42,7 @@ function run_hotrap_1 {
 }
 
 for workload in "${workloads[@]}"; do
-	run_rocksdb $workload rocksdb
 	run_rocksdb $workload rocksdb-fat
-	run_hotrap $workload flush-accessed
 	run_hotrap $workload flush-stably-hot
 done
 wait
