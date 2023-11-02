@@ -23,6 +23,7 @@ function create_instance_if_none {
 function run_rocksdb {
 	# Don't Create instance inside subprocess, otherwise the instance names are likely to collide
 	create_instance_if_none $3
+	echo Run $1 $2 with instance $instance_id $(./hostname.py $config_file $instance_id)
 	DIR=$output_dir/$1/$2
 	mkdir -p $DIR
 	run_rocksdb_1 $1 $2 $instance_id > $DIR/aliyun.txt 2>&1 &
@@ -30,6 +31,7 @@ function run_rocksdb {
 function run_hotrap {
 	# Don't Create instance inside subprocess, otherwise the instance names are likely to collide
 	create_instance_if_none $3
+	echo Run $1 $2 with instance $instance_id $(./hostname.py $config_file $instance_id)
 	DIR=$output_dir/$1/$2
 	mkdir -p $DIR
 	run_hotrap_1 $1 $2 $instance_id > $DIR/aliyun.txt 2>&1 &
