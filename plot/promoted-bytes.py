@@ -21,21 +21,16 @@ mpl.rcParams.update({
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
-promoted_2sdlast_raw = pd.read_table(d + '/promoted-2sdlast-bytes', delim_whitespace=True)
-promoted_2sdlast_time = (promoted_2sdlast_raw['Timestamp(ns)'] - promoted_2sdlast_raw['Timestamp(ns)'][0]) / 1e9
-promoted_2sdlast_bytes = promoted_2sdlast_raw['num-bytes']
-
-promoted_flush_raw = pd.read_table(d + '/promoted-flush-bytes', delim_whitespace=True)
-promoted_flush_time = (promoted_flush_raw['Timestamp(ns)'] - promoted_flush_raw['Timestamp(ns)'][0]) / 1e9
-promoted_flush_bytes = promoted_flush_raw['num-bytes']
+promoted_bytes = pd.read_table(d + '/promoted-bytes', delim_whitespace=True)
+timestamp = (promoted_bytes['Timestamp(ns)'] - promoted_bytes['Timestamp(ns)'][0]) / 1e9
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/promoted-bytes.pdf'
-plt.plot(promoted_2sdlast_time, promoted_2sdlast_bytes)
-plt.plot(promoted_flush_time, promoted_flush_bytes)
-plt.legend(['By 2sdlast', 'By flush to L0'], prop={'size': fontsize})
+plt.plot(timestamp, promoted_bytes['by-flush'])
+plt.plot(timestamp, promoted_bytes['2sdlast'])
+plt.legend(['By flush to L0', 'To the last level in SD'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Promoted bytes', fontdict=fonten)
 plt.savefig(pdf_path)
