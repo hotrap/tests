@@ -30,7 +30,8 @@ if not os.path.exists(plot_dir):
 pdf_path = plot_dir + '/promoted-bytes.pdf'
 plt.plot(timestamp, promoted_bytes['by-flush'])
 plt.plot(timestamp, promoted_bytes['2sdlast'])
-plt.legend(['By flush to L0', 'To the last level in SD'], prop={'size': fontsize})
+plt.plot(timestamp, promoted_bytes['2cdfront'])
+plt.legend(['By flush to L0', 'To the last level in SD', 'To shallower levels in CD'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Promoted bytes', fontdict=fonten)
 plt.savefig(pdf_path)
