@@ -1,4 +1,4 @@
-pip3 install pandas matplotlib humanfriendly
+pip3 install pandas matplotlib humanfriendly json5
 pip3 install aliyun-python-sdk-ecs
 
 tmp=$(mktemp)
