@@ -14,8 +14,6 @@ else
 fi
 cd $(dirname $0)
 
-source common.sh
-
 workloads=(
 	"hotspot0.05_144GB_read_0.5_insert_0.5"
 	"latest_144GB_read_0.5_insert_0.5"
@@ -27,6 +25,9 @@ workloads=(
 	"ycsbc_zipfian_144GB"
 	"ycsba_hotspot0.05_144GB"
 )
+
+source common.sh
+
 function run_rocksdb_1 {
 	setup $1 $2 $3
 	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-144GB.sh ../config/$1 ../../data/$1/$2 16GB"

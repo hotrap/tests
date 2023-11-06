@@ -1,3 +1,10 @@
+for workload in "${workloads[@]}"; do
+	if [ ! -f ../config/$workload ]; then
+		echo $workload does not exists!
+		exit 1
+	fi
+done
+
 function setup {
 	instance_id=$3
 	echo Run $1 $2 with instance $instance_id $(./hostname.py $config_file $instance_id)
