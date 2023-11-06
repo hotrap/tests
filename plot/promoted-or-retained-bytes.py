@@ -21,17 +21,18 @@ mpl.rcParams.update({
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
-promoted_bytes = pd.read_table(d + '/promoted-bytes', delim_whitespace=True)
-timestamp = (promoted_bytes['Timestamp(ns)'] - promoted_bytes['Timestamp(ns)'][0]) / 1e9
+num_bytes = pd.read_table(d + '/promoted-or-retained-bytes', delim_whitespace=True)
+timestamp = (num_bytes['Timestamp(ns)'] - num_bytes['Timestamp(ns)'][0]) / 1e9
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
-pdf_path = plot_dir + '/promoted-bytes.pdf'
-plt.plot(timestamp, promoted_bytes['by-flush'])
-plt.plot(timestamp, promoted_bytes['2sdlast'])
-plt.plot(timestamp, promoted_bytes['2cdfront'])
-plt.legend(['By flush to L0', 'To the last level in SD', 'To shallower levels in CD'], prop={'size': fontsize})
+pdf_path = plot_dir + '/promoted-or-retained-bytes.pdf'
+plt.plot(timestamp, num_bytes['by-flush'])
+plt.plot(timestamp, num_bytes['2sdlast'])
+plt.plot(timestamp, num_bytes['2cdfront'])
+plt.plot(timestamp, num_bytes['retained'])
+plt.legend(['By flush to L0', 'To the last level in SD', 'To shallower levels in CD', 'Retained'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Promoted bytes', fontdict=fonten)
 plt.savefig(pdf_path)
