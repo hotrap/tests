@@ -39,7 +39,7 @@ if not os.path.exists(plot_dir):
 pdf_path = plot_dir + '/throughput.pdf'
 
 plt.plot(sd['Time(Seconds)'], sd['rkB/s'] / 1e3)
-plt.plot(sd['Time(Seconds)'], sd['rkB/s'] / 1e3)
+plt.plot(sd['Time(Seconds)'], sd['wkB/s'] / 1e3)
 plt.plot(cd['Time(Seconds)'], cd['rkB/s'] / 1e3)
 plt.plot(cd['Time(Seconds)'], cd['wkB/s'] / 1e3)
 plt.legend(['read (SD)', 'write (SD)', 'read (CD)', 'write (CD)'], prop={'size': fontsize})
