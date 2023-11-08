@@ -15,15 +15,24 @@ fi
 cd $(dirname $0)
 
 workloads=(
-	"ycsbc_hotspot0.01_110GB"
-	"ycsbc_hotspotshifting0.01_110GB"
-	"ycsbc_uniform_110GB"
-	"ycsbc_zipfian_110GB"
-	"hotspot0.01_110GB_read_0.5_insert_0.5"
-	"zipfian_110GB_read_0.5_insert_0.5"
 	"ycsba_hotspot0.01_110GB"
 	"ycsba_uniform_110GB"
 	"ycsba_zipfian_110GB"
+	"ycsbb_hotspot0.01_110GB"
+	"ycsbb_uniform_110GB"
+	"ycsbb_zipfian_110GB"
+	"ycsbc_hotspot0.01_110GB"
+	"ycsbc_uniform_110GB"
+	"ycsbc_zipfian_110GB"
+	"ycsbd_hotspot0.01_110GB"
+	"ycsbd_uniform_110GB"
+	"ycsbd_zipfian_110GB"
+	"ycsbf_hotspot0.01_110GB"
+	"ycsbf_uniform_110GB"
+	"ycsbf_zipfian_110GB"
+	"read_0.5_insert_0.5_hotspot0.01_110GB"
+	"read_0.5_insert_0.5_uniform_110GB"
+	"read_0.5_insert_0.5_zipfian_110GB"
 )
 
 source common.sh
