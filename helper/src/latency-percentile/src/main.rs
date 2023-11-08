@@ -26,6 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut insert_stats = metrics_util::Summary::with_defaults();
     let mut read_stats = metrics_util::Summary::with_defaults();
     let mut update_stats = metrics_util::Summary::with_defaults();
+    let mut rmw_stats = metrics_util::Summary::with_defaults();
     let mut i = 0;
     while let Ok(file) =
         File::open(input_directory.join(i.to_string() + "_latency_70_100"))
@@ -41,6 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 "INSERT" => insert_stats.add(latency_log10),
                 "READ" => read_stats.add(latency_log10),
                 "UPDATE" => update_stats.add(latency_log10),
+                "RMW" => rmw_stats.add(latency_log10),
                 _ => panic!("Unrecognized operation {}", op),
             }
         }
@@ -83,5 +85,18 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .unwrap();
         }
     }
+
+    if !rmw_stats.is_empty() {
+        let mut read_writer = BufWriter::new(
+            File::create(output_directory.join("rmw_latency")).unwrap(),
+        );
+        writeln!(read_writer, "quantile latency(ns)").unwrap();
+        for q in QUANTILES {
+            let latency_log10 = rmw_stats.quantile(q).unwrap();
+            writeln!(read_writer, "{} {}", q, 10.0_f64.powf(latency_log10))
+                .unwrap();
+        }
+    }
+
     Ok(())
 }
