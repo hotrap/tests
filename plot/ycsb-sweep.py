@@ -37,10 +37,10 @@ subfig_titles = ['(a) hotspot 1%', '(b) uniform', '(c) zipfian']
 patterns = ['///', '\\\\\\', '', 'XXX', '---']
 
 workloads=['hotspot0.01', 'uniform', 'zipfian']
-ycsb_configs=['ycsba', 'ycsbb', 'ycsbc', 'ycsbd', 'ycsbf']
-cluster_labels = ['A', 'B', 'C', 'D', 'F']
+ycsb_configs=['ycsba', 'read_0.5_insert_0.5', 'ycsbb', 'ycsbc', 'ycsbd', 'ycsbf']
+cluster_labels = ['A', 'A\'', 'B', 'C', 'D', 'F']
 versions=['flush-stably-hot', 'rocksdb-fat']
-size='11GB'
+size='110GB'
 
 gs = gridspec.GridSpec(1, len(workloads))
 bar_width = 0.15
