@@ -1,5 +1,5 @@
 workloads=(
-	"hotspot0.01_11GB_read_0.5_insert_0.5"
+	"read_0.5_insert_0.5_hotspot0.01_11GB"
 )
 function run_hotrap {
 	../helper/checkout-$2

@@ -15,12 +15,10 @@ workloads=(
 	"ycsbf_hotspot0.01_11GB"
 	"ycsbf_uniform_11GB"
 	"ycsbf_zipfian_11GB"
-	"hotspot0.01_11GB_read_0.5_insert_0.5"
-	"latest_11GB_read_0.5_insert_0.5"
-	"uniform_11GB_read_0.5_insert_0.5"
-	"zipfian_11GB_read_0.5_insert_0.5"
-	"ycsbc_hotspot0.01_11GB_200B"
-	"hotspot0.01_11GB_200B_read_0.5_insert_0.5"
+	"read_0.5_insert_0.5_hotspot0.01_11GB"
+	"read_0.5_insert_0.5_latest_11GB"
+	"read_0.5_insert_0.5_uniform_11GB"
+	"read_0.5_insert_0.5_zipfian_11GB"
 )
 function run_rocksdb {
 	../helper/checkout-$2
