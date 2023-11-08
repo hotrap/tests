@@ -3,7 +3,6 @@ if [ ! $1 ]; then
 	echo Usage: $0 output-dir
 	exit 1
 fi
-set -e
 DIR=$(realpath "$1")
 mydir=$(realpath $(dirname $0))
 cd $mydir
