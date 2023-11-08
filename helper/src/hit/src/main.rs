@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut key_hits = HashMap::new();
     let mut i = 0;
     while let Ok(key_hit_level) =
-        File::open(dir.join("key_hit_level_".to_owned() + &i.to_string()))
+        File::open(dir.join(i.to_string() + "_key_hit_level_70_100"))
     {
         let key_hit_level = BufReader::new(key_hit_level);
         for line in key_hit_level.lines() {
