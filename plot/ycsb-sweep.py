@@ -33,10 +33,10 @@ plt.rcParams['axes.unicode_minus'] = False
 #fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
 fig = plt.figure(dpi = 300)
 
-subfig_titles = ['(a) hotspot 1%', '(b) uniform', '(c) zipfian']
+subfig_titles = ['(a) hotspot 1%', '(b) zipfian', '(c) uniform']
 patterns = ['///', '\\\\\\', '', 'XXX', '---']
 
-workloads=['hotspot0.01', 'uniform', 'zipfian']
+workloads=['hotspot0.01', 'zipfian', 'uniform']
 ycsb_configs=['ycsba', 'read_0.5_insert_0.5', 'ycsbb', 'ycsbc', 'ycsbd', 'ycsbf']
 cluster_labels = ['A', 'A\'', 'B', 'C', 'D', 'F']
 versions=['flush-stably-hot', 'rocksdb-fat']
