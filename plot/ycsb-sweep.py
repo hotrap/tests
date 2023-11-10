@@ -58,8 +58,9 @@ for i in range(len(workloads)):
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             info = json5.load(open(os.path.join(data_dir, 'info.json')))
             run_70p_timestamp = info['run-70%-timestamp(ns)']
+            run_end_timestamp = info['run-end-timestamp(ns)']
             progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-            progress = progress[progress['Timestamp(ns)'] >= run_70p_timestamp]
+            progress = progress[(run_70p_timestamp <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < run_end_timestamp)]
             operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
             seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
             value = operations_executed / seconds
