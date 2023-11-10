@@ -38,7 +38,7 @@ def create_after_pay_instance(client, instance_name):
     request.set_VSwitchId(config['vswitch_id'])
     request.set_SystemDiskCategory('cloud_essd')
     request.set_SystemDiskPerformanceLevel('PL0')
-    request.set_SystemDiskSize(512)
+    request.set_SystemDiskSize(1024)
     response = client.send_request(request)
     instance_id = response.get('InstanceId')
     return instance_id
