@@ -54,7 +54,7 @@ function run_rocksdb_1 {
 function run_hotrap_1 {
 	setup $1 $2 $3
 	# Reserve 250MB for VisCnts
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$1 ../../data/$1/$2 9.75GB 1GB"
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$1 ../../data/$1/$2 9.75GB 1.1GB"
 	rsync -zPrt -e ssh root@$IP:~/data/$1 $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$1/$2
 	./delete.py $config_file $instance_id
