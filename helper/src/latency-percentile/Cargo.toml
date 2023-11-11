@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 metrics-util = "0.15"
+gpoint = "0.2"

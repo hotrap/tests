@@ -5,10 +5,7 @@ use std::io::{self, BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 
 extern crate metrics_util;
-
-const QUANTILES: [f64; 12] = [
-    0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 0.999, 0.9999,
-];
+use gpoint::GPoint;
 
 struct Stat {
     num: u64,
@@ -34,14 +31,19 @@ impl Stat {
         }
         self.summary.add(latency.log10());
     }
-    fn store(&self, path: &Path) {
+    fn store(&self, path: &Path, quantiles: &[f64]) {
         if !self.summary.is_empty() {
             let mut writer = BufWriter::new(File::create(path).unwrap());
             writeln!(writer, "quantile latency(ns)").unwrap();
-            for q in QUANTILES {
-                let latency_log10 = self.summary.quantile(q).unwrap();
-                writeln!(writer, "{} {}", q, 10.0_f64.powf(latency_log10))
-                    .unwrap();
+            for q in quantiles {
+                let latency_log10 = self.summary.quantile(*q).unwrap();
+                writeln!(
+                    writer,
+                    "{} {}",
+                    GPoint(*q),
+                    10.0_f64.powf(latency_log10)
+                )
+                .unwrap();
             }
             writeln!(writer, "average {}", self.sum / self.num as f64).unwrap();
             writeln!(writer, "max {}", self.max).unwrap();
@@ -62,6 +64,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     let input_directory = PathBuf::from(args.next().unwrap());
     let output_directory = PathBuf::from(args.next().unwrap());
+
+    let mut quantiles = Vec::new();
+    let mut magnitute = 0.1;
+    let mut quantile = 0.0;
+    for _ in 0..4 {
+        for _ in 1..10 {
+            quantile += magnitute;
+            quantiles.push(quantile);
+        }
+        magnitute /= 10.0;
+    }
+
     let mut insert_stats = Stat::new();
     let mut read_stats = Stat::new();
     let mut update_stats = Stat::new();
@@ -88,10 +102,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     println!("{} latency files processed", i);
 
-    insert_stats.store(&output_directory.join("insert_latency"));
-    read_stats.store(&output_directory.join("read_latency"));
-    update_stats.store(&output_directory.join("update_latency"));
-    rmw_stats.store(&output_directory.join("rmw_latency"));
+    insert_stats.store(&output_directory.join("insert_latency"), &quantiles);
+    read_stats.store(&output_directory.join("read_latency"), &quantiles);
+    update_stats.store(&output_directory.join("update_latency"), &quantiles);
+    rmw_stats.store(&output_directory.join("rmw_latency"), &quantiles);
 
     Ok(())
 }
