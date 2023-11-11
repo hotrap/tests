@@ -28,6 +28,6 @@ set -m
 		kill -TERM -$pgid
 	) &
 	bgpid=$!
+	trap "kill -TERM $bgpid" EXIT
 	$2 "${@:3}"
-	kill -TERM $bgpid
 )
