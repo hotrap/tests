@@ -8,7 +8,7 @@ RUSTTARGETS	:= $(patsubst %.rs,bin/%,$(RUSTSRCS))
 
 all: ${RUSTTARGETS}
 	cd src/hit && cargo build --release && cd - > /dev/null
-	cd src/latency-percentile && cargo build --release && cd - > /dev/null
+	cd src/latency-cdf && cargo build --release && cd - > /dev/null
 	cd src/read-keys-from-dump && cargo build --release && cd - > /dev/null
 
 clean:

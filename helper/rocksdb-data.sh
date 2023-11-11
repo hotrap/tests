@@ -13,7 +13,8 @@ mv LOG rocksdb-stats*.txt progress cpu mem info.json "$DIR"/
 if [ -f 0_key_only_trace_70_100 ]; then
 	find . -name "*_key_only_trace_70_100" -exec cat {} \; | awk '{if ($1 == "READ" || $1 == "RMW") print $2}' | $mydir/bin/occurrences > occurrences
 fi
-$mydir/latency-percentile . "$DIR"/
+$mydir/latency-cdf . "$DIR"/
+$mydir/latency.py "$DIR"/
 if [ -f ans_0 ]; then
 	sha256sum ans_* > "$DIR"/ans.sha256
 fi
