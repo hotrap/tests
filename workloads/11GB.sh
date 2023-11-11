@@ -12,6 +12,7 @@ workloads=(
 	"ycsbd_hotspot0.01_11GB"
 	"ycsbd_uniform_11GB"
 	"ycsbd_zipfian_11GB"
+	"ycsbd_latest_11GB"
 	"ycsbf_hotspot0.01_11GB"
 	"ycsbf_uniform_11GB"
 	"ycsbf_zipfian_11GB"
