@@ -7,6 +7,7 @@ if len(sys.argv) != 2:
 	exit()
 
 import os
+import json5
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -22,7 +23,12 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
 num_bytes = pd.read_table(d + '/promoted-or-retained-bytes', delim_whitespace=True)
-timestamp = (num_bytes['Timestamp(ns)'] - num_bytes['Timestamp(ns)'][0]) / 1e9
+info_json = os.path.join(d, 'info.json')
+info_json = json5.load(open(info_json))
+num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info_json['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info_json['run-end-timestamp(ns)'])]
+
+timestamp_start_ns = num_bytes['Timestamp(ns)'].iloc[0]
+timestamp = (num_bytes['Timestamp(ns)'] - timestamp_start_ns) / 1e9
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
