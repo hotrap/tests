@@ -1,7 +1,7 @@
 sudo apt update
 sudo apt install -y rsync git
 
-pip3 install humanfriendly
+pip3 install humanfriendly pandas
 
 sudo sed -i '/^\(root hard nofile 65535\|\* hard nofile 65535\)$/d' /etc/security/limits.conf
 
