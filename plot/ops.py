@@ -25,9 +25,13 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 d = sys.argv[1]
 mean_step = int(sys.argv[2])
 progress_raw = pd.read_table(d + '/progress', delim_whitespace=True)
-timestamp_start_ns = progress_raw['Timestamp(ns)'][0]
+info_json = os.path.join(d, 'info.json')
+info_json = json5.load(open(info_json))
+progress_raw = progress_raw[(progress_raw['Timestamp(ns)'] >= info_json['run-start-timestamp(ns)']) & (progress_raw['Timestamp(ns)'] < info_json['run-end-timestamp(ns)'])]
+
+timestamp_start_ns = progress_raw['Timestamp(ns)'].iloc[0]
 timestamp = (progress_raw['Timestamp(ns)'] - timestamp_start_ns).values / 1e9
-timestamp = timestamp[0:len(timestamp)-1]
+timestamp = timestamp[:-1]
 progress = progress_raw['operations-executed']
 ops = progress[1:len(progress)].values - progress[:len(progress) - 1].values
 
@@ -46,11 +50,8 @@ if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/ops.pdf'
 plt.plot(timestamp, ops)
-info_json = os.path.join(d, 'info.json')
-if os.path.exists(info_json):
-    info_json = json5.load(open(info_json))
-    if 'run-70%-timestamp(ns)' in info_json:
-        plt.axvline((info_json['run-70%-timestamp(ns)'] - timestamp_start_ns) / 1e9, color='orange')
+if 'run-70%-timestamp(ns)' in info_json:
+    plt.axvline((info_json['run-70%-timestamp(ns)'] - timestamp_start_ns) / 1e9, color='orange')
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('OPS', fontdict=fonten)
 plt.title('OPS')
