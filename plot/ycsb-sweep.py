@@ -25,13 +25,13 @@ def cm_to_inch(value):
     return value/2.54
 
 mpl.rcParams.update({
+    'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
     'font.sans-serif': ['Times New Roman'],
-    })
+})
 plt.rcParams['axes.unicode_minus'] = False
 
-#fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
-fig = plt.figure(dpi = 300)
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(5)))
 
 subfig_titles = ['(a) hotspot 1%', '(b) zipfian', '(c) uniform']
 patterns = ['///', '\\\\\\', '', 'XXX', '---']
@@ -49,6 +49,8 @@ cluster_width = bar_width * len(versions)
 for i in range(len(workloads)):
     subfig = plt.subplot(gs[0, i])
     ax = plt.gca()
+    ax.set_axisbelow(True)
+    ax.grid(axis='y')
     workload = workloads[i]
     max_value = 0
     for (pivot, ycsb) in enumerate(ycsb_configs):
@@ -74,12 +76,13 @@ for i in range(len(workloads)):
     plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
     plt.yticks(fontsize=8)
     plt.ylim(0, math.ceil(max_value / 1e4) * 1e4)
-    plt.xlabel(subfig_titles[i], fontsize=8)
+    plt.xlabel(subfig_titles[i], labelpad=1, fontsize=8)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=8)
-fig.legend(versions, fontsize=8, ncol=len(versions), loc='center', bbox_to_anchor=(0.5, 0.95))
+fig.legend(versions, fontsize=8, ncol=len(versions), loc='center', bbox_to_anchor=(0.5, 0.99))
+plt.tight_layout()
 pdf_path = dir + '/ycsb-sweep.pdf'
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()
