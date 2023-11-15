@@ -17,6 +17,7 @@ function run_hotrap {
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${workloads[@]}"; do
+	run_hotrap $workload with-probation
 	run_hotrap $workload viscnts-splay-rs
 	run_hotrap $workload flush-stably-hot
 	run_rocksdb $workload rocksdb-fat
