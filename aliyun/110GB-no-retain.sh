@@ -15,7 +15,7 @@ fi
 cd $(dirname $0)
 
 workloads=(
-	"ycsbc_uniform_110GB"
+	"read_0.5_insert_0.5_hotspot0.01_110GB"
 )
 
 source common.sh
@@ -32,6 +32,6 @@ function run-hotrap {
 }
 
 for workload in "${workloads[@]}"; do
-	aliyun-run run-hotrap $workload flush-accessed
+	aliyun-run run-hotrap $workload no-retain
 done
 wait

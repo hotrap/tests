@@ -41,24 +41,28 @@ for workload in "${workloads[@]}"; do
 	fi
 done
 
-function run_rocksdb_1 {
-	setup $1 $2 $3
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB.sh ../config/$1 ../../data/$1/$2 10GB"
-	rsync -zPrt -e ssh root@$IP:~/data/$1 $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$1/$2
-	./delete.py $config_file $instance_id
+function run-rocksdb {
+	workload=$1
+	version=$2
+	IP=$3
+	./checkout-$version $IP
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB.sh ../config/$workload ../../data/$workload/$version 10GB"
+	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
+	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
-function run_hotrap_1 {
-	setup $1 $2 $3
+function run-hotrap {
+	workload=$1
+	version=$2
+	IP=$3
+	./checkout-$version $IP
 	# Reserve 250MB for VisCnts
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$1 ../../data/$1/$2 9.75GB 1.1GB"
-	rsync -zPrt -e ssh root@$IP:~/data/$1 $output_dir/
-	../helper/hotrap-plot.sh $output_dir/$1/$2
-	./delete.py $config_file $instance_id
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.75GB 1.1GB"
+	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
+	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
 
 for workload in "${workloads[@]}"; do
-	run_rocksdb $workload rocksdb-fat
-	run_hotrap $workload flush-stably-hot
+	aliyun-run run-rocksb $workload rocksdb-fat
+	aliyun-run run-hotrap $workload flush-stably-hot
 done
 wait
