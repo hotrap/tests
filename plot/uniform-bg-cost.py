@@ -33,6 +33,7 @@ plt.rcParams['axes.unicode_minus'] = False
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)))
 
+colormap = 'Set2'
 patterns = ['///', '\\\\\\', '', 'XXX', '---']
 
 workload='uniform'
@@ -70,7 +71,7 @@ for (pivot, ycsb) in enumerate(ycsb_configs):
         value = operations_executed / seconds
         if value > max_value:
             max_value = value
-        ax.bar(x, value, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap('Set3')(version_idx), edgecolor='black', linewidth=0.5)
+        ax.bar(x, value, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
 plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
 plt.yticks(fontsize=8)
 plt.ylim(0, math.ceil(max_value / 1e4) * 1e4)
@@ -95,7 +96,7 @@ for (pivot, ycsb) in enumerate(ycsb_configs):
         cpu = pd.read_table(os.path.join(data_dir, 'cpu'), delim_whitespace=True, names=['Timestamp(s)', 'util'])
         cpu = cpu[(run_70p_timestamp <= cpu['Timestamp(s)'] * 1e9) & (cpu['Timestamp(s)'] * 1e9 < run_end_timestamp)]
         cputime = cpu['util'].sum() / 100
-        ax.bar(x, cputime, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap('Set3')(version_idx), edgecolor='black', linewidth=0.5)
+        ax.bar(x, cputime, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
 plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
 plt.yticks(fontsize=8)
 plt.locator_params(axis='y', nbins=4)
@@ -118,7 +119,7 @@ for (pivot, ycsb) in enumerate(ycsb_configs):
             iostat = iostat[(run_70p_timestamp <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < run_end_timestamp)]
             return iostat[['rkB/s', 'wkB/s']].sum().sum()
         io_TB = (run_time_io_kB('iostat-sd.txt') + run_time_io_kB('iostat-cd.txt')) / 1e9
-        ax.bar(x, io_TB, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap('Set3')(version_idx), edgecolor='black', linewidth=0.5)
+        ax.bar(x, io_TB, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
 plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
 plt.yticks(fontsize=8)
 plt.ylabel('Total read/write data (TB)', fontsize=8)

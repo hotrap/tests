@@ -34,6 +34,7 @@ plt.rcParams['axes.unicode_minus'] = False
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(5)))
 
 subfig_titles = ['(a) hotspot 1%', '(b) zipfian', '(c) uniform']
+colormap = 'Set2'
 patterns = ['///', '\\\\\\', '', 'XXX', '---']
 
 workloads=['hotspot0.01', 'zipfian', 'uniform']
@@ -68,7 +69,7 @@ for i in range(len(workloads)):
             value = operations_executed / seconds
             if value > max_value:
                 max_value = value
-            ax.bar(x, value, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap('Set3')(version_idx), edgecolor='black', linewidth=0.5)
+            ax.bar(x, value, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
     formatter = ScalarFormatter(useMathText=True)
     formatter.set_powerlimits((-3, 4))
     ax.yaxis.set_major_formatter(formatter)

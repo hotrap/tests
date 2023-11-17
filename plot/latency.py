@@ -5,63 +5,95 @@ import sys
 if len(sys.argv) != 2:
 	print('Usage: ' + sys.argv[0] + ' dir')
 	exit()
+dir = sys.argv[1]
 
 import os
 import pandas as pd
+import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from matplotlib.ticker import LogLocator
 
-fontsize=9
-fonten = {'family': 'Times New Roman', 'size': fontsize}
+# Paper specific settings
+STANDARD_WIDTH = 17.8
+SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
+DOUBLE_COL_WIDTH = STANDARD_WIDTH
+def cm_to_inch(value):
+    return value/2.54
 
 mpl.rcParams.update({
+    'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
     'font.sans-serif': ['Times New Roman'],
-    })  # 设置全局字体
-plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    })
+plt.rcParams['axes.unicode_minus'] = False
 
-abspath = os.path.abspath(sys.argv[0])
-dname = os.path.dirname(abspath)
-
-dir = sys.argv[1]
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
+colormap = 'Set2'
 
 tests = [
     {
+        'title': '(a) YCSB-A\' hotspot-1% insert latency',
         'workload': 'read_0.5_insert_0.5_hotspot0.01_110GB',
         'workload-name': 'read-0.5-insert-0.5-hotspot',
-        'operations': ['read', 'insert'],
+        'operation': 'read',
     },
     {
+        'title': '(b) YCSB-A\' hotspot-1% read latency',
+        'workload': 'read_0.5_insert_0.5_hotspot0.01_110GB',
+        'workload-name': 'read-0.5-insert-0.5-hotspot',
+        'operation': 'insert',
+    },
+    {
+        'title': '(c) YCSB-C hotspot-1% read latency',
         'workload': 'ycsbc_hotspot0.01_110GB',
         'workload-name': 'ycsbc-hotspot',
-        'operations': ['read'],
+        'operation': 'read',
     },
 ]
 versions=['flush-stably-hot', 'rocksdb-fat']
-percentiles = ['0.1', '0.3', '0.5', '0.7', '0.9', '0.99', '0.999', 'Max']
-for test in tests:
+percentiles = [50, 60, 70, 80, 90, 95, 99, 99.9]
+
+gs = gridspec.GridSpec(1, len(tests))
+bar_width = 1 / (len(versions) + 1)
+cluster_width = bar_width * len(versions)
+
+for (i, test) in enumerate(tests):
+    subfig = plt.subplot(gs[0, i])
+    ax = plt.gca()
+    ax.set_axisbelow(True)
+    ax.grid(axis='y')
+
     workload = test['workload']
-    operations = test['operations']
-    pdf_path = os.path.join(dir, test['workload-name'] + '-latency.pdf')
-    plt.figure()
-    legends=[]
-    for operation in operations:
-        for version in versions:
-            data_dir = os.path.join(dir, workload, version)
-            path = os.path.join(data_dir, operation + '-latency')
-            latency = pd.read_table(path, delim_whitespace=True, names=['percentile', 'ns'])
-            latency = latency.set_index('percentile').to_dict()['ns']
-            y = []
-            for percentile in percentiles:
-                y.append(latency[percentile])
-            plt.plot(percentiles, y)
-            plt.yscale('log')
-            if len(operations) == 1:
-                legends.append(version)
-            else:
-                legends.append(version + '-' + operation)
-    plt.legend(legends, prop={'size': fontsize})
-    plt.xlabel('Percentiles', fontdict=fonten)
-    plt.ylabel('Latency (ns)', fontdict=fonten)
-    plt.savefig(pdf_path)
-    print('Plot saved to ' + pdf_path)
+    operation = test['operation']
+    for (version_idx, version) in enumerate(versions):
+        data_dir = os.path.join(dir, workload, version)
+        path = os.path.join(data_dir, operation + '-latency-cdf')
+        cdf = pd.read_table(path, delim_whitespace=True, names=['latency', 'cdf'])
+        latencies = np.array(cdf['latency'])
+        cdf = np.array(cdf['cdf'])
+        x = []
+        y = []
+        for percentile in percentiles:
+            x.append(str(percentile))
+            y.append(latencies[np.searchsorted(cdf, percentile / 100)])
+        x.append('max')
+        y.append(latencies[-1])
+        ax.plot(x, y, color=plt.get_cmap(colormap)(version_idx))
+    plt.xticks(fontsize=8)
+    plt.yscale('log')
+    if i == 1:
+        plt.yticks([1e5, 1e6, 1e7], fontsize=8)
+        ax.yaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2, 10) * 0.1, numticks=233))
+    else:
+        plt.yticks(fontsize=8)
+    subfig.text(0.5, -0.27, 'Percentiles (%)', fontsize=6, ha='center', va='center', transform=subfig.transAxes)
+    plt.xlabel(test['title'], labelpad = 8, fontsize=8)
+    if i == 0:
+        plt.ylabel('Latency (ns)', fontsize=8)
+fig.legend(versions, fontsize=8, ncol=len(versions), loc='center', bbox_to_anchor=(0.5, 0.99))
+plt.tight_layout()
+pdf_path = os.path.join(dir, 'latency.pdf')
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+print('Plot saved to ' + pdf_path)
