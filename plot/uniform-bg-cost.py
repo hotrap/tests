@@ -43,41 +43,11 @@ versions=['flush-stably-hot', 'rocksdb-fat']
 version_dir=['.', '.']
 size='110GB'
 
-gs = gridspec.GridSpec(1, 3)
+gs = gridspec.GridSpec(1, 2)
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
 subfig = plt.subplot(gs[0, 0])
-ax = plt.gca()
-ax.set_axisbelow(True)
-ax.grid(axis='y')
-formatter = ScalarFormatter(useMathText=True)
-formatter.set_powerlimits((-3, 4))
-ax.yaxis.set_major_formatter(formatter)
-ax.yaxis.get_offset_text().set_fontsize(8)
-max_value = 0
-for (pivot, ycsb) in enumerate(ycsb_configs):
-    workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
-    for (version_idx, version) in enumerate(versions):
-        data_dir = os.path.join(version_dir[version_idx], workload_dir, version)
-        x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-        info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        run_70p_timestamp = info['run-70%-timestamp(ns)']
-        run_end_timestamp = info['run-end-timestamp(ns)']
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-        progress = progress[(run_70p_timestamp <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < run_end_timestamp)]
-        operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
-        seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
-        value = operations_executed / seconds
-        if value > max_value:
-            max_value = value
-        ax.bar(x, value, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
-plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
-plt.yticks(fontsize=8)
-plt.ylim(0, math.ceil(max_value / 1e4) * 1e4)
-plt.ylabel('Operations per second', fontsize=8)
-
-subfig = plt.subplot(gs[0, 1])
 ax = plt.gca()
 ax.set_axisbelow(True)
 ax.grid(axis='y')
@@ -102,7 +72,7 @@ plt.yticks(fontsize=8)
 plt.locator_params(axis='y', nbins=4)
 plt.ylabel('CPU time (seconds)', fontsize=8)
 
-plt.subplot(gs[0, 2])
+plt.subplot(gs[0, 1])
 ax = plt.gca()
 ax.set_axisbelow(True)
 ax.grid(axis='y')
