@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [[ $# < 3 || $# > 5 ]]; then
+if [[ $# < 2 || $# > 3 ]]; then
 	echo Usage: $0 workload-file output-dir [switches]
 	exit 1
 fi

@@ -21,14 +21,14 @@ workloads=(
 	"read_0.5_insert_0.5_uniform_11GB"
 	"read_0.5_insert_0.5_zipfian_11GB"
 )
-function run_rocksdb {
+function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	./test-rocksdb-11GB.sh ../config/$1 $DIR 1GB
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
-function run_hotrap {
+function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
@@ -36,8 +36,16 @@ function run_hotrap {
 	./test-hotrap-11GB.sh ../config/$1 $DIR 0.975GB 110MB
 	../helper/hotrap-plot-11GB.sh $DIR
 }
+function run-rocksdb-sd {
+	../helper/checkout-rocksdb
+	DIR=../../data/$1/rocksdb-sd
+	echo Result directory: $DIR
+	./test-rocksdb-sd-11GB.sh ../config/$1 $DIR
+	../helper/rocksdb-plot-11GB.sh $DIR
+}
 for workload in "${workloads[@]}"; do
-	run_hotrap $workload viscnts-splay-rs
-	run_hotrap $workload flush-stably-hot
-	run_rocksdb $workload rocksdb-fat
+	run-hotrap $workload viscnts-splay-rs
+	run-hotrap $workload flush-stably-hot
+	run-rocksdb $workload rocksdb-fat
+	run-rocksdb-sd $workload
 done
