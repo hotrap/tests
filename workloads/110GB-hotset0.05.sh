@@ -1,5 +1,6 @@
 workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB"
+	"ycsbc_hotspot0.05_110GB"
 )
 function run-rocksdb {
 	../helper/checkout-$2
