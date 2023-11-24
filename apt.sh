@@ -9,3 +9,5 @@ sudo apt install -y libgflags-dev
 sudo apt install -y liburcu-dev libboost-program-options-dev libboost-fiber-dev
 # iostat.sh
 sudo apt install -y gawk
+# CacheLib
+sudo apt install -y libjemalloc-dev libevent-dev libdouble-conversion-dev libnuma-dev libboost-regex-dev libsodium-dev
