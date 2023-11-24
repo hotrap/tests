@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)
+source common.sh
+cd ..
+
+cd ../rocksdb
+git checkout v8.7.3
+build_rocksdb
+
+cd ../kvexe-secondary-cache
+git checkout secondary-cache
+build_kvexe_rocksdb

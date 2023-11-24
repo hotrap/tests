@@ -9,5 +9,3 @@ sudo apt install -y libgflags-dev
 sudo apt install -y liburcu-dev libboost-program-options-dev libboost-fiber-dev
 # iostat.sh
 sudo apt install -y gawk
-# viscnts-lsm
-sudo apt install -y liburing-dev

@@ -1,19 +1,19 @@
 workloads=(
-	"ycsba_hotspot0.01_110GB"
+	"read_0.5_insert_0.5_hotspot0.01_110GB"
 	"ycsbc_hotspot0.01_110GB"
+	"ycsba_hotspot0.01_110GB"
 	"ycsbd_hotspot0.01_110GB"
 	"ycsbf_hotspot0.01_110GB"
-	"read_0.5_insert_0.5_hotspot0.01_110GB"
+	"read_0.5_insert_0.5_uniform_110GB"
 	"ycsba_uniform_110GB"
 	"ycsbc_uniform_110GB"
 	"ycsbd_uniform_110GB"
 	"ycsbf_uniform_110GB"
-	"read_0.5_insert_0.5_uniform_110GB"
+	"read_0.5_insert_0.5_zipfian_110GB"
 	"ycsba_zipfian_110GB"
 	"ycsbc_zipfian_110GB"
 	"ycsbd_zipfian_110GB"
 	"ycsbf_zipfian_110GB"
-	"read_0.5_insert_0.5_zipfian_110GB"
 	"ycsbc_hotspotshifting0.01_110GB"
 )
 function run-rocksdb {
@@ -21,6 +21,13 @@ function run-rocksdb {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	./test-rocksdb-110GB.sh ../config/$1 $DIR 10GB
+	../helper/rocksdb-plot.sh $DIR
+}
+function run-secondary-cache {
+	../helper/checkout-$2
+	DIR=../../data/$1/$2
+	echo Result directory: $DIR
+	./test-secondary-cache-110GB.sh ../config/$1 $DIR 10GB 1.1GB
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -41,5 +48,6 @@ function run-rocksdb-sd {
 for workload in "${workloads[@]}"; do
 	run-hotrap $workload flush-stably-hot
 	run-rocksdb $workload rocksdb-fat
+	run-secondary-cache $workload secondary-cache
 	run-rocksdb-sd $workload
 done
