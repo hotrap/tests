@@ -20,9 +20,7 @@ mkdir data
 git clone -b v2023.11.20.00 https://github.com/facebook/CacheLib.git
 cd CacheLib
 ./contrib/build.sh -j -T
-sudo rm -rf /opt/cachelib
-sudo cp -r opt/cachelib /opt
-echo "export CACHELIB_HOME=/opt/cachelib" >> ~/.profile
+echo "export CACHELIB_HOME=$(pwd)/opt/cachelib" >> ~/.profile
 
 git clone git@github.com:hotrap/hotrap.git rocksdb
 cp -r rocksdb hotrap
