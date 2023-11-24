@@ -26,7 +26,7 @@ function run-hotrap {
 	IP=$3
 	./checkout-$version $IP
 	# Reserve 250MB for VisCnts
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.75GB 1.1GB"
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.75GB 5.5GB"
 	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
