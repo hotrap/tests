@@ -1,0 +1,16 @@
+recordcount=11000000
+operationcount=11000000
+workload=site.ycsb.workloads.CoreWorkload
+
+readallfields=true
+
+readproportion=1
+updateproportion=0
+scanproportion=0
+insertproportion=0
+
+requestdistribution=hotspot
+
+hotspotdatafraction=0.05
+hotspotopnfraction=0.95
+
