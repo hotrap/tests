@@ -35,7 +35,7 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(
 
 subfigs = [
     {
-        'title': '(a) hotspot 1%',
+        'title': '(a) hotspot 5%',
         'ticks': [0, 1e4, 2e4, 3e4, 4e4],
     },
     {
@@ -45,11 +45,11 @@ subfigs = [
     {
         'title': '(c) uniform',
         'ticks': [0, 1e4, 2e4, 3e4, 4e4],
-    }
+    },
 ]
 colormap = 'Set2'
 
-workloads=['hotspot0.01', 'zipfian', 'uniform']
+workloads=['hotspot0.05', 'zipfian', 'uniform']
 ycsb_configs=['ycsba', 'read_0.5_insert_0.5', 'ycsbc', 'ycsbd', 'ycsbf']
 cluster_labels = ['A', 'A\'', 'C', 'D', 'F']
 versions=['flush-stably-hot', 'rocksdb-fat', 'rocksdb-sd']

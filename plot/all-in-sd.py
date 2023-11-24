@@ -36,7 +36,7 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(
 colormap = 'Set2'
 patterns = ['///', '\\\\\\', '', 'XXX', '---']
 
-workload='hotspot0.01'
+workload='hotspot0.05'
 ycsb_configs=['ycsba', 'read_0.5_insert_0.5', 'ycsbc', 'ycsbd', 'ycsbf']
 cluster_labels = ['A', 'A\'', 'C', 'D', 'F']
 versions=['flush-stably-hot', 'rocksdb-sd']

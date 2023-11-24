@@ -34,20 +34,20 @@ colormap = 'Set2'
 
 tests = [
     {
-        'title': '(a) YCSB-A\' hotspot-1% insert latency',
-        'workload': 'read_0.5_insert_0.5_hotspot0.01_110GB',
+        'title': '(a) YCSB-A\' hotspot-5% insert latency',
+        'workload': 'read_0.5_insert_0.5_hotspot0.05_110GB',
         'workload-name': 'read-0.5-insert-0.5-hotspot',
         'operation': 'read',
     },
     {
-        'title': '(b) YCSB-A\' hotspot-1% read latency',
-        'workload': 'read_0.5_insert_0.5_hotspot0.01_110GB',
+        'title': '(b) YCSB-A\' hotspot-5% read latency',
+        'workload': 'read_0.5_insert_0.5_hotspot0.05_110GB',
         'workload-name': 'read-0.5-insert-0.5-hotspot',
         'operation': 'insert',
     },
     {
-        'title': '(c) YCSB-C hotspot-1% read latency',
-        'workload': 'ycsbc_hotspot0.01_110GB',
+        'title': '(c) YCSB-C hotspot-5% read latency',
+        'workload': 'ycsbc_hotspot0.05_110GB',
         'workload-name': 'ycsbc-hotspot',
         'operation': 'read',
     },
