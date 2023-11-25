@@ -14,9 +14,9 @@ awk "{
 		}
 	}
 	END {
-		print "by-flush", $2 - first_by_flush;
-		print "2sdlast", $3 - first_2sdlast;
-		print "2cdfront", $4 - first_2cdfront;
-		print "retained", $5 - first_retained;
+		print "by-flush", ($2 - first_by_flush) / 1e9, "GB";
+		print "2sdlast", ($3 - first_2sdlast) / 1e9, "GB";
+		print "2cdfront", ($4 - first_2cdfront) / 1e9, "GB";
+		print "retained", ($5 - first_retained) / 1e9, "GB";
 	}
 '
