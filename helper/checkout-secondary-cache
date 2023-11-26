@@ -6,7 +6,7 @@ source common.sh
 cd ..
 
 cd ../rocksdb
-git checkout v8.7.3
+git checkout fb-main
 build_rocksdb
 
 cd ../kvexe-secondary-cache
