@@ -22,13 +22,6 @@ function run-rocksdb-sd {
 	./test-rocksdb-sd-11GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
-function run-secondary-cache {
-	../helper/checkout-$2
-	DIR=../../data/$1/$2
-	echo Result directory: $DIR
-	./test-secondary-cache-11GB.sh ../config/$1 $DIR 1GB 550MB
-	../helper/rocksdb-plot-11GB.sh $DIR
-}
 function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
@@ -36,12 +29,19 @@ function run-rocksdb {
 	./test-rocksdb-11GB.sh ../config/$1 $DIR 1GB
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
+function run-secondary-cache {
+	../helper/checkout-$2
+	DIR=../../data/$1/$2
+	echo Result directory: $DIR
+	./test-secondary-cache-11GB.sh ../config/$1 $DIR 1GB 550MB
+	../helper/rocksdb-plot-11GB.sh $DIR
+}
 function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	# Reserve 25MB for VisCnts
-	./test-hotrap-11GB.sh ../config/$1 $DIR 0.975GB 550MB
+	# Reserve 33MB for VisCnts
+	./test-hotrap-11GB.sh ../config/$1 $DIR 0.967GB 550MB 33MB
 	../helper/hotrap-plot-11GB.sh $DIR
 }
 for workload in "${workloads[@]}"; do
