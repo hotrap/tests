@@ -27,7 +27,7 @@ function run-secondary-cache {
 	../helper/checkout-secondary-cache
 	DIR=../../data/$1/secondary-cache
 	echo Result directory: $DIR
-	./test-secondary-cache-110GB.sh ../config/$1 $DIR 10GB 5.5GB
+	./test-secondary-cache-110GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-rocksdb {

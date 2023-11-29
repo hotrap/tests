@@ -55,7 +55,7 @@ function run-secondary-cache {
 	version=$2
 	IP=$3
 	./checkout-secondary-cache $IP
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-secondary-cache-110GB.sh ../config/$workload ../../data/$workload/$version 10GB 5.5GB"
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-secondary-cache-110GB.sh ../config/$workload ../../data/$workload/$version"
 	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }

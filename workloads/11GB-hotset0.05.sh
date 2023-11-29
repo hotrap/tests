@@ -33,7 +33,7 @@ function run-secondary-cache {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-secondary-cache-11GB.sh ../config/$1 $DIR 1GB 550MB
+	./test-secondary-cache-11GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
 function run-hotrap {

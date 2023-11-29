@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [[ $# < 4 || $# > 5 ]]; then
-	echo Usage: $0 workload-file output-dir sd-size secondary-cache-size [switches]
+if [[ $# < 2 || $# > 3 ]]; then
+	echo Usage: $0 workload-file output-dir [switches]
 	exit 1
 fi
 set -e
@@ -14,11 +14,8 @@ if [ "$res" ]; then
 fi
 workload_file=$(realpath $1)
 DIR=$(realpath "$2")
-sd_size=$(humanfriendly --parse-size=$3)
-secondary_cache_size=$(humanfriendly --parse-size=$4)
-sd_size=$(($sd_size-$secondary_cache_size))
-if [ $5 ]; then
-	switches=$5
+if [ $3 ]; then
+	switches=$3
 else
 	switches=0x1
 fi
@@ -27,5 +24,5 @@ workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-secondary-cache/build/
 
 ulimit -n 100000
-../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=8 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=67108864 --level0_file_num_compaction_trigger=1 --secondary_cache_size=$secondary_cache_size --secondary_cache_volatile_size=16777216 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,$sd_size},{$workspace/testdb/cd,100000000000}}\" 2>> $DIR/log.txt"
+../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=8 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=201326592 --level0_file_num_compaction_trigger=1 --secondary_cache_size=550000000 --secondary_cache_volatile_size=16777216 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,450000000},{$workspace/testdb/cd,100000000000}}\" 2>> $DIR/log.txt"
 bash ../helper/rocksdb-data.sh "$DIR"
