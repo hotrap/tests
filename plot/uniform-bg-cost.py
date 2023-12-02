@@ -61,10 +61,10 @@ for (pivot, ycsb) in enumerate(ycsb_configs):
         data_dir = os.path.join(version_dir[version_idx], workload_dir, version)
         x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        run_70p_timestamp = info['run-70%-timestamp(ns)']
+        run_start_timestamp = info['run-start-timestamp(ns)']
         run_end_timestamp = info['run-end-timestamp(ns)']
         cpu = pd.read_table(os.path.join(data_dir, 'cpu'), delim_whitespace=True, names=['Timestamp(s)', 'util'])
-        cpu = cpu[(run_70p_timestamp <= cpu['Timestamp(s)'] * 1e9) & (cpu['Timestamp(s)'] * 1e9 < run_end_timestamp)]
+        cpu = cpu[(run_start_timestamp <= cpu['Timestamp(s)'] * 1e9) & (cpu['Timestamp(s)'] * 1e9 < run_end_timestamp)]
         cputime = cpu['util'].sum() / 100
         ax.bar(x, cputime, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
 plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
@@ -82,11 +82,11 @@ for (pivot, ycsb) in enumerate(ycsb_configs):
         data_dir = os.path.join(version_dir[version_idx], workload_dir, version)
         x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        run_70p_timestamp = info['run-70%-timestamp(ns)']
+        run_start_timestamp = info['run-70%-timestamp(ns)']
         run_end_timestamp = info['run-end-timestamp(ns)']
         def run_time_io_kB(fname):
             iostat = pd.read_table(os.path.join(data_dir, fname), delim_whitespace=True)
-            iostat = iostat[(run_70p_timestamp <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < run_end_timestamp)]
+            iostat = iostat[(run_start_timestamp <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < run_end_timestamp)]
             return iostat[['rkB/s', 'wkB/s']].sum().sum()
         io_TB = (run_time_io_kB('iostat-sd.txt') + run_time_io_kB('iostat-cd.txt')) / 1e9
         ax.bar(x, io_TB, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)

@@ -30,7 +30,6 @@ mpl.rcParams.update({
 plt.rcParams['axes.unicode_minus'] = False
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
-colormap = 'Set2'
 
 tests = [
     {
@@ -52,7 +51,29 @@ tests = [
         'operation': 'read',
     },
 ]
-versions=['flush-stably-hot', 'rocksdb-fat']
+versions=[
+    {
+        'path': 'flush-stably-hot',
+        'color': plt.get_cmap('Set2')(0),
+        'marker': 'o',
+    },
+    {
+        'path': 'rocksdb-fat',
+        'color': plt.get_cmap('Set2')(1),
+        'marker':'^',
+    },
+    {
+        'path': 'secondary-cache',
+        'color': plt.get_cmap('Set2')(3),
+        'marker': 's',
+    },
+    {
+        'path': 'rocksdb-sd',
+        'color': plt.get_cmap('Set2')(2),
+        'marker':'x',
+    },
+]
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)']
 percentiles = [50, 60, 70, 80, 90, 95, 99, 99.9]
 
 gs = gridspec.GridSpec(1, len(tests))
@@ -68,7 +89,7 @@ for (i, test) in enumerate(tests):
     workload = test['workload']
     operation = test['operation']
     for (version_idx, version) in enumerate(versions):
-        data_dir = os.path.join(dir, workload, version)
+        data_dir = os.path.join(dir, workload, version['path'])
         path = os.path.join(data_dir, operation + '-latency-cdf')
         cdf = pd.read_table(path, delim_whitespace=True, names=['latency', 'cdf'])
         latencies = np.array(cdf['latency'])
@@ -80,7 +101,7 @@ for (i, test) in enumerate(tests):
             y.append(latencies[np.searchsorted(cdf, percentile / 100)])
         x.append('max')
         y.append(latencies[-1])
-        ax.plot(x, y, color=plt.get_cmap(colormap)(version_idx))
+        ax.plot(x, y, color=version['color'], marker=version['marker'], markerfacecolor='none')
     plt.xticks(fontsize=8)
     plt.yscale('log')
     if i == 1:
@@ -92,7 +113,7 @@ for (i, test) in enumerate(tests):
     plt.xlabel(test['title'], labelpad = 8, fontsize=8)
     if i == 0:
         plt.ylabel('Latency (ns)', fontsize=8)
-fig.legend(versions, fontsize=8, ncol=len(versions), loc='center', bbox_to_anchor=(0.5, 0.99))
+fig.legend(version_names, fontsize=8, ncol=len(versions), loc='center', bbox_to_anchor=(0.5, 0.99))
 plt.tight_layout()
 pdf_path = os.path.join(dir, 'latency.pdf')
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)

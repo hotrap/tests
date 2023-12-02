@@ -5,8 +5,8 @@ function run_hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	# Reserve 250MB for VisCnts
-	./test-hotrap-110GB.sh ../config/$1 $DIR 9.75GB 5.5GB
+	# Reserve 330MB for VisCnts
+	./test-hotrap-110GB.sh ../config/$1 $DIR 9.67GB 5.5GB 330MB
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${workloads[@]}"; do

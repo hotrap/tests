@@ -36,7 +36,7 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(
 subfigs = [
     {
         'title': '(a) hotspot 5%',
-        'ticks': [0, 1e4, 2e4, 3e4, 4e4],
+        'ticks': [0, 2e4, 4e4, 6e4],
     },
     {
         'title': '(b) zipfian',
@@ -44,17 +44,36 @@ subfigs = [
     },
     {
         'title': '(c) uniform',
-        'ticks': [0, 1e4, 2e4, 3e4, 4e4],
+        'ticks': [0, 2e4, 4e4, 6e4],
     },
 ]
-colormap = 'Set2'
 
 workloads=['hotspot0.05', 'zipfian', 'uniform']
 ycsb_configs=['ycsba', 'read_0.5_insert_0.5', 'ycsbc', 'ycsbd', 'ycsbf']
 cluster_labels = ['A', 'A\'', 'C', 'D', 'F']
-versions=['flush-stably-hot', 'rocksdb-fat', 'rocksdb-sd']
-patterns = ['///', '\\\\\\', 'XXXXXXXXX', 'XXX', '---']
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(SD)']
+versions=[
+    {
+        'path': 'flush-stably-hot',
+        'pattern': '///',
+        'color': plt.get_cmap('Set2')(0),
+    },
+    {
+        'path': 'rocksdb-fat',
+        'pattern': '\\\\\\',
+        'color': plt.get_cmap('Set2')(1),
+    },
+    {
+        'path': 'secondary-cache',
+        'pattern': 'XXX',
+        'color': plt.get_cmap('Set2')(3),
+    },
+    {
+        'path': 'rocksdb-sd',
+        'pattern': 'XXXXXXXXX',
+        'color': plt.get_cmap('Set2')(2),
+    },
+]
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)']
 size='110GB'
 
 gs = gridspec.GridSpec(1, len(workloads))
@@ -70,7 +89,7 @@ for i in range(len(workloads)):
     for (pivot, ycsb) in enumerate(ycsb_configs):
         workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
         for (version_idx, version) in enumerate(versions):
-            data_dir = os.path.join(workload_dir, version)
+            data_dir = os.path.join(workload_dir, version['path'])
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             info = json5.load(open(os.path.join(data_dir, 'info.json')))
             run_70p_timestamp = info['run-70%-timestamp(ns)']
@@ -80,13 +99,14 @@ for i in range(len(workloads)):
             operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
             seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
             value = operations_executed / seconds
-            ax.bar(x, value, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
+            ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     formatter = ScalarFormatter(useMathText=True)
     formatter.set_powerlimits((-3, 4))
     ax.yaxis.set_major_formatter(formatter)
     ax.yaxis.get_offset_text().set_fontsize(8)
     plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
     plt.yticks(subfigs[i]['ticks'], fontsize=8)
+    plt.ylim((0, 7e4))
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=8)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=8)

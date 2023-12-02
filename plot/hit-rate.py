@@ -7,6 +7,10 @@ if len(sys.argv) != 2:
 	exit()
 
 import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
+from common import *
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -22,35 +26,14 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
 
-first_level_in_cd = int(open(d + '/first-level-in-cd').read())
-
-timestamps = []
-hit_rates = []
-last_tier0 = 0
-last_total = 0
-for line in open(d + '/num-accesses'):
-	res = line.split(' ')
-	timestamp = int(res[0])
-	tier0 = 0
-	total = 0
-	for (level, num_accesses) in enumerate(res[1:]):
-		num_accesses = int(num_accesses)
-		total += num_accesses
-		if level < first_level_in_cd:
-			tier0 += num_accesses
-	if total - last_total != 0:
-		timestamps.append(timestamp)
-		hit_rates.append((tier0 - last_tier0) / (total - last_total))
-		last_tier0 = tier0
-		last_total = total
-
-time = (np.array(timestamps) - timestamps[0]) / 1e9
+hit_rates = read_hit_rates(d)
+time = (hit_rates['Timestamp(ns)'] - hit_rates.iloc[0]['Timestamp(ns)']) / 1e9
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/hit-rate.pdf'
-plt.plot(time, hit_rates)
+plt.plot(time, hit_rates['hit-rate'])
 plt.xlabel('Time')
 plt.ylabel('Hit rate')
 plt.yticks(np.linspace(0, 1, 11))
