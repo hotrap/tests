@@ -12,4 +12,4 @@ sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), 'common/'))
 from all_in_sd import *
 
 dir=sys.argv[1]
-draw_all_in_sd(dir, '110GB', 'all-in-sd.pdf')
+draw_all_in_sd(dir, '110GB_200B', 'all-in-sd-200B.pdf')
