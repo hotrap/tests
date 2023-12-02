@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+if [ ! $2 ]; then
+	echo Usage: $0 IP version
+	exit 1
+fi
+IP=$1
+version=$2
+cd ../..
+rsync -zPrt -e ssh hotrap root@$IP:~/ --exclude='build'
+rsync -zPrt -e ssh viscnts-lsm root@$IP:~/ --exclude='build'
+rsync -zPrt -e ssh kvexe root@$IP:~/ --exclude='build'
+ssh root@$IP "./tests/helper/checkout-$version"

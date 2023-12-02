@@ -30,6 +30,7 @@ workloads=(
 	"ycsbc_uniform_110GB"
 	"ycsbd_uniform_110GB"
 	"ycsbf_uniform_110GB"
+	"ycsbc_hotspotshifting0.05_110GB"
 )
 
 source common.sh
@@ -41,6 +42,15 @@ for workload in "${workloads[@]}"; do
 	fi
 done
 
+function run-rocksdb-sd {
+	workload=$1
+	version=$2
+	IP=$3
+	./checkout-rocksdb $IP
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-sd-110GB.sh ../config/$workload ../../data/$workload/$version"
+	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
+	../helper/rocksdb-plot.sh $output_dir/$workload/$version
+}
 function run-rocksdb {
 	workload=$1
 	version=$2
@@ -63,20 +73,11 @@ function run-hotrap {
 	workload=$1
 	version=$2
 	IP=$3
-	./checkout-$version $IP
-	# Reserve 250MB for VisCnts
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.75GB 5.5GB"
+	./checkout-hotrap $IP $version
+	# Reserve 330MB for VisCnts
+	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.67GB 5.5GB 330MB"
 	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
-}
-function run-rocksdb-sd {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-rocksdb $IP
-	ssh root@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-sd-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zPrt -e ssh root@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 
 for workload in "${workloads[@]}"; do
@@ -85,4 +86,7 @@ for workload in "${workloads[@]}"; do
 	aliyun-run run-hotrap $workload flush-stably-hot
 	aliyun-run run-rocksdb-sd $workload rocksdb-sd
 done
+aliyun-run run-hotrap "ycsbc_uniform_110GB" flush-accessed
+aliyun-run run-hotrap "read_0.5_insert_0.5_hotspot0.05_110GB" no-retain
+aliyun-run run-hotrap "read_0.5_insert_0.5_hotspot0.05_110GB" no-promote-by-compaction
 wait
