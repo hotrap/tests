@@ -12,4 +12,4 @@ sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), 'common/'))
 from uniform_bg_cost import *
 
 dir=sys.argv[1]
-draw_uniform_bg_cost(dir, '110GB', 'uniform-bg-cost.pdf')
+draw_uniform_bg_cost(dir, '110GB_200B', 'uniform-bg-cost-200B.pdf')

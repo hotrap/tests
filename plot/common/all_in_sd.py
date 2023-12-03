@@ -9,7 +9,7 @@ import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 
 def draw_all_in_sd(dir, size, pdf_name):
-# Paper specific settings
+    # Paper specific settings
     STANDARD_WIDTH = 17.8
     SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
     DOUBLE_COL_WIDTH = STANDARD_WIDTH
