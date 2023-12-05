@@ -20,7 +20,10 @@ function throughput {
 		}
 	" < $1
 }
-echo SD
-throughput iostat-sd.txt
-echo CD
-throughput iostat-cd.txt
+sd_res=$(throughput iostat-sd.txt)
+echo "$sd_res" | awk '{print "SD", $0}'
+cd_res=$(throughput iostat-cd.txt)
+echo "$cd_res" | awk '{print "CD", $0}'
+sd_total=$(echo "$sd_res" | awk '{if (NR == 3) print $2}')
+cd_total=$(echo "$cd_res" | awk '{if (NR == 3) print $2}')
+echo "total $(echo $sd_total + $cd_total | bc) GB"
