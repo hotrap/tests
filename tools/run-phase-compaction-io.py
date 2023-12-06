@@ -15,7 +15,7 @@ info_json = json5.load(open(info_json))
 def run_phase(info_json, data):
     return data[(data['Timestamp(ns)'] >= info_json['run-start-timestamp(ns)']) & (data['Timestamp(ns)'] < info_json['run-end-timestamp(ns)'])]
 
-compaction_bytes = run_phase(info_json, read_compaction_bytes(os.path.join(data_dir, 'compaction-stats')))
+compaction_bytes = run_phase(info_json, read_compaction_bytes(data_dir))
 compaction_bytes['read'] -= compaction_bytes.iloc[0]['read']
 compaction_bytes['write'] -= compaction_bytes.iloc[0]['write']
 print('total: %f GB' %((compaction_bytes.iloc[-1]['read'] + compaction_bytes.iloc[-1]['write']) / 1e9))

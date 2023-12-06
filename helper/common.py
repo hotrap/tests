@@ -47,9 +47,9 @@ def progress_to_timestamp(data_dir, progress):
         return info['run-end-timestamp(ns)']
     return v.iloc[0]['Timestamp(ns)']
 
-def read_compaction_bytes(path):
+def read_compaction_bytes(data_dir):
     compaction_bytes = []
-    compaction_stats = open(path)
+    compaction_stats = open(os.path.join(data_dir, 'compaction-stats'))
     while True:
         line = compaction_stats.readline()
         if line == '':
