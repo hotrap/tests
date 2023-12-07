@@ -2,18 +2,12 @@ workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_11GB"
 	"ycsba_hotspot0.05_11GB"
 	"ycsbc_hotspot0.05_11GB"
-	"ycsbd_hotspot0.05_11GB"
-	"ycsbf_hotspot0.05_11GB"
 	"read_0.5_insert_0.5_uniform_11GB"
 	"ycsba_uniform_11GB"
 	"ycsbc_uniform_11GB"
-	"ycsbd_uniform_11GB"
-	"ycsbf_uniform_11GB"
 	"read_0.5_insert_0.5_zipfian_11GB"
 	"ycsba_zipfian_11GB"
 	"ycsbc_zipfian_11GB"
-	"ycsbd_zipfian_11GB"
-	"ycsbf_zipfian_11GB"
 )
 function run-rocksdb-sd {
 	../helper/checkout-rocksdb
@@ -50,5 +44,5 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload flush-stably-hot
 	run-hotrap $workload with-probation
-	run_hotrap $workload viscnts-splay-rs
+	run-hotrap $workload viscnts-splay-rs
 done
