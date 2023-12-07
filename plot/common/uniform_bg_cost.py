@@ -74,11 +74,11 @@ def draw_uniform_bg_cost(dir, size, pdf_name):
             info = json5.load(open(os.path.join(data_dir, 'info.json')))
             run_start_timestamp = info['run-70%-timestamp(ns)']
             run_end_timestamp = info['run-end-timestamp(ns)']
-            def run_time_io_kB(fname):
+            def run_time_io(fname):
                 iostat = pd.read_table(os.path.join(data_dir, fname), delim_whitespace=True)
                 iostat = iostat[(run_start_timestamp <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < run_end_timestamp)]
-                return iostat[['rkB/s', 'wkB/s']].sum().sum()
-            io_TB = (run_time_io_kB('iostat-sd.txt') + run_time_io_kB('iostat-cd.txt')) / 1e9
+                return iostat[['rkB/s', 'wkB/s']].sum().sum() * 1024
+            io_TB = (run_time_io('iostat-sd.txt') + run_time_io('iostat-cd.txt')) / 1e12
             ax.bar(x, io_TB, width=bar_width, hatch=patterns[version_idx], color=plt.get_cmap(colormap)(version_idx), edgecolor='black', linewidth=0.5)
     plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
     plt.yticks(fontsize=8)

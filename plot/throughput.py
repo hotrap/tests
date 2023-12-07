@@ -38,10 +38,10 @@ if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/throughput.pdf'
 
-plt.plot(sd['Time(Seconds)'], sd['rkB/s'] / 1e3)
-plt.plot(sd['Time(Seconds)'], sd['wkB/s'] / 1e3)
-plt.plot(cd['Time(Seconds)'], cd['rkB/s'] / 1e3)
-plt.plot(cd['Time(Seconds)'], cd['wkB/s'] / 1e3)
+plt.plot(sd['Time(Seconds)'], sd['rkB/s'] * 1024 / 1e6)
+plt.plot(sd['Time(Seconds)'], sd['wkB/s'] * 1024 / 1e6)
+plt.plot(cd['Time(Seconds)'], cd['rkB/s'] * 1024 / 1e6)
+plt.plot(cd['Time(Seconds)'], cd['wkB/s'] * 1024 / 1e6)
 plt.legend(['read (SD)', 'write (SD)', 'read (CD)', 'write (CD)'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Throughput (MB/s)', fontdict=fonten)

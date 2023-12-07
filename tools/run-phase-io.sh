@@ -14,9 +14,9 @@ function throughput {
 			}
 		}
 		END {
-			print \"read\", rkB / 1e6, \"GB\";
-			print \"write\", wkB / 1e6, \"GB\";
-			print \"total\", (rkB + wkB) / 1e6, \"GB\"
+			print \"read\", rkB * 1024 / 1e9, \"GB\";
+			print \"write\", wkB * 1024 / 1e9, \"GB\";
+			print \"total\", (rkB + wkB) * 1024 / 1e9, \"GB\"
 		}
 	" < $1
 }

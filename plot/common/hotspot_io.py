@@ -94,11 +94,11 @@ def draw_hotspot_io(dir, size, pdf_name):
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
                 timestamp_start = progress_to_timestamp(data_dir, start_progress)
                 timestamp_end = progress_to_timestamp(data_dir, end_progress)
-                def run_time_io_kB(fname):
+                def run_time_io(fname):
                     iostat = pd.read_table(os.path.join(data_dir, fname), delim_whitespace=True)
                     iostat = iostat[(timestamp_start <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < timestamp_end)]
-                    return iostat[['rkB/s', 'wkB/s']].sum().sum()
-                device_io = (run_time_io_kB('iostat-sd.txt') + run_time_io_kB('iostat-cd.txt')) / 1e9
+                    return iostat[['rkB/s', 'wkB/s']].sum().sum() * 1024
+                device_io = (run_time_io('iostat-sd.txt') + run_time_io('iostat-cd.txt')) / 1e12
 
                 bottom = 0
 
