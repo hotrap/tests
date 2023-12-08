@@ -10,5 +10,5 @@ timers = pd.read_table('timers', delim_whitespace=True)
 timers = timers[(run_start_timestamp <= timers['Timestamp(ns)']) & (timers['Timestamp(ns)'] < run_end_timestamp)]
 
 print('Compaction CPU time(s): %f' %((timers.iloc[-1] - timers.iloc[0])['compaction-cpu-micros'] / 1e6))
-print('Insert CPU time(s): %f' %((timers.iloc[-1] - timers.iloc[0])['insert-cpu-nanos'] / 1e9))
-print('Read CPU time(s): %f' %((timers.iloc[-1] - timers.iloc[0])['read-cpu-nanos'] / 1e9))
+print('Put CPU time(s): %f' %((timers.iloc[-1] - timers.iloc[0])['put-cpu-nanos'] / 1e9))
+print('Get CPU time(s): %f' %((timers.iloc[-1] - timers.iloc[0])['get-cpu-nanos'] / 1e9))
