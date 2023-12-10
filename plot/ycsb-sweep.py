@@ -49,8 +49,8 @@ subfigs = [
 ]
 
 workloads=['hotspot0.05', 'zipfian', 'uniform']
-ycsb_configs=['ycsba', 'read_0.5_insert_0.5', 'ycsbc', 'ycsbd', 'ycsbf']
-cluster_labels = ['A', 'A\'', 'C', 'D', 'F']
+ycsb_configs=['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
+cluster_labels = ['RO', 'RW', 'WH', 'UH']
 versions=[
     {
         'path': 'flush-stably-hot',

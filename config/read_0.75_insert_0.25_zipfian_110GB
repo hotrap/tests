@@ -4,12 +4,10 @@ workload=site.ycsb.workloads.CoreWorkload
 
 readallfields=true
 
-readproportion=0.8
+readproportion=0.75
 updateproportion=0
 scanproportion=0
-insertproportion=0.2
+insertproportion=0.25
 
-requestdistribution=hotspot
+requestdistribution=zipfian
 
-hotspotdatafraction=0.05
-hotspotopnfraction=0.95
