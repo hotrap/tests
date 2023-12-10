@@ -76,9 +76,9 @@ def read_compaction_bytes(data_dir):
     compaction_bytes.columns = ['Timestamp(ns)', 'read', 'write']
     return compaction_bytes
 
-def read_compaction_bytes_sd_cd(path, first_level_in_cd):
+def read_compaction_bytes_sd_cd(data_dir, first_level_in_cd):
     compaction_bytes = []
-    compaction_stats = open(path)
+    compaction_stats = open(os.path.join(data_dir, 'compaction-stats'))
     while True:
         line = compaction_stats.readline()
         if line == '':
@@ -113,3 +113,22 @@ def read_compaction_bytes_sd_cd(path, first_level_in_cd):
     compaction_bytes.columns = ['Timestamp(ns)', 'sd-read', 'sd-write', 'cd-read', 'cd-write']
     return compaction_bytes
 
+def read_rand_read_bytes_sd_cd(data_dir, first_level_in_cd):
+    rand_read_bytes = []
+    for line in open(os.path.join(data_dir, 'rand-read-bytes')):
+        if line == '':
+            break
+        s = line.split(' ')
+        sd = 0
+        cd = 0
+        timestamp_ns = int(s[0])
+        for level, bytes in enumerate(s[1:]):
+            bytes = int(bytes)
+            if level < first_level_in_cd:
+                sd += bytes
+            else:
+                cd += bytes
+        rand_read_bytes.append(pd.Series([timestamp_ns, sd, cd]))
+    rand_read_bytes = pd.concat(rand_read_bytes, axis=1).T
+    rand_read_bytes.columns = ['Timestamp(ns)', 'sd', 'cd']
+    return rand_read_bytes
