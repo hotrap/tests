@@ -101,7 +101,7 @@ for (i, test) in enumerate(tests):
             y.append(latencies[np.searchsorted(cdf, percentile / 100)])
         x.append('max')
         y.append(latencies[-1])
-        ax.plot(x, y, color=version['color'], marker=version['marker'], markerfacecolor='none')
+        ax.plot(x, y, color=version['color'], marker=version['marker'], markerfacecolor='none', linewidth=1, markersize=4)
     plt.xticks(fontsize=8)
     plt.yscale('log')
     if i == 1:
