@@ -9,7 +9,7 @@ if len(sys.argv) != 2:
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), 'common/'))
-from hotspot_io import *
+from cputime_breakdown import *
 
 dir=sys.argv[1]
-draw_hotspot_io(dir, '110GB', 'hotspot-io.pdf')
+draw_cputime_breakdown(dir, '110GB', 'cputime-breakdown.pdf')

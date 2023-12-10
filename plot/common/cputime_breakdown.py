@@ -34,7 +34,7 @@ class MulticolorPatchHandler(object):
             handlebox.add_artist(patch)
         return ret
 
-def draw_hotspot_cputime(dir, size, pdf_name):
+def draw_cputime_breakdown(dir, size, pdf_name):
     # Paper specific settings
     STANDARD_WIDTH = 17.8
     SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
@@ -49,26 +49,32 @@ def draw_hotspot_cputime(dir, size, pdf_name):
         })
     plt.rcParams['axes.unicode_minus'] = False
 
-    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)))
+    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
 
     workload='hotspot0.05'
     ycsb_configs=['ycsbc', 'read_0.5_insert_0.5', 'ycsba']
     cluster_labels = ['i-0%', 'i-50%', 'u-50%']
-    versions=[
-        {
-            'path': 'flush-stably-hot',
-            # #66C2A5
-            'colors': ['#01654d', '#208369', '#44a185', '#64c0a3', '#83e0c2', '#a8ffe6'],
-        },
-        {
-            'path': 'rocksdb-sd',
-            # #8DA0CB
-            'colors': ['#2d4469', '#5c7098', '#8da0cb', '#c0d3ff'],
-        },
-    ]
-    patterns = ['///', '\\\\\\', 'XXX', '|||', '......', 'OOO']
 
-    gs = gridspec.GridSpec(1, 2)
+    flush_stably_hot = {
+        'path': 'flush-stably-hot',
+        # #66C2A5
+        'colors': ['#01654d', '#208369', '#44a185', '#64c0a3', '#83e0c2', '#a8ffe6'],
+    }
+    rocksdb_sd = {
+        'path': 'rocksdb-sd',
+        # #8DA0CB
+        'colors': ['#2d4469', '#5c7098', '#8da0cb', '#c0d3ff'],
+    }
+    rocksdb_fat = {
+        'path': 'rocksdb-fat',
+        # #FC8D62
+        'colors': ['#892c08', '#bc562f', '#ef8258', '#ffc092'],
+    }
+    patterns = ['///', '\\\\\\', 'XXX', '***', '......', 'OOO']
+
+    gs = gridspec.GridSpec(1, 3)
+
+    versions=[flush_stably_hot, rocksdb_sd]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
 
@@ -106,11 +112,11 @@ def draw_hotspot_cputime(dir, size, pdf_name):
                 timers = timers.iloc[-1] - timers.iloc[0]
                 bottom = 0
 
-                height = timers['read-cpu-nanos'] / 1e9
+                height = timers['get-cpu-nanos'] / 1e9
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[0], color=version['colors'][0], edgecolor='black', linewidth=0.5)
                 bottom += height
 
-                height = timers['insert-cpu-nanos'] / 1e9
+                height = timers['put-cpu-nanos'] / 1e9
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[1], color=version['colors'][1], edgecolor='black', linewidth=0.5)
                 bottom += height
 
@@ -137,34 +143,72 @@ def draw_hotspot_cputime(dir, size, pdf_name):
 
     subfig = plt.subplot(gs[0, 0])
     draw_cputime(start_progress_fn, warmup_finish_progress)
-    plt.xlabel('(a) CPU time of warm-up phase', fontsize=8)
+    plt.xlabel('(a) Warm-up phase of hotspot-5%', fontsize=8)
+    subfig.legend(
+        [
+            MulticolorPatch(colors=flush_stably_hot['colors']),
+            MulticolorPatch(colors=rocksdb_sd['colors']),
+        ],
+        ['HotRAP', 'RocksDB(SD)'],
+        handler_map={MulticolorPatch: MulticolorPatchHandler()},
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, 1.15), columnspacing=1,
+    )
 
     subfig = plt.subplot(gs[0, 1])
     draw_cputime(warmup_finish_progress, end_progress_fn)
-    plt.xlabel('(b) CPU time of stable phase', fontsize=8)
+    plt.xlabel('(b) Stable phase of hotspot-5%', fontsize=8)
+    subfig.legend(
+        [
+            MulticolorPatch(colors=flush_stably_hot['colors']),
+            MulticolorPatch(colors=rocksdb_sd['colors']),
+        ],
+        ['HotRAP', 'RocksDB(SD)'],
+        handler_map={MulticolorPatch: MulticolorPatchHandler()},
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, 1.15), columnspacing=1,
+    )
+
+    workload='uniform'
+    versions = [flush_stably_hot, rocksdb_fat]
+    subfig = plt.subplot(gs[0, 2])
+    draw_cputime(start_progress_fn, end_progress_fn)
+    plt.xlabel('(c) Run phase of uniform', fontsize=8)
+    subfig.legend(
+        [
+            MulticolorPatch(colors=flush_stably_hot['colors']),
+            MulticolorPatch(colors=rocksdb_fat['colors']),
+        ],
+        ['HotRAP', 'RocksDB-fat'],
+        handler_map={MulticolorPatch: MulticolorPatchHandler()},
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, 1.15), columnspacing=1,
+    )
 
     labels = []
     handles = []
-    labels.append('HotRAP')
-    handles.append(MulticolorPatch(colors=versions[0]['colors']))
-    labels.append('RocksDB(SD)')
-    handles.append(MulticolorPatch(colors=versions[1]['colors']))
+    def all_versions(i):
+        handles.append(MulticolorPatch(
+            colors=[
+                flush_stably_hot['colors'][i],
+                rocksdb_sd['colors'][i],
+                rocksdb_fat['colors'][i]
+            ],
+            pattern=patterns[i],
+        ))
     labels.append('Read')
-    handles.append(MulticolorPatch(colors=[versions[0]['colors'][0], versions[1]['colors'][0]], pattern=patterns[0]))
+    all_versions(0)
     labels.append('Insert')
-    handles.append(MulticolorPatch(colors=[versions[0]['colors'][1], versions[1]['colors'][1]], pattern=patterns[1]))
+    all_versions(1)
     labels.append('Compaction')
-    handles.append(MulticolorPatch(colors=[versions[0]['colors'][2], versions[1]['colors'][2]], pattern=patterns[2]))
+    all_versions(2)
     labels.append('Checker')
-    handles.append(MulticolorPatch(colors=[versions[0]['colors'][3]], pattern=patterns[3]))
+    handles.append(MulticolorPatch(colors=[flush_stably_hot['colors'][3]], pattern=patterns[3]))
     labels.append('RALT')
-    handles.append(MulticolorPatch(colors=[versions[0]['colors'][4]], pattern=patterns[4]))
+    handles.append(MulticolorPatch(colors=[flush_stably_hot['colors'][4]], pattern=patterns[4]))
     labels.append('Others')
-    handles.append(MulticolorPatch(colors=[versions[0]['colors'][-1], versions[1]['colors'][-1]], pattern=patterns[-1]))
+    all_versions(-1)
     fig.legend(
         handles, labels,
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
-        fontsize=8, ncol=4, loc='center', bbox_to_anchor=(0.5, 1.03), columnspacing=1
+        fontsize=8, ncol=6, loc='center', bbox_to_anchor=(0.5, 0.94), columnspacing=1
     )
     plt.tight_layout()
     pdf_path = os.path.join(dir, pdf_name)
