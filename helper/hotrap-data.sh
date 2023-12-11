@@ -13,6 +13,6 @@ if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count
 	$mydir/hit . > "$DIR"/hit
 fi
-mv first-level-in-cd promoted-or-retained-bytes not-promoted-bytes num-accesses checker-* viscnts-io "$DIR"/
+mv promoted-or-retained-bytes not-promoted-bytes num-accesses checker-* viscnts-io "$DIR"/
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
