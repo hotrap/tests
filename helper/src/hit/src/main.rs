@@ -3,24 +3,25 @@ use std::{
     env,
     error::Error,
     fs::File,
-    io::{self, BufRead, BufReader, Read},
+    io::{self, BufRead, BufReader, Read, BufWriter, Write},
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = env::args();
     let arg0 = args.next().unwrap();
     // args.len(): Returns the exact remaining length of the iterator.
-    if args.len() != 1 {
-        eprintln!("Usage: {} dir", arg0);
+    if args.len() != 2 {
+        eprintln!("Usage: {} db_dir data_dir", arg0);
         return Err(Box::new(io::Error::new(
             io::ErrorKind::Other,
             "Invalid arguments",
         )));
     }
     let dir = std::path::PathBuf::from(args.next().unwrap());
+    let data_dir = std::path::PathBuf::from(args.next().unwrap());
 
     let mut first_level_in_cd =
-        File::open(dir.join("first-level-in-cd")).unwrap();
+        File::open(data_dir.join("first-level-in-cd")).unwrap();
     let mut buf = String::new();
     first_level_in_cd.read_to_string(&mut buf).unwrap();
     let first_level_in_cd: usize = buf.trim().parse().unwrap();
@@ -72,11 +73,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    print!("key-rank occurrences");
+    let mut writer = BufWriter::new(File::create(data_dir.join("hit")).unwrap());
+    write!(&mut writer, "key-rank occurrences").unwrap();
     if hits_cdf.len() != 1 {
-        print!(" hits");
+        write!(&mut writer, " hits").unwrap();
     }
-    println!();
+    writeln!(&mut writer).unwrap();
     let max_dots = 10000;
     let n = occurrences_cdf.len();
     if n == 0 {
@@ -88,18 +90,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     let mut i = 0;
     while i < n - 1 {
-        print!("{} {}", i + 1, occurrences_cdf[i]);
+        write!(&mut writer, "{} {}", i + 1, occurrences_cdf[i]).unwrap();
         if hits_cdf.len() != 1 {
-            print!(" {}", hits_cdf[i]);
+            write!(&mut writer, " {}", hits_cdf[i]).unwrap();
         }
-        println!();
+        writeln!(&mut writer).unwrap();
         i += step;
     }
-    print!("{} {}", n, occurrences_cdf[n - 1]);
+    write!(&mut writer, "{} {}", n, occurrences_cdf[n - 1]).unwrap();
     if hits_cdf.len() != 1 {
-        print!(" {}", hits_cdf[n - 1]);
+        write!(&mut writer, " {}", hits_cdf[n - 1]).unwrap();
     }
-    println!();
+    writeln!(&mut writer).unwrap();
 
     Ok(())
 }

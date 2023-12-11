@@ -11,7 +11,7 @@ cd ../../testdb
 cd db
 if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count
-	$mydir/hit . > "$DIR"/hit
+	$mydir/hit . "$DIR"
 fi
 mv promoted-or-retained-bytes not-promoted-bytes num-accesses checker-* viscnts-io "$DIR"/
 cd ..
