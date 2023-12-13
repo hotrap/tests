@@ -8,32 +8,6 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 
-# https://stackoverflow.com/a/77614517/13688160
-# define an object that will be used by the legend
-class MulticolorPatch(object):
-    def __init__(self, colors, pattern=None):
-        self.colors = colors
-        self.pattern = pattern
-class MulticolorPatchHandler(object):
-    def legend_artist(self, legend, orig_handle, fontsize, handlebox):
-        width, height = handlebox.width, handlebox.height
-        for i, c in enumerate(orig_handle.colors):
-            patch = plt.Rectangle(
-                [
-                    width/len(orig_handle.colors) * i - handlebox.xdescent,
-                    -handlebox.ydescent,
-                ],
-                width / len(orig_handle.colors),
-                height, 
-                facecolor=c, 
-                edgecolor='black',
-                hatch=orig_handle.pattern,
-            )
-            if i == 0:
-                ret = patch
-            handlebox.add_artist(patch)
-        return ret
-
 def draw_cputime_breakdown(dir, size, pdf_name):
     # Paper specific settings
     STANDARD_WIDTH = 17.8
@@ -49,34 +23,46 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         })
     plt.rcParams['axes.unicode_minus'] = False
 
-    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
+    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4.5)))
 
     workload='hotspot0.05'
-    ycsb_configs=['ycsbc', 'read_0.5_insert_0.5', 'ycsba']
-    cluster_labels = ['i-0%', 'i-50%', 'u-50%']
+    ycsb_configs=['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
+    cluster_labels = ['RO', 'RW', 'WH', 'UH']
+    colors_left = [
+        plt.get_cmap('Paired')(1),
+        plt.get_cmap('Paired')(3),
+        plt.get_cmap('Paired')(5),
+        plt.get_cmap('Paired')(7),
+        plt.get_cmap('Paired')(9),
+        'white',
+    ]
+    colors_right = [
+        plt.get_cmap('Paired')(0),
+        plt.get_cmap('Paired')(2),
+        plt.get_cmap('Paired')(4),
+        'white',
+    ]
 
     flush_stably_hot = {
         'path': 'flush-stably-hot',
-        # #66C2A5
-        'colors': ['#01654d', '#208369', '#44a185', '#64c0a3', '#83e0c2', '#a8ffe6'],
+        'colors': colors_left,
     }
     rocksdb_sd = {
         'path': 'rocksdb-sd',
-        # #8DA0CB
-        'colors': ['#2d4469', '#5c7098', '#8da0cb', '#c0d3ff'],
+        'colors': colors_right,
     }
     rocksdb_fat = {
         'path': 'rocksdb-fat',
-        # #FC8D62
-        'colors': ['#892c08', '#bc562f', '#ef8258', '#ffc092'],
+        'colors': colors_right,
     }
-    patterns = ['///', '\\\\\\', 'XXX', '***', '......', 'OOO']
+    patterns = ['///', '\\\\\\', 'XXX', '......', 'ooo', '']
 
     gs = gridspec.GridSpec(1, 3)
 
     versions=[flush_stably_hot, rocksdb_sd]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
+    subfig_anchor_y = 1.1
 
     def start_progress_fn(data_dir):
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
@@ -151,7 +137,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['HotRAP', 'RocksDB(SD)'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, 1.15), columnspacing=1,
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )
 
     subfig = plt.subplot(gs[0, 1])
@@ -164,7 +150,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['HotRAP', 'RocksDB(SD)'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, 1.15), columnspacing=1,
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )
 
     workload='uniform'
@@ -179,7 +165,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['HotRAP', 'RocksDB-fat'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, 1.15), columnspacing=1,
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )
 
     labels = []
@@ -187,9 +173,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     def all_versions(i):
         handles.append(MulticolorPatch(
             colors=[
-                flush_stably_hot['colors'][i],
-                rocksdb_sd['colors'][i],
-                rocksdb_fat['colors'][i]
+                colors_left[i],
+                colors_right[i],
             ],
             pattern=patterns[i],
         ))
@@ -208,7 +193,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     fig.legend(
         handles, labels,
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
-        fontsize=8, ncol=6, loc='center', bbox_to_anchor=(0.5, 0.94), columnspacing=1
+        fontsize=8, ncol=6, loc='center', bbox_to_anchor=(0.5, 0.96), columnspacing=1
     )
     plt.tight_layout()
     pdf_path = os.path.join(dir, pdf_name)

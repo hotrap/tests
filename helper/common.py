@@ -2,6 +2,33 @@ import os
 import json5
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
+# https://stackoverflow.com/a/77614517/13688160
+# define an object that will be used by the legend
+class MulticolorPatch(object):
+    def __init__(self, colors, pattern=None):
+        self.colors = colors
+        self.pattern = pattern
+class MulticolorPatchHandler(object):
+    def legend_artist(self, legend, orig_handle, fontsize, handlebox):
+        width, height = handlebox.width, handlebox.height
+        for i, c in enumerate(orig_handle.colors):
+            patch = plt.Rectangle(
+                [
+                    width/len(orig_handle.colors) * i - handlebox.xdescent,
+                    -handlebox.ydescent,
+                ],
+                width / len(orig_handle.colors),
+                height, 
+                facecolor=c, 
+                edgecolor='black',
+                hatch=orig_handle.pattern,
+            )
+            if i == 0:
+                ret = patch
+            handlebox.add_artist(patch)
+        return ret
 
 def read_hit_rates(data_dir):
     first_level_in_cd = int(open(os.path.join(data_dir, 'first-level-in-cd')).read())
