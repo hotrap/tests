@@ -1,4 +1,4 @@
-sudo apt install -y cmake
+sudo apt install -y cmake libtcmalloc-minimal4
 # tests
 sudo apt install -y jq
 # iostat
