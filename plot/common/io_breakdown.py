@@ -188,7 +188,8 @@ def draw_io_breakdown(dir, size, pdf_name):
     labels.append('RALT')
     handles.append(common.MulticolorPatch(colors=[colors_left[4]], pattern=patterns[4]))
     labels.append('Others')
-    handles.append(get_fig_legend(-1))
+    assert colors_left[-1] == colors_right[-1]
+    handles.append(common.MulticolorPatch(colors=[colors_left[-1]], pattern=patterns[-1]))
     fig.legend(
         handles, labels,
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},

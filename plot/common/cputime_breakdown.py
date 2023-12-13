@@ -189,7 +189,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     labels.append('RALT')
     handles.append(MulticolorPatch(colors=[flush_stably_hot['colors'][4]], pattern=patterns[4]))
     labels.append('Others')
-    all_versions(-1)
+    assert colors_left[-1] == colors_right[-1]
+    handles.append(MulticolorPatch(colors=[colors_left[-1]], pattern=patterns[-1]))
     fig.legend(
         handles, labels,
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
