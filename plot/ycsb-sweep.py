@@ -35,7 +35,7 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(
 
 subfigs = [
     {
-        'title': '(a) hotspot 5%',
+        'title': '(a) hotspot-5%',
         'ticks': [0, 2e4, 4e4, 6e4],
     },
     {
