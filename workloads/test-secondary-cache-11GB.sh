@@ -24,5 +24,5 @@ workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-secondary-cache/build/
 
 ulimit -n 100000
-../helper/exe-while.sh $DIR bash -c "$kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=8 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=201326592 --level0_file_num_compaction_trigger=1 --secondary_cache_size=550000000 --secondary_cache_volatile_size=16777216 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,450000000},{$workspace/testdb/cd,100000000000}}\" 2>> $DIR/log.txt"
+../helper/exe-while.sh $DIR bash -c "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4 $kvexe_dir/rocksdb-kvexe --cleanup --switches=$switches --num_threads=8 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=201326592 --level0_file_num_compaction_trigger=1 --secondary_cache_size=550000000 --secondary_cache_volatile_size=16777216 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/sd,450000000},{$workspace/testdb/cd,100000000000}}\" 2>> $DIR/log.txt"
 bash ../helper/rocksdb-data.sh "$DIR"
