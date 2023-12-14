@@ -24,6 +24,7 @@ function aliyun-run-bg {
 	./start.py $config_file $instance_id
 	IP=$(./ip.py $config_file $instance_id)
 	./setup.sh $IP
+	ssh root@$IP -o ServerAliveInterval=60 "rm -rf data/$2/$3"
 
 	$1 $2 $3 $IP
 
