@@ -1,19 +1,16 @@
 workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB"
+	"read_0.75_insert_0.25_hotspot0.05_110GB"
 	"ycsba_hotspot0.05_110GB"
 	"ycsbc_hotspot0.05_110GB"
-	"ycsbd_hotspot0.05_110GB"
-	"ycsbf_hotspot0.05_110GB"
 	"read_0.5_insert_0.5_uniform_110GB"
+	"read_0.75_insert_0.25_uniform_110GB"
 	"ycsba_uniform_110GB"
 	"ycsbc_uniform_110GB"
-	"ycsbd_uniform_110GB"
-	"ycsbf_uniform_110GB"
 	"read_0.5_insert_0.5_zipfian_110GB"
+	"read_0.75_insert_0.25_zipfian_110GB"
 	"ycsba_zipfian_110GB"
 	"ycsbc_zipfian_110GB"
-	"ycsbd_zipfian_110GB"
-	"ycsbf_zipfian_110GB"
 	"ycsbc_hotspotshifting0.05_110GB"
 )
 function run-rocksdb-sd {
