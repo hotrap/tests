@@ -15,3 +15,5 @@ print('Put CPU time(s): %f' %(timers['put-cpu-nanos'] / 1e9))
 print('Get CPU time(s): %f' %(timers['get-cpu-nanos'] / 1e9))
 if 'viscnts.compaction.cpu.nanos' in timers:
 	print('VisCnts CPU time(s): %f' %((timers['viscnts.compaction.cpu.nanos'] + timers['viscnts.flush.cpu.nanos'] + timers['viscnts.decay.scan.cpu.nanos'] + timers['viscnts.decay.write.cpu.nanos']) / 1e9))
+if 'viscnts.compaction.thread.cpu.nanos' in timers:
+	print('VisCnts threads CPU time(s): %f' %((timers['viscnts.compaction.thread.cpu.nanos'] + timers['viscnts.flush.thread.cpu.nanos'] + timers['viscnts.decay.thread.cpu.nanos']) / 1e9))
