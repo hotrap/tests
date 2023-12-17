@@ -7,7 +7,6 @@ DIR=$(realpath "$1")
 cd $(dirname $0)
 mkdir -p $DIR/plot/
 bash rocksdb-plot.sh $DIR &
-../plot/hit.py $DIR &
 ../plot/promoted-or-retained-bytes.py $DIR &
 ../plot/hit-rate.py $DIR &
 wait
