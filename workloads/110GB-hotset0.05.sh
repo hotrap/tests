@@ -11,7 +11,6 @@ workloads=(
 	"read_0.75_insert_0.25_zipfian_110GB"
 	"ycsba_zipfian_110GB"
 	"ycsbc_zipfian_110GB"
-	"ycsbc_hotspotshifting0.05_110GB"
 )
 function run-rocksdb-sd {
 	../helper/checkout-rocksdb
@@ -48,5 +47,6 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload flush-stably-hot
 done
-run-hotrap "read_0.7_insert_0.3_hotspot0.05_110GB" no-retain
-run-hotrap "read_0.7_insert_0.3_hotspot0.05_110GB" no-promote-by-compaction
+run-hotrap "ycsbc_hotspotshifting0.05_110GB" flush-stably-hot
+run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-retain
+run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-promote-by-compaction
