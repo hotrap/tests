@@ -39,7 +39,7 @@ impl Stat {
         self.sum += latency;
     }
     fn print(&mut self, ts: u64) {
-        const PERCENTILES: &[f64] = &[0.99, 0.999];
+        const PERCENTILES: &[f64] = &[0.5, 0.99, 0.999, 0.9999];
         let n = self.latencies.size();
         if n < 2 {
             return;
@@ -49,7 +49,11 @@ impl Stat {
             None => {
                 let mut file =
                     BufWriter::new(File::create(&self.path).unwrap());
-                writeln!(&mut file, "Timestamp(ns) Average 99% 99.9%").unwrap();
+                writeln!(
+                    &mut file,
+                    "Timestamp(ns) Average 50% 99% 99.9% 99.99%"
+                )
+                .unwrap();
                 self.file = Some(file);
                 self.file.as_mut().unwrap()
             }
