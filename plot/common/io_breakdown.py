@@ -55,7 +55,7 @@ def draw_io_breakdown(dir, size, pdf_name):
         'colors': colors_right,
         'legend-colors': colors_right,
     }
-    patterns = ['///', '\\\\\\', '......', 'XXX', 'ooo', '']
+    patterns = ['///', '\\\\\\', '......', 'XXX', '', '']
 
     gs = gridspec.GridSpec(1, 3)
 
@@ -125,6 +125,14 @@ def draw_io_breakdown(dir, size, pdf_name):
                 height = (compaction_bytes['sd-read'] + compaction_bytes['sd-write']) / 1e12
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                 bottom += height
+
+                if version['path'] == 'flush-stably-hot':
+                    viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), delim_whitespace=True)
+                    viscnts_io = viscnts_io[(timestamp_start <= viscnts_io['Timestamp(ns)']) & (viscnts_io['Timestamp(ns)'] < timestamp_end)]
+                    viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]
+                    height = (viscnts_io['read'] + viscnts_io['write']) / 1e12
+                    ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[4], color=version['colors'][4], edgecolor='black', linewidth=0.5)
+                    bottom += height
 
                 height = device_io - bottom
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[-1], color=version['colors'][-1], edgecolor='black', linewidth=0.5)
