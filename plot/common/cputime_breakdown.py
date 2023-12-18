@@ -55,7 +55,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         'path': 'rocksdb-fat',
         'colors': colors_right,
     }
-    patterns = ['///', '\\\\\\', 'XXX', '......', 'ooo', '']
+    patterns = ['///', '\\\\\\', 'XXX', '......', '', '']
 
     gs = gridspec.GridSpec(1, 3)
 
@@ -111,13 +111,13 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                 bottom += height
                 if version_idx == 0:
                     first_level_in_cd = int(open(os.path.join(data_dir, 'first-level-in-cd')).read())
-                    checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_cd - 1) + '-cputimes'), delim_whitespace=True)
+                    checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_cd - 1) + '-cputime'), delim_whitespace=True)
                     checker = checker[(timestamp_start <= checker['Timestamp(ns)']) & (checker['Timestamp(ns)'] < timestamp_end)]
-                    height = (checker.iloc[-1] - checker.iloc[0])['cputime(s)']
+                    height = (checker.iloc[-1] - checker.iloc[0])['cputime(ns)'] / 1e9
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                     bottom += height
 
-                    height = (timers['viscnts.compaction.cpu.nanos'] + timers['viscnts.flush.cpu.nanos'] + timers['viscnts.decay.scan.cpu.nanos'] + timers['viscnts.decay.write.cpu.nanos']) / 1e9
+                    height = (timers['viscnts.compaction.thread.cpu.nanos'] + timers['viscnts.flush.thread.cpu.nanos'] + timers['viscnts.decay.thread.cpu.nanos']) / 1e9
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[4], color=version['colors'][4], edgecolor='black', linewidth=0.5)
                     bottom += height
                 height = cputimes - bottom
