@@ -9,7 +9,9 @@ if len(sys.argv) != 2:
 dir=sys.argv[1]
 
 import os
-import math
+sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
+import common
+
 import json5
 import pandas as pd
 import matplotlib as mpl
@@ -88,14 +90,17 @@ for i in range(len(workloads)):
     workload = workloads[i]
     for (pivot, ycsb) in enumerate(ycsb_configs):
         workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
+        data_dir = os.path.join(workload_dir, 'flush-stably-hot')
+        start_progress = common.warmup_finish_progress(data_dir)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        end_progress = progress.iloc[-1]['operations-executed']
         for (version_idx, version) in enumerate(versions):
             data_dir = os.path.join(workload_dir, version['path'])
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-            info = json5.load(open(os.path.join(data_dir, 'info.json')))
-            run_70p_timestamp = info['run-70%-timestamp(ns)']
-            run_end_timestamp = info['run-end-timestamp(ns)']
+            timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
+            timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
             progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-            progress = progress[(run_70p_timestamp <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < run_end_timestamp)]
+            progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
             operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
             seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
             value = operations_executed / seconds
