@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)
+source common.sh
+cd ..
+
+cd ../hotrap
+git checkout promote-stably-hot
+build_rocksdb
+
+cd ../viscnts-lsm
+build_viscnts_lsm
+
+cd ../kvexe
+git checkout main
+build_kvexe_viscnts_lsm
