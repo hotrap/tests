@@ -102,7 +102,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     while let Ok(file) =
         File::open(dir.join("latency-".to_owned() + &i.to_string()))
     {
-        iters.push(rev_lines::RevLines::new(file).peekable());
+        iters.push(
+            rev_lines::RevLines::with_capacity(16 * 1024 * 1024, file)
+                .peekable(),
+        );
         i += 1;
     }
 
