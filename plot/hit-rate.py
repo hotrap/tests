@@ -3,42 +3,57 @@
 import sys
 
 if len(sys.argv) != 2:
-	print('Usage: ' + sys.argv[0] + ' dir')
+	print('Usage: ' + sys.argv[0] + ' data-dir')
 	exit()
+data_dir = sys.argv[1]
 
 import os
-
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
-from common import *
+import common
 
+import json5
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-fontsize=9
-fonten = {'family': 'Times New Roman', 'size': fontsize}
+# Paper specific settings
+STANDARD_WIDTH = 17.8
+SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
+DOUBLE_COL_WIDTH = STANDARD_WIDTH
+def cm_to_inch(value):
+    return value/2.54
 
 mpl.rcParams.update({
+    'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
     'font.sans-serif': ['Times New Roman'],
-    })  # 设置全局字体
-plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    })
+plt.rcParams['axes.unicode_minus'] = False
 
-d = sys.argv[1]
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.3, cm_to_inch(4)))
 
-hit_rates = read_hit_rates(d)
-time = (hit_rates['Timestamp(ns)'] - hit_rates.iloc[0]['Timestamp(ns)']) / 1e9
+info = os.path.join(data_dir, 'info.json')
+info = json5.load(open(info))
 
-plot_dir = d + '/plot'
+hit_rates = common.read_hit_rates(data_dir)
+time = (hit_rates['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
+
+ax = plt.gca()
+plt.plot(time, hit_rates['hit-rate'])
+plt.xlabel('Time', fontsize=8)
+plt.ylabel('Hit rate', fontsize=8)
+plt.yticks(np.linspace(0, 1, 11), fontsize=8)
+
+i = hit_rates['hit-rate'].idxmax()
+x = time[i]
+y = hit_rates['hit-rate'][i]
+ax.annotate('Max: {:.2f}%'.format(y * 100), xy=(x, y), xytext=(0.5, 0.5), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"))
+
+plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/hit-rate.pdf'
-plt.plot(time, hit_rates['hit-rate'])
-plt.xlabel('Time')
-plt.ylabel('Hit rate')
-plt.yticks(np.linspace(0, 1, 11))
-plt.title('Hit rate')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

@@ -3,8 +3,10 @@
 import sys
 
 if len(sys.argv) != 3:
-	print('Usage: ' + sys.argv[0] + ' dir mean_step')
+	print('Usage: ' + sys.argv[0] + ' data-dir mean-step')
 	exit()
+data_dir = sys.argv[1]
+mean_step = int(sys.argv[2])
 
 import os
 import json5
@@ -12,27 +14,32 @@ import pandas as pd
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 
-fontsize=9
-fonten = {'family': 'Times New Roman', 'size': fontsize}
+# Paper specific settings
+STANDARD_WIDTH = 17.8
+SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
+DOUBLE_COL_WIDTH = STANDARD_WIDTH
+def cm_to_inch(value):
+    return value/2.54
 
 mpl.rcParams.update({
+    'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
     'font.sans-serif': ['Times New Roman'],
-    })  # 设置全局字体
-plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    })
+plt.rcParams['axes.unicode_minus'] = False
 
-d = sys.argv[1]
-mean_step = int(sys.argv[2])
-progress_raw = pd.read_table(d + '/progress', delim_whitespace=True)
-info_json = os.path.join(d, 'info.json')
-info_json = json5.load(open(info_json))
-progress_raw = progress_raw[(progress_raw['Timestamp(ns)'] >= info_json['run-start-timestamp(ns)']) & (progress_raw['Timestamp(ns)'] < info_json['run-end-timestamp(ns)'])]
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.3, cm_to_inch(4)))
 
-timestamp_start_ns = progress_raw['Timestamp(ns)'].iloc[0]
-timestamp = (progress_raw['Timestamp(ns)'] - timestamp_start_ns).values / 1e9
-timestamp = timestamp[:-1]
-progress = progress_raw['operations-executed']
+progress = pd.read_table(data_dir + '/progress', delim_whitespace=True)
+info = os.path.join(data_dir, 'info.json')
+info = json5.load(open(info))
+progress = progress[(progress['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (progress['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
+
+time = (progress['Timestamp(ns)'] - info['run-start-timestamp(ns)']).values / 1e9
+time = time[:-1]
+progress = progress['operations-executed']
 ops = progress[1:len(progress)].values - progress[:len(progress) - 1].values
 
 def mean_every_n(a, n):
@@ -42,20 +49,25 @@ def mean_every_n(a, n):
 		res = np.append(res, a[split:].mean())
 	return res
 
-timestamp = mean_every_n(timestamp, mean_step)
+time = mean_every_n(time, mean_step)
 ops = mean_every_n(ops, mean_step)
 
-plot_dir = d + '/plot'
+ax = plt.gca()
+formatter = ScalarFormatter(useMathText=True)
+formatter.set_powerlimits((-3, 4))
+ax.yaxis.set_major_formatter(formatter)
+ax.yaxis.get_offset_text().set_fontsize(8)
+plt.plot(time, ops, linewidth=0.5)
+plt.xticks(fontsize=8)
+plt.yticks(fontsize=8)
+plt.xlabel('Time (Seconds)', fontsize=8)
+plt.ylabel('Operation per second', fontsize=8)
+
+plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/ops.pdf'
-plt.plot(timestamp, ops)
-if 'run-70%-timestamp(ns)' in info_json:
-    plt.axvline((info_json['run-70%-timestamp(ns)'] - timestamp_start_ns) / 1e9, color='orange')
-plt.xlabel('Time (Seconds)', fontdict=fonten)
-plt.ylabel('OPS', fontdict=fonten)
-plt.title('OPS')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

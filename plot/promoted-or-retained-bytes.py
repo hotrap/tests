@@ -3,8 +3,9 @@
 import sys
 
 if len(sys.argv) != 2:
-	print('Usage: ' + sys.argv[0] + ' dir')
+	print('Usage: ' + sys.argv[0] + ' data-dir')
 	exit()
+data_dir = sys.argv[1]
 
 import os
 import json5
@@ -12,36 +13,42 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-fontsize=9
-fonten = {'family': 'Times New Roman', 'size': fontsize}
+# Paper specific settings
+STANDARD_WIDTH = 17.8
+SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
+DOUBLE_COL_WIDTH = STANDARD_WIDTH
+def cm_to_inch(value):
+    return value/2.54
 
 mpl.rcParams.update({
+    'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
     'font.sans-serif': ['Times New Roman'],
-    })  # 设置全局字体
-plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    })
+plt.rcParams['axes.unicode_minus'] = False
 
-d = sys.argv[1]
-num_bytes = pd.read_table(d + '/promoted-or-retained-bytes', delim_whitespace=True)
-info_json = os.path.join(d, 'info.json')
-info_json = json5.load(open(info_json))
-num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info_json['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info_json['run-end-timestamp(ns)'])]
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.3, cm_to_inch(4)))
 
-timestamp_start_ns = num_bytes['Timestamp(ns)'].iloc[0]
-timestamp = (num_bytes['Timestamp(ns)'] - timestamp_start_ns) / 1e9
+info = os.path.join(data_dir, 'info.json')
+info = json5.load(open(info))
 
-plot_dir = d + '/plot'
+num_bytes = pd.read_table(data_dir + '/promoted-or-retained-bytes', delim_whitespace=True)
+num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
+time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
+
+assert num_bytes['2cdfront'].max() == 0
+plt.plot(time, num_bytes['by-flush'])
+plt.plot(time, num_bytes['2sdlast'])
+plt.plot(time, num_bytes['retained'])
+plt.legend(['By flush to L0', 'To SD\'s last level', 'Retained'], frameon=False, fontsize=8)
+plt.xlabel('Time (Seconds)', fontsize=8)
+plt.ylabel('Promoted bytes', fontsize=8)
+
+plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/promoted-or-retained-bytes.pdf'
-plt.plot(timestamp, num_bytes['by-flush'])
-plt.plot(timestamp, num_bytes['2sdlast'])
-plt.plot(timestamp, num_bytes['2cdfront'])
-plt.plot(timestamp, num_bytes['retained'])
-plt.legend(['By flush to L0', 'To the last level in SD', 'To shallower levels in CD', 'Retained'], prop={'size': fontsize})
-plt.xlabel('Time (Seconds)', fontdict=fonten)
-plt.ylabel('Promoted bytes', fontdict=fonten)
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()
