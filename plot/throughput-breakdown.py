@@ -123,7 +123,7 @@ for (i, version) in enumerate(versions):
         plt.ylabel('Throughput (MB/s)', fontsize=8)
 fig.legend(['SD', 'CD', 'SD-Compaction', 'CD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 0.99))
 plt.tight_layout()
-pdf_path = 'time-throughput.pdf'
+pdf_path = 'throughput-breakdown.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
