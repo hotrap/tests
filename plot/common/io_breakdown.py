@@ -40,8 +40,8 @@ def draw_io_breakdown(dir, size, pdf_name):
         plt.get_cmap('Paired')(4), plt.get_cmap('Paired')(6),
         'white',
     ]
-    flush_stably_hot = {
-        'path': 'flush-stably-hot',
+    promote_stably_hot = {
+        'path': 'promote-stably-hot',
         'colors': colors_left,
         'legend-colors': colors_left,
     }
@@ -59,7 +59,7 @@ def draw_io_breakdown(dir, size, pdf_name):
 
     gs = gridspec.GridSpec(1, 3)
 
-    versions=[flush_stably_hot, rocksdb_sd]
+    versions=[promote_stably_hot, rocksdb_sd]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
     subfig_anchor_y = 1.1
@@ -78,7 +78,7 @@ def draw_io_breakdown(dir, size, pdf_name):
         ax.grid(axis='y')
         for (pivot, ycsb) in enumerate(ycsb_configs):
             workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
-            data_dir = os.path.join(workload_dir, 'flush-stably-hot')
+            data_dir = os.path.join(workload_dir, 'promote-stably-hot')
             start_progress = start_progress_fn(data_dir)
             end_progress = end_progress_fn(data_dir)
             for (version_idx, version) in enumerate(versions):
@@ -126,7 +126,7 @@ def draw_io_breakdown(dir, size, pdf_name):
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                 bottom += height
 
-                if version['path'] == 'flush-stably-hot':
+                if version['path'] == 'promote-stably-hot':
                     viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), delim_whitespace=True)
                     viscnts_io = viscnts_io[(timestamp_start <= viscnts_io['Timestamp(ns)']) & (viscnts_io['Timestamp(ns)'] < timestamp_end)]
                     viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]
@@ -145,7 +145,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     plt.xlabel('(a) Warm-up phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=flush_stably_hot['legend-colors']),
+            common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_sd['legend-colors']),
         ],
         ['HotRAP', 'RocksDB(SD)'],
@@ -158,7 +158,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     plt.xlabel('(b) Stable phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=flush_stably_hot['legend-colors']),
+            common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_sd['legend-colors']),
         ],
         ['HotRAP', 'RocksDB(SD)'],
@@ -167,13 +167,13 @@ def draw_io_breakdown(dir, size, pdf_name):
     )
 
     workload='uniform'
-    versions = [flush_stably_hot, rocksdb_fat]
+    versions = [promote_stably_hot, rocksdb_fat]
     subfig = plt.subplot(gs[0, 2])
     draw_io(start_progress_fn, end_progress_fn)
     plt.xlabel('(c) Run phase of uniform', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=flush_stably_hot['legend-colors']),
+            common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_fat['legend-colors']),
         ],
         ['HotRAP', 'RocksDB-fat'],

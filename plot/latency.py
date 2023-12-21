@@ -16,7 +16,6 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from matplotlib.ticker import LogLocator
 from matplotlib.ticker import ScalarFormatter
 
 # Paper specific settings
@@ -37,7 +36,7 @@ figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_in
 
 versions=[
     {
-        'path': 'flush-stably-hot',
+        'path': 'promote-stably-hot',
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },
@@ -148,7 +147,7 @@ workloads = [
 
 for workload in workloads:
     workload_dir = os.path.join(dir, workload['path'])
-    data_dir = os.path.join(workload_dir, 'flush-stably-hot')
+    data_dir = os.path.join(workload_dir, 'promote-stably-hot')
     warmup_finish_progress = common.warmup_finish_progress(data_dir)
     for (version_idx, version) in enumerate(versions):
         data_dir = os.path.join(workload_dir, version['path'])

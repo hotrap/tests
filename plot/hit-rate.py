@@ -40,14 +40,15 @@ time = (hit_rates['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 
 ax = plt.gca()
 plt.plot(time, hit_rates['hit-rate'])
-plt.xlabel('Time', fontsize=8)
+plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Hit rate', fontsize=8)
+plt.xticks(fontsize=8)
 plt.yticks(np.linspace(0, 1, 11), fontsize=8)
 
 i = hit_rates['hit-rate'].idxmax()
 x = time[i]
 y = hit_rates['hit-rate'][i]
-ax.annotate('Max: {:.2f}%'.format(y * 100), xy=(x, y), xytext=(0.5, 0.5), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"))
+ax.annotate('Max: {:.2f}%'.format(y * 100), xy=(x, y), xytext=(0.5, 0.5), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"), fontsize=8)
 
 plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):

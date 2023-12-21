@@ -43,8 +43,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         'white',
     ]
 
-    flush_stably_hot = {
-        'path': 'flush-stably-hot',
+    promote_stably_hot = {
+        'path': 'promote-stably-hot',
         'colors': colors_left,
     }
     rocksdb_sd = {
@@ -59,7 +59,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
 
     gs = gridspec.GridSpec(1, 3)
 
-    versions=[flush_stably_hot, rocksdb_sd]
+    versions=[promote_stably_hot, rocksdb_sd]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
     subfig_anchor_y = 1.1
@@ -82,7 +82,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ax.yaxis.get_offset_text().set_fontsize(8)
         for (pivot, ycsb) in enumerate(ycsb_configs):
             workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
-            data_dir = os.path.join(workload_dir, 'flush-stably-hot')
+            data_dir = os.path.join(workload_dir, 'promote-stably-hot')
             start_progress = start_progress_fn(data_dir)
             end_progress = end_progress_fn(data_dir)
             for (version_idx, version) in enumerate(versions):
@@ -132,7 +132,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     plt.xlabel('(a) Warm-up phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
-            MulticolorPatch(colors=flush_stably_hot['colors']),
+            MulticolorPatch(colors=promote_stably_hot['colors']),
             MulticolorPatch(colors=rocksdb_sd['colors']),
         ],
         ['HotRAP', 'RocksDB(SD)'],
@@ -145,7 +145,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     plt.xlabel('(b) Stable phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
-            MulticolorPatch(colors=flush_stably_hot['colors']),
+            MulticolorPatch(colors=promote_stably_hot['colors']),
             MulticolorPatch(colors=rocksdb_sd['colors']),
         ],
         ['HotRAP', 'RocksDB(SD)'],
@@ -154,13 +154,13 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     )
 
     workload='uniform'
-    versions = [flush_stably_hot, rocksdb_fat]
+    versions = [promote_stably_hot, rocksdb_fat]
     subfig = plt.subplot(gs[0, 2])
     draw_cputime(start_progress_fn, end_progress_fn)
     plt.xlabel('(c) Run phase of uniform', fontsize=8)
     subfig.legend(
         [
-            MulticolorPatch(colors=flush_stably_hot['colors']),
+            MulticolorPatch(colors=promote_stably_hot['colors']),
             MulticolorPatch(colors=rocksdb_fat['colors']),
         ],
         ['HotRAP', 'RocksDB-fat'],
@@ -185,9 +185,9 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     labels.append('Compaction')
     all_versions(2)
     labels.append('Checker')
-    handles.append(MulticolorPatch(colors=[flush_stably_hot['colors'][3]], pattern=patterns[3]))
+    handles.append(MulticolorPatch(colors=[promote_stably_hot['colors'][3]], pattern=patterns[3]))
     labels.append('RALT')
-    handles.append(MulticolorPatch(colors=[flush_stably_hot['colors'][4]], pattern=patterns[4]))
+    handles.append(MulticolorPatch(colors=[promote_stably_hot['colors'][4]], pattern=patterns[4]))
     labels.append('Others')
     assert colors_left[-1] == colors_right[-1]
     handles.append(MulticolorPatch(colors=[colors_left[-1]], pattern=patterns[-1]))

@@ -55,7 +55,7 @@ ycsb_configs=['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
 cluster_labels = ['RO', 'RW', 'WH', 'UH']
 versions=[
     {
-        'path': 'flush-stably-hot',
+        'path': 'promote-stably-hot',
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },
@@ -90,7 +90,7 @@ for i in range(len(workloads)):
     workload = workloads[i]
     for (pivot, ycsb) in enumerate(ycsb_configs):
         workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
-        data_dir = os.path.join(workload_dir, 'flush-stably-hot')
+        data_dir = os.path.join(workload_dir, 'promote-stably-hot')
         start_progress = common.warmup_finish_progress(data_dir)
         progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
         end_progress = progress.iloc[-1]['operations-executed']
