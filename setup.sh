@@ -21,6 +21,7 @@ git clone -b v2023.11.20.00 https://github.com/facebook/CacheLib.git
 cd CacheLib
 ./contrib/build.sh -j -T
 echo "export CACHELIB_HOME=$(pwd)/opt/cachelib" >> ~/.profile
+cd ..
 
 git clone git@github.com:hotrap/hotrap.git rocksdb
 cp -r rocksdb hotrap
