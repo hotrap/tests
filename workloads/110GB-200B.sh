@@ -33,10 +33,10 @@ function run-hotrap {
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${hotspot_workloads[@]}"; do
-	run-hotrap $workload flush-stably-hot
-	run-rocksdb-sd $workload
+	run-hotrap $workload promote-stably-hot
+# 	run-rocksdb-sd $workload
 done
 for workload in "${uniform_workloads[@]}"; do
-	run-hotrap $workload flush-stably-hot
-	run-rocksdb $workload rocksdb-fat
+	run-hotrap $workload promote-stably-hot
+# 	run-rocksdb $workload rocksdb-fat
 done

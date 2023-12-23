@@ -35,7 +35,7 @@ markersize = 3
 versions = [
 	{
 		'name': '(a) HotRAP',
-		'path': 'flush-stably-hot',
+		'path': 'promote-stably-hot',
     },
 	{
         'name': '(b) promote-accessed',
