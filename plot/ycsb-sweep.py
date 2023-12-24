@@ -80,7 +80,7 @@ versions=[
     },
     {
         'path': 'prismdb',
-        'pattern': '......',
+        'pattern': '---\\\\\\\\\\\\',
         'color': plt.get_cmap('Set2')(5),
     }
 ]
