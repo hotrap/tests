@@ -12,7 +12,6 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
 
-import json5
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -50,8 +49,8 @@ subfigs = [
     },
 ]
 
-workloads=['hotspot0.05', 'zipfian', 'uniform']
-ycsb_configs=['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
+skewnesses = ['hotspot0.05', 'zipfian', 'uniform']
+ycsb_configs = ['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
 cluster_labels = ['RO', 'RW', 'WH', 'UH']
 versions=[
     {
@@ -74,36 +73,83 @@ versions=[
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
     },
+    {
+        'path': 'mutant',
+        'pattern': '---',
+        'color': plt.get_cmap('Set2')(4),
+    },
+    {
+        'path': 'prismdb',
+        'pattern': '......',
+        'color': plt.get_cmap('Set2')(5),
+    }
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)']
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)', 'Mutant', 'PrismDB']
 size='110GB'
 
-gs = gridspec.GridSpec(1, len(workloads))
-bar_width = 0.15
+gs = gridspec.GridSpec(1, len(skewnesses))
+bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
-for i in range(len(workloads)):
+other_sys_in = open('other-sys.txt')
+other_sys = {}
+while True:
+    line = other_sys_in.readline()
+    line = line.strip()
+    if len(line) == 0:
+        break
+    if line == 'uh':
+        t = 'ycsba'
+    elif line == 'wr':
+        t = 'read_0.75_insert_0.25'
+    elif line == 'wh':
+        t = 'read_0.5_insert_0.5'
+    elif line == 'rh':
+        t = 'ycsbc'
+    else:
+        print('Unknown type ' + line)
+        assert False
+    for _ in range(0, 2):
+        line = other_sys_in.readline().strip().split(' ')
+        assert line[0][-1] == ':'
+        version = line[0][:-1]
+        i = 1
+        while i < len(line):
+            skewness = line[i]
+            i += 1
+            ops = float(line[i])
+            i += 1
+            workload = t + '_' + skewness + '_' + size
+            if workload not in other_sys:
+                other_sys[workload] = {}
+            other_sys[workload][version] = ops
+
+for i in range(len(skewnesses)):
     subfig = plt.subplot(gs[0, i])
     ax = plt.gca()
     ax.set_axisbelow(True)
     ax.grid(axis='y')
-    workload = workloads[i]
+    skewness = skewnesses[i]
     for (pivot, ycsb) in enumerate(ycsb_configs):
-        workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
+        workload = ycsb + '_' + skewness + '_' + size
+        workload_dir = os.path.join(dir, workload)
         data_dir = os.path.join(workload_dir, 'promote-stably-hot')
         start_progress = common.warmup_finish_progress(data_dir)
         progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
         end_progress = progress.iloc[-1]['operations-executed']
         for (version_idx, version) in enumerate(versions):
-            data_dir = os.path.join(workload_dir, version['path'])
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-            timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
-            timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
-            progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-            progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
-            operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
-            seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
-            value = operations_executed / seconds
+            if version_idx < 4:
+                data_dir = os.path.join(workload_dir, version['path'])
+                timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
+                timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
+                progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+                progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
+                operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
+                seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
+                value = operations_executed / seconds
+            else:
+                value = other_sys[workload][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     formatter = ScalarFormatter(useMathText=True)
     formatter.set_powerlimits((-3, 4))
