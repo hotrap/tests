@@ -80,9 +80,9 @@ for workload in "${workloads[@]}"; do
 	aliyun-run run-rocksdb-sd $workload rocksdb-sd
 	aliyun-run run-rocksdb $workload rocksdb-fat
 	aliyun-run run-secondary-cache $workload secondary-cache
-	aliyun-run run-hotrap $workload flush-stably-hot
+	aliyun-run run-hotrap $workload promote-stably-hot
 done
-aliyun-run run-hotrap "ycsbc_hotspotshifting0.05_110GB" flush-stably-hot
+aliyun-run run-hotrap "ycsbc_hotspotshifting0.05_110GB" promote-stably-hot
 aliyun-run run-hotrap "ycsbc_uniform_110GB" flush-accessed
 aliyun-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-retain
 aliyun-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-promote-by-compaction
