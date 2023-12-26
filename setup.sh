@@ -19,7 +19,7 @@ mkdir data
 
 git clone -b v2023.11.20.00 https://github.com/facebook/CacheLib.git
 cd CacheLib
-./contrib/build.sh -j -T -p $(realpath ..)/opt/cachelib
+./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
 cd ..
 cat >> ~/.profile <<EOF
 export CACHELIB_HOME=$(pwd)/opt/cachelib
