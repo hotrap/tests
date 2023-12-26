@@ -1,8 +1,3 @@
-sudo apt update
-sudo apt install -y rsync git
-
-pip3 install humanfriendly pandas
-
 sudo sed -i '/^\(root hard nofile 65535\|\* hard nofile 65535\)$/d' /etc/security/limits.conf
 
 sudo mkfs.ext4 /dev/nvme0n1
@@ -44,3 +39,4 @@ EOF
 source ~/.profile
 sh <(curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh) -y
 source "$HOME/.cargo/env"
+

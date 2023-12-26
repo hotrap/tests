@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-if [ ! $1 ]; then
-	echo Usage: $0 IP
-	exit 1
-fi
-cd ../..
-rsync -zPrt -e ssh rocksdb root@$1:~/ --exclude='build'
-rsync -zPrt -e ssh kvexe-rocksdb root@$1:~/ --exclude='build'
-ssh root@$1 "./tests/helper/checkout-rocksdb"

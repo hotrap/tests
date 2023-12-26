@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+if [ ! $2 ]; then
+	echo Usage: $0 user IP
+	exit 1
+fi
+user=$1
+IP=$2
+cd ../..
+rsync -zPrt -e ssh rocksdb $user@$IP:~/ --exclude='build'
+rsync -zPrt -e ssh kvexe-rocksdb $user@$IP:~/ --exclude='build'
+ssh $user@$IP "./tests/helper/checkout-rocksdb-fat"
