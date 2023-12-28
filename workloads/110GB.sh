@@ -48,6 +48,6 @@ for workload in "${workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
 done
 run-hotrap "ycsbc_hotspotshifting0.05_110GB" promote-stably-hot
-run-hotrap "ycsbc_uniform_110GB" flush-accessed
+run-hotrap "ycsbc_uniform_110GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-promote-by-compaction

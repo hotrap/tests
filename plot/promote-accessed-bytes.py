@@ -39,7 +39,7 @@ versions = [
     },
 	{
         'name': '(b) promote-accessed',
-		'path': 'flush-accessed',
+		'path': 'promote-accessed',
     }
 ]
 gs = gridspec.GridSpec(1, len(versions))

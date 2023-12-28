@@ -40,7 +40,7 @@ versions = [
     },
 	{
         'name': '(b) promote-accessed',
-		'path': 'flush-accessed',
+		'path': 'promote-accessed',
     }
 ]
 throughput_breakdown.draw_throughput_breakdown(dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)
