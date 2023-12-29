@@ -37,15 +37,15 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(
 subfigs = [
     {
         'title': '(a) hotspot-5%',
-        'ticks': [0, 2e4, 4e4, 6e4],
+        'ticks': [0, 3e4, 6e4, 9e4],
     },
     {
         'title': '(b) zipfian',
-        'ticks': [0, 2e4, 4e4, 6e4],
+        'ticks': [0, 3e4, 6e4, 9e4],
     },
     {
         'title': '(c) uniform',
-        'ticks': [0, 2e4, 4e4, 6e4],
+        'ticks': [0, 3e4, 6e4, 9e4],
     },
 ]
 
@@ -157,11 +157,11 @@ for i in range(len(skewnesses)):
     ax.yaxis.get_offset_text().set_fontsize(8)
     plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
     plt.yticks(subfigs[i]['ticks'], fontsize=8)
-    plt.ylim((0, 7e4))
+    plt.ylim((0, max(subfigs[i]['ticks']) + 1e4))
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=8)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=8)
-fig.legend(version_names, fontsize=8, ncol=len(versions), loc='center', bbox_to_anchor=(0.5, 0.99))
+fig.legend(version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 0.99))
 plt.tight_layout()
 pdf_path = dir + '/ycsb-sweep.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
