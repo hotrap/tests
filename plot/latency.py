@@ -160,25 +160,9 @@ for workload in workloads:
             # print(workload['path'], version['path'])
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             path = os.path.join(data_dir, fig['operation'] + '-latency')
-            if version_idx == 0:
-                latency = pd.read_table(path, delim_whitespace=True)
-                latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
-                value = latency[fig['percentile']]
-            else:
-                # Temporarily
-                latency = pd.read_table(path, delim_whitespace=True, names=['percentile', 'latency(ns)'])
-                latency = latency.set_index('percentile')['latency(ns)']
-                # print(latency)
-                if fig['percentile'] == 'Average':
-                    value = latency['Average']
-                elif fig['percentile'] == '50%':
-                    value = latency['0.5']
-                elif fig['percentile'] == '99%':
-                    value = latency['0.99']
-                elif fig['percentile'] == '99.9%':
-                    value = latency['0.999']
-                else:
-                    assert False
+            latency = pd.read_table(path, delim_whitespace=True)
+            latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
+            value = latency[fig['percentile']]
             fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
 
 for (i, fig) in enumerate(figs):
