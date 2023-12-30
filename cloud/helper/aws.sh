@@ -5,6 +5,7 @@ sudo chown $USER:$USER /mnt/sd
 mkdir -p /mnt/sd/{db,sd,viscnts}     
 sudo bash -c "echo \"/dev/nvme1n1 /mnt/sd ext4 defaults 0 0\" >> /etc/fstab"
 
+cd ~
 mkdir testdb
 cd testdb
 ln -s /mnt/sd/{db,sd,viscnts} .
