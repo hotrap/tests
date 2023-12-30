@@ -34,9 +34,9 @@ function run-hotrap {
 }
 for workload in "${hotspot_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
-# 	run-rocksdb-sd $workload
+	run-rocksdb-sd $workload
 done
 for workload in "${uniform_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
-# 	run-rocksdb $workload rocksdb-fat
+	run-rocksdb $workload rocksdb-fat
 done
