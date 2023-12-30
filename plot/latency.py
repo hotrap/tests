@@ -32,7 +32,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(8)))
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
 
 versions=[
     {
@@ -59,22 +59,14 @@ versions=[
 version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)']
 percentiles = [50, 60, 70, 80, 90, 95, 99, 99.9]
 
-gs = gridspec.GridSpec(2, 4)
+gs = gridspec.GridSpec(1, 3)
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
 figs = [
     {
-        'title': 'Average latency of get',
-        'subfig': plt.subplot(gs[0, 0]),
-        'ax': plt.gca(),
-        'xticks': ['RO', 'RW', 'WH'],
-        'operation': 'read',
-        'percentile': 'Average',
-    },
-    {
         'title': '50% latency of get',
-        'subfig': plt.subplot(gs[0, 1]),
+        'subfig': plt.subplot(gs[0, 0]),
         'ax': plt.gca(),
         'xticks': ['RO', 'RW', 'WH'],
         'operation': 'read',
@@ -82,7 +74,7 @@ figs = [
     },
     {
         'title': '99% tail latency of get',
-        'subfig': plt.subplot(gs[0, 2]),
+        'subfig': plt.subplot(gs[0, 1]),
         'ax': plt.gca(),
         'xticks': ['RO', 'RW', 'WH'],
         'operation': 'read',
@@ -90,44 +82,12 @@ figs = [
     },
     {
         'title': '99.9% tail latency of get',
-        'subfig': plt.subplot(gs[0, 3]),
+        'subfig': plt.subplot(gs[0, 2]),
         'ax': plt.gca(),
         'xticks': ['RO', 'RW', 'WH'],
         'operation': 'read',
         'percentile': '99.9%',
     },
-    {
-        'title': 'Average latency of insert',
-        'subfig': plt.subplot(gs[1, 0]),
-        'ax': plt.gca(),
-        'xticks': ['RW', 'WH'],
-        'operation': 'insert',
-        'percentile': 'Average',
-    },
-    {
-        'title': '50% tail latency of insert',
-        'subfig': plt.subplot(gs[1, 1]),
-        'ax': plt.gca(),
-        'xticks': ['RW', 'WH'],
-        'operation': 'insert',
-        'percentile': '50%',
-    },
-    {
-        'title': '99% tail latency of insert',
-        'subfig': plt.subplot(gs[1, 2]),
-        'ax': plt.gca(),
-        'xticks': ['RW', 'WH'],
-        'operation': 'insert',
-        'percentile': '99%',
-    },
-    {
-        'title': '99.9% tail latency of insert',
-        'subfig': plt.subplot(gs[1, 3]),
-        'ax': plt.gca(),
-        'xticks': ['RW', 'WH'],
-        'operation': 'insert',
-        'percentile': '99.9%',
-    }
 ]
 
 workloads = [
