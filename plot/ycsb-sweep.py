@@ -91,8 +91,29 @@ gs = gridspec.GridSpec(1, len(skewnesses))
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
+workload_version_ops = {}
+for i in range(len(skewnesses)):
+    skewness = skewnesses[i]
+    for ycsb in ycsb_configs:
+        workload = ycsb + '_' + skewness + '_' + size
+        workload_dir = os.path.join(dir, workload)
+        data_dir = os.path.join(workload_dir, 'promote-stably-hot')
+        start_progress = common.warmup_finish_progress(data_dir)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        end_progress = progress.iloc[-1]['operations-executed']
+        workload_version_ops[workload] = {}
+        for (version_idx, version) in enumerate(versions):
+            if version_idx < 4:
+                data_dir = os.path.join(workload_dir, version['path'])
+                timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
+                timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
+                progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+                progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
+                operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
+                seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
+                workload_version_ops[workload][version['path']] = operations_executed / seconds
+
 other_sys_in = open('other-sys.txt')
-other_sys = {}
 while True:
     line = other_sys_in.readline()
     line = line.strip()
@@ -120,9 +141,24 @@ while True:
             ops = float(line[i])
             i += 1
             workload = t + '_' + skewness + '_' + size
-            if workload not in other_sys:
-                other_sys[workload] = {}
-            other_sys[workload][version] = ops
+            workload_version_ops[workload][version] = ops
+
+def get_ratios(skewnesses):
+    ratios = []
+    for skewness in skewnesses:
+        for ycsb in ['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5']:
+            workload = ycsb + '_' + skewness + '_' + size
+            version_ops = workload_version_ops[workload]
+            ratios.append(version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
+            ratios.append(version_ops['promote-stably-hot'] / version_ops['secondary-cache'])
+    return ratios
+ratios = get_ratios(['hotspot0.05', 'zipfian'])
+print("%.1f%%" %((min(ratios) - 1) * 100))
+print("%.0f%%" %((max(ratios) - 1) * 100))
+
+ratios = get_ratios(['uniform'])
+print("%.1f%%" %((min(ratios) - 1) * 100))
+print("%.0f%%" %((max(ratios) - 1) * 100))
 
 for i in range(len(skewnesses)):
     subfig = plt.subplot(gs[0, i])
@@ -132,24 +168,9 @@ for i in range(len(skewnesses)):
     skewness = skewnesses[i]
     for (pivot, ycsb) in enumerate(ycsb_configs):
         workload = ycsb + '_' + skewness + '_' + size
-        workload_dir = os.path.join(dir, workload)
-        data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-        start_progress = common.warmup_finish_progress(data_dir)
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-        end_progress = progress.iloc[-1]['operations-executed']
         for (version_idx, version) in enumerate(versions):
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-            if version_idx < 4:
-                data_dir = os.path.join(workload_dir, version['path'])
-                timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
-                timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
-                progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-                progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
-                operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
-                seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
-                value = operations_executed / seconds
-            else:
-                value = other_sys[workload][version['path']]
+            value = workload_version_ops[workload][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     formatter = ScalarFormatter(useMathText=True)
     formatter.set_powerlimits((-3, 4))
