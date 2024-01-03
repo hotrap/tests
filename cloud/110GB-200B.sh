@@ -52,11 +52,11 @@ function run-hotrap {
 }
 
 for workload in "${hotspot_workloads[@]}"; do
-	cloud-run run-hotrap $workload flush-stably-hot
+	cloud-run run-hotrap $workload promote-stably-hot
 	cloud-run run-rocksdb-sd $workload rocksdb-sd
 done
 for workload in "${uniform_workloads[@]}"; do
-	cloud-run run-hotrap $workload flush-stably-hot
+	cloud-run run-hotrap $workload promote-stably-hot
 	cloud-run run-rocksdb $workload rocksdb-fat
 done
 wait
