@@ -26,11 +26,12 @@ while True:
 def work(latencies):
     latencies = np.array([x for array in latencies for x in array])
     print('Average %f ns' %(latencies.mean()))
-    percentiles = [99, 99.9]
+    percentiles = [10, 20, 30, 40, 50, 60, 70, 80, 90, 99, 99.9]
     a = np.percentile(latencies, percentiles)
     for i in range(0, len(a)):
         print('%f%% %f ns' %(percentiles[i], a[i]))
 print('Read')
 work(read_latencies)
-print('Insert')
-work(insert_latencies)
+if len(insert_latencies) != 0:
+    print('Insert')
+    work(insert_latencies)
