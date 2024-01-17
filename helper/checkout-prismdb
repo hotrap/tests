@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)
+source common.sh
+cd ../..
+
+cd prismdb
+mkdir -p build
+cd build
+cmake ..
+make -j$(nproc)
+cd ../..
+
+cd kvexe-prismdb
+build_kvexe_prismdb

@@ -30,6 +30,8 @@ EOF
 
 git clone git@github.com:hotrap/hotrap.git rocksdb
 cp -r rocksdb hotrap
+git clone --recursive git@github.com:hotrap/prismdb.git
+git clone git@github.com:hotrap/mutant.git
 
 git clone --recursive git@github.com:hotrap/kvexe.git
 cp -r kvexe kvexe-rocksdb
@@ -38,6 +40,8 @@ rm -r 3rdparty/{rcu-vector,counter-timer-vec}
 git checkout rocksdb
 cd ..
 git clone -b secondary-cache --recursive git@github.com:hotrap/kvexe.git kvexe-secondary-cache
+git clone -b prismdb --recursive git@github.com:hotrap/kvexe.git kvexe-prismdb
+git clone -b mutant --recursive git@github.com:hotrap/kvexe.git kvexe-mutant
 
 git clone git@github.com:hotrap/viscnts-splay-rs.git
 git clone --recursive git@github.com:hotrap/viscnts-lsm.git

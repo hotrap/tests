@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)
+source common.sh
+cd ../..
+
+cd mutant
+make -j$(nproc) shared_lib
+
+cd kvexe-mutant
+build_kvexe_mutant

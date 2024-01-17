@@ -40,3 +40,19 @@ function build_kvexe_rocksdb {
 	make
 	cd ..
 }
+function build_kvexe_prismdb {
+	workspace=$(realpath ..)
+	mkdir -p build
+	cd build
+	cmake .. -DROCKSDB_INCLUDE=$workspace/prismdb/include -DROCKSDB_LIB=$workspace/prismdb/build
+	make
+	cd ..
+}
+function build_kvexe_mutant {
+	workspace=$(realpath ..)
+	mkdir -p build
+	cd build
+	cmake .. -DROCKSDB_INCLUDE=$workspace/mutant/include -DROCKSDB_LIB=$workspace/mutant
+	make
+	cd ..
+}
