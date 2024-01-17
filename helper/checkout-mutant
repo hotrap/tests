@@ -7,6 +7,7 @@ cd ../..
 
 cd mutant
 make -j$(nproc) shared_lib
+cd ..
 
 cd kvexe-mutant
 build_kvexe_mutant
