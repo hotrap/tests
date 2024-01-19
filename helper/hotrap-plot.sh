@@ -9,4 +9,5 @@ mkdir -p $DIR/plot/
 bash rocksdb-plot.sh $DIR &
 ../plot/promoted-or-retained-bytes.py $DIR &
 ../plot/hit-rate.py $DIR &
+../plot/vcsize.py $DIR &
 wait
