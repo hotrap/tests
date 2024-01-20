@@ -14,6 +14,7 @@ if [ -f occurrences ]; then
 	$mydir/hit . "$DIR"
 fi
 find . \
+	-mindepth 1 \
 	\! -regex "\./[0-9]*\.log" \
 	\! -name CURRENT \
 	\! -name IDENTITY \
