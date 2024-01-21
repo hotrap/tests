@@ -24,3 +24,4 @@ find . \
 	-exec mv {} "$DIR" \;
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
+$mydir/latency-after "$DIR"/
