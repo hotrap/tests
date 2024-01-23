@@ -1,9 +1,12 @@
-for workload in "${workloads[@]}"; do
-	if [ ! -f ../config/$workload ]; then
-		echo $workload does not exists!
-		exit 1
-	fi
-done
+function check-workload-files {
+	for workload in "$@"; do
+		if [ ! -f ../config/$workload ]; then
+			echo $workload does not exists!
+			exit 1
+		fi
+	done
+}
+check-workload-files "${workloads[@]}"
 
 vendor=$(cat $config_file | jq -er ".vendor")
 if [ "$vendor" == 'aliyun' ]; then
