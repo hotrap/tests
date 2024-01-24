@@ -77,11 +77,15 @@ function cloud-run {
 	fi
 	# Don't Create instance inside subprocess, otherwise the instance names are likely to collide
 	create_instance_if_none $4
+	if [ ! "$instance_id" ]; then
+		echo Fail to create instance
+		return 1
+	fi
 	echo -n "$1 $2 $3 with instance $instance_id "
 	if [ "$vendor" == 'aliyun' ]; then
 		./aliyun/hostname.py $config_file $instance_id
 	else
-		./aws/ip.py $instance_id
+		echo
 	fi
 	DIR=$output_dir/$2/$3
 	mkdir -p $DIR
