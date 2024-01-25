@@ -114,34 +114,21 @@ for i in range(len(skewnesses)):
                 seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
                 workload_version_ops[workload][version['path']] = operations_executed / seconds
 
-other_sys_in = open('other-sys.txt')
-while True:
-    line = other_sys_in.readline()
-    line = line.strip()
-    if len(line) == 0:
-        break
-    if line == 'uh':
-        t = 'ycsba'
-    elif line == 'wr':
-        t = 'read_0.75_insert_0.25'
-    elif line == 'wh':
-        t = 'read_0.5_insert_0.5'
-    elif line == 'rh':
-        t = 'ycsbc'
-    else:
-        print('Unknown type ' + line)
-        assert False
-    for _ in range(0, 2):
-        line = other_sys_in.readline().strip().split(' ')
-        assert line[0][-1] == ':'
-        version = line[0][:-1]
-        i = 1
-        while i < len(line):
-            skewness = line[i]
-            i += 1
-            ops = float(line[i])
-            i += 1
-            workload = t + '_' + skewness + '_' + size
+ycsb_configs_prismdb_mutant = ['ycsbc', 'wr', 'wh', 'ycsba']
+for ycsb in ycsb_configs_prismdb_mutant:
+    for skewness in skewnesses:
+        workload = 'workload_110GB_' + ycsb + '_' + skewness
+        workload_version_ops[workload] = {}
+        workload_dir = os.path.join(dir, workload)
+        for version in ['prismdb', 'mutant']:
+            data_dir = os.path.join(workload_dir, version)
+            progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+            last = progress.iloc[-1]
+            progress = progress[progress['operations-executed'] != last['operations-executed']]
+            last = progress.iloc[-1]
+            first = progress.iloc[len(progress) - len(progress) // 10]
+            seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
+            ops = (last['operations-executed'] - first['operations-executed']) / seconds
             workload_version_ops[workload][version] = ops
 
 def get_ratios(skewnesses):
@@ -168,8 +155,11 @@ for i in range(len(skewnesses)):
     ax.grid(axis='y')
     skewness = skewnesses[i]
     for (pivot, ycsb) in enumerate(ycsb_configs):
-        workload = ycsb + '_' + skewness + '_' + size
         for (version_idx, version) in enumerate(versions):
+            if version_idx < 4:
+                workload = ycsb + '_' + skewness + '_' + size
+            else:
+                workload = 'workload_110GB_' + ycsb_configs_prismdb_mutant[pivot] + '_' + skewness
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             value = workload_version_ops[workload][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
