@@ -57,7 +57,6 @@ versions=[
     },
 ]
 version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)']
-percentiles = [50, 60, 70, 80, 90, 95, 99, 99.9]
 
 gs = gridspec.GridSpec(1, 3)
 bar_width = 1 / (len(versions) + 1)
@@ -117,13 +116,13 @@ for workload in workloads:
                 pivot = fig['xticks'].index(workload['name'])
             except ValueError:
                 continue
-            # print(workload['path'], version['path'])
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             path = os.path.join(data_dir, fig['operation'] + '-latency')
             latency = pd.read_table(path, delim_whitespace=True)
             latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
             value = latency[fig['percentile']]
             fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
+            # print(workload['name'], version['path'], fig['percentile'], value)
 
 for (i, fig) in enumerate(figs):
     subfig = fig['subfig']
