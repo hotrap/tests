@@ -34,18 +34,19 @@ plt.rcParams['axes.unicode_minus'] = False
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
 
+ticks = [0, 5e4, 10e4, 15e4]
 subfigs = [
     {
         'title': '(a) hotspot-5%',
-        'ticks': [0, 3e4, 6e4, 9e4],
+        'ticks': ticks
     },
     {
         'title': '(b) zipfian',
-        'ticks': [0, 3e4, 6e4, 9e4],
+        'ticks': ticks
     },
     {
         'title': '(c) uniform',
-        'ticks': [0, 3e4, 6e4, 9e4],
+        'ticks': ticks
     },
 ]
 
