@@ -163,9 +163,7 @@ for i in range(len(skewnesses)):
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             value = workload_version_ops[workload][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
-    formatter = ScalarFormatter(useMathText=True)
-    formatter.set_powerlimits((-3, 4))
-    ax.yaxis.set_major_formatter(formatter)
+    ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(8)
     plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
     plt.yticks(subfigs[i]['ticks'], fontsize=8)
