@@ -19,9 +19,8 @@ import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 
 # Paper specific settings
-STANDARD_WIDTH = 17.8
-SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
-DOUBLE_COL_WIDTH = STANDARD_WIDTH
+SINGLE_COL_WIDTH = 8.5
+DOUBLE_COL_WIDTH = 17.8
 def cm_to_inch(value):
     return value/2.54
 
@@ -32,7 +31,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3)), constrained_layout=True)
 
 xticks = ['RO', 'RW', 'WH']
 workloads = [
@@ -44,17 +43,6 @@ workloads = [
     },
     {
         'path': 'read_0.5_insert_0.5_hotspot0.05_110GB',
-    },
-]
-workloads_prismdb_mutant = [
-    {
-        'path': 'workload_110GB_ycsbc_hotspot0.05',
-    },
-    {
-        'path': 'workload_110GB_wr_hotspot0.05',
-    },
-    {
-        'path': 'workload_110GB_wh_hotspot0.05',
     },
 ]
 versions=[
@@ -82,41 +70,28 @@ versions=[
         'color': plt.get_cmap('Set2')(2),
         'workloads': workloads,
     },
-    {
-        'path': 'mutant',
-        'pattern': '---',
-        'color': plt.get_cmap('Set2')(4),
-        'workloads': workloads_prismdb_mutant,
-    },
-    {
-        'path': 'prismdb',
-        'pattern': '---\\\\\\\\\\\\',
-        'color': plt.get_cmap('Set2')(5),
-        'workloads': workloads_prismdb_mutant,
-    }
 ]
 version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)', 'Mutant', 'PrismDB']
 
-gs = gridspec.GridSpec(1, 3)
+gs = gridspec.GridSpec(1, 3, figure=figure)
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
 figs = [
     {
-        'title': '50% latency of get',
+        'title': '(a) 50%',
         'subfig': plt.subplot(gs[0, 0]),
         'ax': plt.gca(),
         'percentile': '50%',
     },
     {
-        'title': '99% tail latency of get (log scale)',
+        'title': '(b) 99%',
         'subfig': plt.subplot(gs[0, 1]),
         'ax': plt.gca(),
         'percentile': '99%',
-        'yscale': 'log',
     },
     {
-        'title': '99.9% tail latency of get (log scale)',
+        'title': '(c) 99.9% (log scale)',
         'subfig': plt.subplot(gs[0, 2]),
         'ax': plt.gca(),
         'percentile': '99.9%',
@@ -143,12 +118,6 @@ for (version_idx, version) in enumerate(versions):
                 value = latency[fig['percentile']]
                 fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
                 # print(workload['name'], version['path'], fig['percentile'], value)
-        else:
-            latency = pd.read_table(os.path.join(data_dir, 'last-10p-read-latency'), delim_whitespace=True)
-            for fig in figs:
-                x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-                value = latency[fig['percentile']]
-                fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
 
 for (i, fig) in enumerate(figs):
     subfig = fig['subfig']
@@ -160,9 +129,13 @@ for (i, fig) in enumerate(figs):
     formatter.set_powerlimits((-3, 4))
     ax.yaxis.set_major_formatter(formatter)
     ax.yaxis.get_offset_text().set_fontsize(8)
+    ax.tick_params(axis='y', which='major', labelsize=8)
 
     ax.set_xticks(list(range(0, len(xticks))), xticks, fontsize=8)
-    ax.set_xlabel(fig['title'], labelpad=8, fontsize=8)
+    if i == 2:
+        ax.set_xlabel(fig['title'], labelpad=2, fontsize=8, loc='right')
+    else:
+        ax.set_xlabel(fig['title'], labelpad=2, fontsize=8)
     if 'yscale' in fig:
         ax.set_yscale(fig['yscale'])
     if i == 0:
@@ -170,8 +143,8 @@ for (i, fig) in enumerate(figs):
 handles = []
 for version in versions:
     handles.append(mpl.patches.Patch(facecolor=version['color'], hatch=version['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 0.99))
-plt.tight_layout()
+figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=2, loc='center', bbox_to_anchor=(0.5, 1.13))
+# gs.tight_layout(figure=figure)
 pdf_path = os.path.join(dir, 'latency.pdf')
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
