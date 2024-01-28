@@ -51,8 +51,19 @@ subfigs = [
 ]
 
 skewnesses = ['hotspot0.05', 'zipfian', 'uniform']
-ycsb_configs = ['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
-cluster_labels = ['RO', 'RW', 'WH', 'UH']
+rw_ratios = ['RO', 'RW', 'WH', 'UH']
+ratios_ycsb = {
+    'RO': 'ycsbc',
+    'RW': 'read_0.75_insert_0.25',
+    'WH': 'read_0.5_insert_0.5',
+    'UH': 'ycsba'
+}
+ratios_prismdb_mutant = {
+    'RO': 'ycsbc',
+    'RW': 'wr',
+    'WH': 'wh',
+    'UH': 'ycsba'
+}
 versions=[
     {
         'path': 'promote-stably-hot',
@@ -92,51 +103,45 @@ gs = gridspec.GridSpec(1, len(skewnesses))
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
-workload_version_ops = {}
+skewness_ratio_version_ops = {}
 for i in range(len(skewnesses)):
     skewness = skewnesses[i]
-    for ycsb in ycsb_configs:
-        workload = ycsb + '_' + skewness + '_' + size
-        workload_dir = os.path.join(dir, workload)
-        data_dir = os.path.join(workload_dir, 'promote-stably-hot')
+    skewness_ratio_version_ops[skewness] = {}
+    for ratio in rw_ratios:
+        workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
+        data_dir = os.path.join(dir, workload, 'promote-stably-hot')
         start_progress = common.warmup_finish_progress(data_dir)
         progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
         end_progress = progress.iloc[-1]['operations-executed']
-        workload_version_ops[workload] = {}
+        skewness_ratio_version_ops[skewness][ratio] = {}
         for (version_idx, version) in enumerate(versions):
             if version_idx < 4:
-                data_dir = os.path.join(workload_dir, version['path'])
+                workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
+                data_dir = os.path.join(dir, workload, version['path'])
                 timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
                 timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
                 progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
                 progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
                 operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
                 seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
-                workload_version_ops[workload][version['path']] = operations_executed / seconds
-
-ycsb_configs_prismdb_mutant = ['ycsbc', 'wr', 'wh', 'ycsba']
-for ycsb in ycsb_configs_prismdb_mutant:
-    for skewness in skewnesses:
-        workload = 'workload_110GB_' + ycsb + '_' + skewness
-        workload_version_ops[workload] = {}
-        workload_dir = os.path.join(dir, workload)
-        for version in ['prismdb', 'mutant']:
-            data_dir = os.path.join(workload_dir, version)
-            progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-            last = progress.iloc[-1]
-            progress = progress[progress['operations-executed'] != last['operations-executed']]
-            last = progress.iloc[-1]
-            first = progress.iloc[len(progress) - len(progress) // 10]
-            seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
-            ops = (last['operations-executed'] - first['operations-executed']) / seconds
-            workload_version_ops[workload][version] = ops
+                skewness_ratio_version_ops[skewness][ratio][version['path']] = operations_executed / seconds
+            else:
+                workload = 'workload_110GB_' + ratios_prismdb_mutant[ratio] + '_' + skewness
+                data_dir = os.path.join(dir, workload, version['path'])
+                progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+                last = progress.iloc[-1]
+                progress = progress[progress['operations-executed'] != last['operations-executed']]
+                last = progress.iloc[-1]
+                first = progress.iloc[len(progress) - len(progress) // 10]
+                seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
+                ops = (last['operations-executed'] - first['operations-executed']) / seconds
+                skewness_ratio_version_ops[skewness][ratio][version['path']] = ops
 
 def get_ratios(skewnesses):
     ratios = []
     for skewness in skewnesses:
-        for ycsb in ['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5']:
-            workload = ycsb + '_' + skewness + '_' + size
-            version_ops = workload_version_ops[workload]
+        for ratio in ['RO', 'RW', 'WH']:
+            version_ops = skewness_ratio_version_ops[skewness][ratio]
             ratios.append(version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
             ratios.append(version_ops['promote-stably-hot'] / version_ops['secondary-cache'])
     return ratios
@@ -154,18 +159,14 @@ for i in range(len(skewnesses)):
     ax.set_axisbelow(True)
     ax.grid(axis='y')
     skewness = skewnesses[i]
-    for (pivot, ycsb) in enumerate(ycsb_configs):
+    for (pivot, ratio) in enumerate(rw_ratios):
         for (version_idx, version) in enumerate(versions):
-            if version_idx < 4:
-                workload = ycsb + '_' + skewness + '_' + size
-            else:
-                workload = 'workload_110GB_' + ycsb_configs_prismdb_mutant[pivot] + '_' + skewness
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-            value = workload_version_ops[workload][version['path']]
+            value = skewness_ratio_version_ops[skewness][ratio][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(8)
-    plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
+    plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=8)
     plt.yticks(subfigs[i]['ticks'], fontsize=8)
     plt.ylim((0, max(subfigs[i]['ticks']) + 1e4))
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=8)
