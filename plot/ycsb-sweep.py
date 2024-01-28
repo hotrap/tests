@@ -96,7 +96,7 @@ versions=[
         'color': plt.get_cmap('Set2')(5),
     }
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)', 'Mutant', 'PrismDB']
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)', 'Mutant', 'PrismDB']
 size='110GB'
 
 gs = gridspec.GridSpec(1, len(skewnesses))

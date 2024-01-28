@@ -47,7 +47,7 @@ plt.plot(time, num_bytes['retained'], marker='s', markersize=markersize, markeve
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
 ax.yaxis.get_offset_text().set_fontsize(8)
-plt.legend(['By flush to L0', 'To SD\'s last level', 'Retained'], frameon=False, fontsize=8)
+plt.legend(['By flush to L0', 'To FD\'s last level', 'Retained'], frameon=False, fontsize=8)
 plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Promoted bytes', fontsize=8)
 

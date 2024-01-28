@@ -135,7 +135,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
             MulticolorPatch(colors=promote_stably_hot['colors']),
             MulticolorPatch(colors=rocksdb_sd['colors']),
         ],
-        ['HotRAP', 'RocksDB(SD)'],
+        ['HotRAP', 'RocksDB(FD)'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )
@@ -148,7 +148,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
             MulticolorPatch(colors=promote_stably_hot['colors']),
             MulticolorPatch(colors=rocksdb_sd['colors']),
         ],
-        ['HotRAP', 'RocksDB(SD)'],
+        ['HotRAP', 'RocksDB(FD)'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )

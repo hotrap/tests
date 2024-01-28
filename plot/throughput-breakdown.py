@@ -47,13 +47,13 @@ versions=[
         'path': 'secondary-cache',
     },
     {
-        'name': '(d) RocksDB(SD)',
+        'name': '(d) RocksDB(FD)',
         'path': 'rocksdb-sd',
     },
 ]
 throughput_breakdown.draw_throughput_breakdown(dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)
 
-fig.legend(['SD', 'CD', 'SD-Compaction', 'CD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 0.99))
+fig.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 0.99))
 plt.tight_layout()
 pdf_path = 'throughput-breakdown.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)

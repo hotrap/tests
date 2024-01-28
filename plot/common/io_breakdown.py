@@ -148,7 +148,7 @@ def draw_io_breakdown(dir, size, pdf_name):
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_sd['legend-colors']),
         ],
-        ['HotRAP', 'RocksDB(SD)'],
+        ['HotRAP', 'RocksDB(FD)'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )
@@ -161,7 +161,7 @@ def draw_io_breakdown(dir, size, pdf_name):
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_sd['legend-colors']),
         ],
-        ['HotRAP', 'RocksDB(SD)'],
+        ['HotRAP', 'RocksDB(FD)'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
     )
@@ -185,13 +185,13 @@ def draw_io_breakdown(dir, size, pdf_name):
         return common.MulticolorPatch(colors=[colors_left[i], colors_right[i]], pattern=patterns[i])
     labels = []
     handles = []
-    labels.append(r'Get in CD')
-    handles.append(get_fig_legend(0))
     labels.append(r'Get in SD')
+    handles.append(get_fig_legend(0))
+    labels.append(r'Get in FD')
     handles.append(get_fig_legend(1))
-    labels.append('Compaction in CD')
-    handles.append(get_fig_legend(2))
     labels.append('Compaction in SD')
+    handles.append(get_fig_legend(2))
+    labels.append('Compaction in FD')
     handles.append(get_fig_legend(3))
     labels.append('RALT')
     handles.append(common.MulticolorPatch(colors=[colors_left[4]], pattern=patterns[4]))

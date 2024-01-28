@@ -71,7 +71,7 @@ versions=[
         'workloads': workloads,
     },
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(SD)', 'Mutant', 'PrismDB']
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)']
 
 gs = gridspec.GridSpec(1, 3, figure=figure)
 bar_width = 1 / (len(versions) + 1)
