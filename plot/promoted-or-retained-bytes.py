@@ -27,7 +27,7 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.3, cm_to_inch(4)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(5)))
 num_marks = 5
 markersize = 3
 
@@ -46,10 +46,12 @@ plt.plot(time, num_bytes['2sdlast'], marker='^', markersize=markersize, markever
 plt.plot(time, num_bytes['retained'], marker='s', markersize=markersize, markevery=markevery)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
+ax.ticklabel_format(useMathText=True)
 ax.yaxis.get_offset_text().set_fontsize(8)
-plt.legend(['By flush to L0', 'To FD\'s last level', 'Retained'], frameon=False, fontsize=8)
+plt.legend(['By flush to L0', 'To FD\'s last level', 'Retained'], frameon=False, fontsize=8, loc=(0, 0.55))
 plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Promoted bytes', fontsize=8)
+plt.tight_layout()
 
 plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):

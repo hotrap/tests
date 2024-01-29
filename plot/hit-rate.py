@@ -30,7 +30,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.3, cm_to_inch(4)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(4.7)))
 
 info = os.path.join(data_dir, 'info.json')
 info = json5.load(open(info))
@@ -43,12 +43,13 @@ plt.plot(time, hit_rates['hit-rate'])
 plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Hit rate', fontsize=8)
 plt.xticks(fontsize=8)
-plt.yticks(np.linspace(0, 1, 11), fontsize=8)
+plt.yticks(np.linspace(0, 1, 6), fontsize=8)
 
 i = hit_rates['hit-rate'].idxmax()
 x = time[i]
 y = hit_rates['hit-rate'][i]
 ax.annotate('Max: {:.2f}%'.format(y * 100), xy=(x, y), xytext=(0.5, 0.5), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"), fontsize=8)
+plt.tight_layout()
 
 plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):

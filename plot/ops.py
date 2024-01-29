@@ -30,7 +30,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.3, cm_to_inch(4)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(5)))
 
 progress = pd.read_table(data_dir + '/progress', delim_whitespace=True)
 info = os.path.join(data_dir, 'info.json')
@@ -60,8 +60,10 @@ ax.yaxis.get_offset_text().set_fontsize(8)
 plt.plot(time, ops, linewidth=0.5)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
+ax.set_ylim(bottom=0)
 plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Operation per second', fontsize=8)
+plt.tight_layout()
 
 plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):
