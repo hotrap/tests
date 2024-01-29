@@ -31,20 +31,20 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)))
 
 versions = [
     {
         'name': '(a) HotRAP',
         'path': 'ycsbc_hotspot0.01_110GB/promote-stably-hot',
         'ymax': 4e4,
-        'yticks': [1e4, 2e4, 3e4, 4e4],
+        'yticks': [0, 1e4, 2e4, 3e4, 4e4],
     },
     {
         'name': '(b) RocksDB-fat',
         'path': 'ycsbc_hotspot0.01_load_110GB_run_1GB/rocksdb-fat',
         'ymax': 400,
-        'yticks': [100, 200, 300, 400],
+        'yticks': [0, 100, 200, 300, 400],
     }
 ]
 gs = gridspec.GridSpec(1, len(versions))
@@ -84,7 +84,7 @@ for (version_idx, version) in enumerate(versions):
     plt.yticks(version['yticks'], fontsize=8)
     if version_idx == 0:
         plt.ylabel('Operation per second', fontsize=8)
-    subfig.text(0.5, -0.23, 'Time (Seconds)', fontsize=6, ha='center', va='center', transform=subfig.transAxes)
+    subfig.text(0.5, -0.4, 'Time (Seconds)', fontsize=6, ha='center', va='center', transform=subfig.transAxes)
     plt.xlabel(version['name'], labelpad=8, fontsize=8)
 
 plt.tight_layout()
