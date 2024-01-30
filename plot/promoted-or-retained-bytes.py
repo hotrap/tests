@@ -41,16 +41,16 @@ time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 assert num_bytes['2cdfront'].max() == 0
 ax = plt.gca()
 markevery = int(len(time) / num_marks)
-plt.plot(time, num_bytes['by-flush'], marker='o', markersize=markersize, markevery=markevery)
 plt.plot(time, num_bytes['2sdlast'], marker='^', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['by-flush'], marker='o', markersize=markersize, markevery=markevery)
 plt.plot(time, num_bytes['retained'], marker='s', markersize=markersize, markevery=markevery)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
 ax.ticklabel_format(useMathText=True)
 ax.yaxis.get_offset_text().set_fontsize(8)
-plt.legend(['By flush to L0', 'To FD\'s last level', 'Retained'], frameon=False, fontsize=8, loc=(0, 0.55))
+plt.legend(['By compaction', 'By flush', 'Retained'], frameon=False, fontsize=8, loc=(0, 0.55))
 plt.xlabel('Time (Seconds)', fontsize=8)
-plt.ylabel('Promoted bytes', fontsize=8)
+plt.ylabel('Promoted/retained bytes', fontsize=8)
 plt.tight_layout()
 
 plot_dir = data_dir + '/plot'
