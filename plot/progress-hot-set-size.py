@@ -26,7 +26,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4.7)), constrained_layout=True)
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.66, cm_to_inch(4.7)), constrained_layout=True)
 
 figs = [
     {
@@ -52,16 +52,16 @@ figs = [
         'yticks': [0, 1, 2, 3, 4, 5],
         'loc': [0.5, 0.4],
     },
-    {
-        'versions': [
-            {
-                'path': 'zipfian',
-                'marker': None,
-            }
-        ],
-        'names': ['zipfian'],
-        'yticks': [0, 1, 2, 3],
-    },
+    # {
+    #     'versions': [
+    #         {
+    #             'path': 'zipfian',
+    #             'marker': None,
+    #         }
+    #     ],
+    #     'names': ['zipfian'],
+    #     'yticks': [0, 1, 2, 3],
+    # },
     {
         'versions': [
             {
