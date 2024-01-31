@@ -40,7 +40,7 @@ time = (hit_rates['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 hit_rates = hit_rates['hit-rate'].values
 
 ax = plt.gca()
-plt.plot(time, hit_rates)
+plt.plot(time, hit_rates, linewidth=0.5)
 plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Hit rate', fontsize=8)
 plt.xticks(fontsize=8)

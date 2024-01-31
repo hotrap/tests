@@ -41,9 +41,9 @@ time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 assert num_bytes['2cdfront'].max() == 0
 ax = plt.gca()
 markevery = int(len(time) / num_marks)
-plt.plot(time, num_bytes['2sdlast'], marker='^', markersize=markersize, markevery=markevery)
-plt.plot(time, num_bytes['by-flush'], marker='o', markersize=markersize, markevery=markevery)
-plt.plot(time, num_bytes['retained'], marker='s', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['2sdlast'], linewidth=0.5, marker='^', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['by-flush'], linewidth=0.5, marker='o', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['retained'], linewidth=0.5, marker='s', markersize=markersize, markevery=markevery)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
 ax.ticklabel_format(useMathText=True)

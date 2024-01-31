@@ -77,7 +77,7 @@ def draw(version, marker, text_y):
         except StopIteration:
             break
         x.append(row['operations-executed'])
-    plt.plot(x, y, marker=marker, markersize=4, markevery=int(len(x) / 5))
+    plt.plot(x, y, linewidth=0.5, marker=marker, markersize=4, markevery=int(len(x) / 5))
 
     # hit_rate = hit_rates['hit-rate'][int(len(hit_rates) * 0.99):].mean()
     # ax.annotate('Final: {:.2f}%'.format(hit_rate * 100), xy=(x[-1], hit_rate), xytext=(0.5, text_y), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"), fontsize=8)
