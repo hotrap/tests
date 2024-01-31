@@ -25,7 +25,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(4.7)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(4.5)))
 
 versions = [
     {
@@ -48,10 +48,11 @@ for version in versions:
     data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hit-rate'], delim_whitespace=True)
     plt.plot(data['progress'], data['hit-rate'], linewidth=0.5, marker=version['marker'], markersize=3, markevery=int(len(data['progress']) / 5))
 plt.xlabel('Completed operation count', fontsize=8, loc='left')
-plt.ylabel('Hit rate', fontsize=8)
+ax.xaxis.set_label_coords(0.1, -0.19)
 plt.xticks(fontsize=8)
 ax.ticklabel_format(useMathText=True)
 ax.xaxis.get_offset_text().set_fontsize(8)
+plt.ylabel('Hit rate', fontsize=8)
 plt.yticks(np.linspace(0, 1, 6), fontsize=8)
 plt.legend(version_names, frameon=False, fontsize=8)
 
