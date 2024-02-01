@@ -12,6 +12,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
 
+import io
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -137,21 +138,43 @@ for i in range(len(skewnesses)):
                 ops = (last['operations-executed'] - first['operations-executed']) / seconds
                 skewness_ratio_version_ops[skewness][ratio][version['path']] = ops
 
-def get_ratios(skewnesses):
-    ratios = []
-    for skewness in skewnesses:
-        for ratio in ['RO', 'RW', 'WH']:
-            version_ops = skewness_ratio_version_ops[skewness][ratio]
-            ratios.append(version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
-            ratios.append(version_ops['promote-stably-hot'] / version_ops['secondary-cache'])
-    return ratios
-ratios = get_ratios(['hotspot0.05', 'zipfian'])
-print("%.1f%%" %((min(ratios) - 1) * 100))
-print("%.0f%%" %((max(ratios) - 1) * 100))
+def speedup_ratio_skewness(ratio, skewness):
+    version_ops = skewness_ratio_version_ops[skewness][ratio]
+    hotrap_ops = version_ops['promote-stably-hot']
+    other_sys_max_ops = 0
+    for (version, ops) in version_ops.items():
+        if version == 'promote-stably-hot' or version == 'rocksdb-sd':
+            continue
+        other_sys_max_ops = max(other_sys_max_ops, ops)
+    return hotrap_ops / other_sys_max_ops
+def speedup(ratio):
+    speedup_hotspot = speedup_ratio_skewness(ratio, 'hotspot0.05')
+    speedup_zipfian = speedup_ratio_skewness(ratio, 'zipfian')
+    assert speedup_hotspot >= speedup_zipfian
+    return speedup_hotspot
 
-ratios = get_ratios(['uniform'])
-print("%.1f%%" %((min(ratios) - 1) * 100))
-print("%.0f%%" %((max(ratios) - 1) * 100))
+tex = io.StringIO()
+speedup_ro = speedup('RO')
+print('% Speedup over second best under read-only workloads', file=tex)
+print('\defmacro{SpeedupRO}{%.1f}' %speedup_ro, file=tex)
+speedup_rw = speedup('RW')
+print("% Speedup over second best under read-write workloads", file=tex)
+print('\defmacro{SpeedupRW}{%.1f}' %speedup_rw, file=tex)
+max_speedup_ro_rw = max(speedup_ro, speedup_rw)
+print("% Max speedup over second best under RO & RW", file=tex)
+print('\defmacro{MaxSpeedupRORW}{%.1f}' %max_speedup_ro_rw, file=tex)
+
+min_ratio = 1
+ratio_version_ops = skewness_ratio_version_ops['uniform']
+for (ratio, version_ops) in ratio_version_ops.items():
+    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
+overhead = 1 - min_ratio
+print('% Max overhead under uniform workloads compared to RocksDB-fat', file=tex)
+print('\defmacro{OverheadUniformRocksDBFat}{%.1f\\%%}' %(overhead * 100), file=tex)
+
+tex = tex.getvalue()
+print(tex)
+open(os.path.join(dir, 'ycsb-sweep.tex'), mode='w').write(tex)
 
 for i in range(len(skewnesses)):
     subfig = plt.subplot(gs[0, i])
