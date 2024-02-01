@@ -100,6 +100,17 @@ for fig in figs:
             seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
             skewness_ratio_version_ops[skewness][ratio][version] = operations_executed / seconds
 
+json_output = io.StringIO()
+min_ratio = 1
+ratio_version_ops = skewness_ratio_version_ops['uniform']
+for (ratio, version_ops) in ratio_version_ops.items():
+    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
+overhead = 1 - min_ratio
+print('{\n\t\"OverheadUniformRocksDBFat200B\": %f\n}' %overhead, file=json_output)
+json_output = json_output.getvalue()
+print(json_output)
+open(os.path.join(dir, 'ops-200B.json'), mode='w').write(json_output)
+
 for (i, fig) in enumerate(figs):
     plt.subplot(gs[0, i])
     ax = plt.gca()
