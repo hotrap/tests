@@ -11,6 +11,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
 
+import io
 import json5
 import numpy as np
 import pandas as pd
@@ -66,6 +67,16 @@ def draw(version, marker, text_y):
     progress['operations-executed'] -= progress.iloc[0]['operations-executed']
 
     hit_rates = common.read_hit_rates(data_dir)
+
+    if version == 'no-retain':
+        tex = io.StringIO()
+        final_hit_rate = hit_rates['hit-rate'][int(len(hit_rates) * 0.99):].mean()
+        print('% Final hit rate of no-retain', file=tex)
+        print('\defmacro{FinalHitRateNoRetain}{%.1f\\%%}' %(final_hit_rate * 100), file=tex)
+        tex = tex.getvalue()
+        print(tex)
+        open('no-retain.tex', mode='w').write(tex)
+
     hit_rate = Estimater(hit_rates, 'hit-rate')
 
     x = []
