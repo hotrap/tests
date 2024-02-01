@@ -51,7 +51,7 @@ def annotate(i, text_x):
     x = time[i - 1]
     y = hit_rates[i - 1]
     hit_rate = hit_rates[i - interval:i].mean()
-    ax.annotate('Final: {:.2f}%'.format(hit_rate * 100), xy=(x, y), xytext=(text_x, 0.6), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"), fontsize=8)
+    ax.annotate('Final: {:.1f}%'.format(hit_rate * 100), xy=(x, y), xytext=(text_x, 0.6), textcoords='axes fraction', arrowprops=dict(arrowstyle="->"), fontsize=8)
 annotate((hit_rates[1:] - hit_rates[:-1]).argmin(), 0.1)
 annotate(len(hit_rates), 0.6)
 plt.tight_layout()
