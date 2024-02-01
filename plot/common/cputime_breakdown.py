@@ -72,7 +72,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
         return progress.iloc[-1]['operations-executed']
 
-    def draw_cputime(start_progress_fn, end_progress_fn):
+    def draw_cputime(start_progress_fn, end_progress_fn, min_max_portion):
         ax = plt.gca()
         ax.set_axisbelow(True)
         ax.grid(axis='y')
@@ -118,6 +118,9 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                     bottom += height
 
                     height = (timers['viscnts.compaction.thread.cpu.nanos'] + timers['viscnts.flush.thread.cpu.nanos'] + timers['viscnts.decay.thread.cpu.nanos']) / 1e9
+                    portion = height / cputimes
+                    min_max_portion[0] = min(min_max_portion[0], portion)
+                    min_max_portion[1] = max(min_max_portion[1], portion)
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[4], color=version['colors'][4], edgecolor='black', linewidth=0.5)
                     bottom += height
                 height = cputimes - bottom
@@ -127,8 +130,10 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         plt.locator_params(axis='y', nbins=4)
         plt.ylabel('CPU time (seconds)', fontsize=8)
 
+    min_max_portion = [1, 0]
+
     subfig = plt.subplot(gs[0, 0])
-    draw_cputime(start_progress_fn, warmup_finish_progress)
+    draw_cputime(start_progress_fn, warmup_finish_progress, min_max_portion)
     plt.xlabel('(a) Warm-up phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
@@ -141,7 +146,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     )
 
     subfig = plt.subplot(gs[0, 1])
-    draw_cputime(warmup_finish_progress, end_progress_fn)
+    draw_cputime(warmup_finish_progress, end_progress_fn, min_max_portion)
     plt.xlabel('(b) Stable phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
@@ -156,7 +161,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     workload='uniform'
     versions = [promote_stably_hot, rocksdb_fat]
     subfig = plt.subplot(gs[0, 2])
-    draw_cputime(start_progress_fn, end_progress_fn)
+    draw_cputime(start_progress_fn, end_progress_fn, min_max_portion)
     plt.xlabel('(c) Run phase of uniform', fontsize=8)
     subfig.legend(
         [
@@ -202,3 +207,4 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     print('Plot saved to ' + pdf_path)
     if 'DISPLAY' in os.environ:
         plt.show()
+    return (min_max_portion[0], min_max_portion[1])

@@ -9,6 +9,7 @@ import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 from matplotlib.patches import Patch
 
+# Return min and max ralt portion
 def draw_io_breakdown(dir, size, pdf_name):
     # Paper specific settings
     STANDARD_WIDTH = 17.8
@@ -72,7 +73,7 @@ def draw_io_breakdown(dir, size, pdf_name):
         progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
         return progress.iloc[-1]['operations-executed']
 
-    def draw_io(start_progress_fn, end_progress_fn):
+    def draw_io(start_progress_fn, end_progress_fn, min_max_portion):
         ax = plt.gca()
         ax.set_axisbelow(True)
         ax.grid(axis='y')
@@ -131,6 +132,9 @@ def draw_io_breakdown(dir, size, pdf_name):
                     viscnts_io = viscnts_io[(timestamp_start <= viscnts_io['Timestamp(ns)']) & (viscnts_io['Timestamp(ns)'] < timestamp_end)]
                     viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]
                     height = (viscnts_io['read'] + viscnts_io['write']) / 1e12
+                    portion = height / device_io
+                    min_max_portion[0] = min(min_max_portion[0], portion)
+                    min_max_portion[1] = max(min_max_portion[1], portion)
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[4], color=version['colors'][4], edgecolor='black', linewidth=0.5)
                     bottom += height
 
@@ -140,8 +144,10 @@ def draw_io_breakdown(dir, size, pdf_name):
         plt.yticks(fontsize=8)
         plt.ylabel('I/O (TB)', fontsize=8)
 
+    min_max_portion = [1, 0]
+
     subfig = plt.subplot(gs[0, 0])
-    draw_io(start_progress_fn, common.warmup_finish_progress)
+    draw_io(start_progress_fn, common.warmup_finish_progress, min_max_portion)
     plt.xlabel('(a) Warm-up phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
@@ -154,7 +160,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     )
 
     subfig = plt.subplot(gs[0, 1])
-    draw_io(common.warmup_finish_progress, end_progress_fn)
+    draw_io(common.warmup_finish_progress, end_progress_fn, min_max_portion)
     plt.xlabel('(b) Stable phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
@@ -169,7 +175,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     workload='uniform'
     versions = [promote_stably_hot, rocksdb_fat]
     subfig = plt.subplot(gs[0, 2])
-    draw_io(start_progress_fn, end_progress_fn)
+    draw_io(start_progress_fn, end_progress_fn, min_max_portion)
     plt.xlabel('(c) Run phase of uniform', fontsize=8)
     subfig.legend(
         [
@@ -210,3 +216,4 @@ def draw_io_breakdown(dir, size, pdf_name):
     print('Plot saved to ' + pdf_path)
     if 'DISPLAY' in os.environ:
         plt.show()
+    return (min_max_portion[0], min_max_portion[1])
