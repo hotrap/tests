@@ -3,9 +3,6 @@ if [[ $# < 4 || $# > 6 ]]; then
 	echo Usage: $0 workload-file output-dir sd-size max-hot-size max-viscnts-size [switches]
 	exit 1
 fi
-set -e
-set -o pipefail
-# To make set -e take effect if the output dir does not exists
 mkdir -p $2
 res="$(ls -A $2)"
 if [ "$res" ]; then
