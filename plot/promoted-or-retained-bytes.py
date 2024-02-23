@@ -38,10 +38,10 @@ num_bytes = pd.read_table(data_dir + '/promoted-or-retained-bytes', delim_whites
 num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
 time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 
-assert num_bytes['2cdfront'].max() == 0
+assert num_bytes['2sdfront'].max() == 0
 ax = plt.gca()
 markevery = int(len(time) / num_marks)
-plt.plot(time, num_bytes['2sdlast'], linewidth=0.5, marker='^', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['2fdlast'], linewidth=0.5, marker='^', markersize=markersize, markevery=markevery)
 plt.plot(time, num_bytes['by-flush'], linewidth=0.5, marker='o', markersize=markersize, markevery=markevery)
 plt.plot(time, num_bytes['retained'], linewidth=0.5, marker='s', markersize=markersize, markevery=markevery)
 plt.xticks(fontsize=8)

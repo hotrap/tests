@@ -58,10 +58,10 @@ for (i, version) in enumerate(versions):
     num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
     time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 
-    assert num_bytes['2cdfront'].max() == 0
+    assert num_bytes['2sdfront'].max() == 0
     markevery = int(len(time) / num_marks)
     plt.plot(time, num_bytes['by-flush'], marker='o', markersize=markersize, markevery=markevery)
-    plt.plot(time, num_bytes['2sdlast'], marker='^', markersize=markersize, markevery=markevery)
+    plt.plot(time, num_bytes['2fdlast'], marker='^', markersize=markersize, markevery=markevery)
     plt.plot(time, num_bytes['retained'], marker='s', markersize=markersize, markevery=markevery)
     plt.xticks(fontsize=8)
     plt.yticks(fontsize=8)
