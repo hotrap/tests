@@ -10,11 +10,11 @@ uniform_workloads=(
 	"ycsba_uniform_110GB_200B"
 	"ycsbc_uniform_110GB_200B"
 )
-function run-rocksdb-sd {
+function run-rocksdb-fd {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-sd
+	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
-	./test-rocksdb-sd-110GB-200B.sh ../config/$1 $DIR
+	./test-rocksdb-fd-110GB-200B.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-rocksdb {
@@ -34,7 +34,7 @@ function run-hotrap {
 }
 for workload in "${hotspot_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
-	run-rocksdb-sd $workload
+	run-rocksdb-fd $workload
 done
 for workload in "${uniform_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot

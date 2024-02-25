@@ -48,7 +48,7 @@ versions=[
     },
     {
         'name': '(d) RocksDB(FD)',
-        'path': 'rocksdb-sd',
+        'path': 'rocksdb-fd',
     },
 ]
 throughput_breakdown.draw_throughput_breakdown(dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)

@@ -65,7 +65,7 @@ versions=[
         'workloads': workloads,
     },
     {
-        'path': 'rocksdb-sd',
+        'path': 'rocksdb-fd',
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
         'workloads': workloads,

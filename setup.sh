@@ -44,10 +44,10 @@ git clone -b prismdb --recursive git@github.com:hotrap/kvexe.git kvexe-prismdb
 git clone -b mutant --recursive git@github.com:hotrap/kvexe.git kvexe-mutant
 
 git clone git@github.com:hotrap/viscnts-splay-rs.git
-git clone --recursive git@github.com:hotrap/viscnts-lsm.git
+git clone --recursive git@github.com:hotrap/RALT.git
 
 echo Need to setup manually:
-echo 1. testdb/{db,sd,cd,viscnts}
-echo 2. export sd_dev=the device in \"iostat\" that is used as SD.
-echo 3. export cd_dev=the device in \"iostat\" that is used as CD.
+echo 1. testdb/{db,fd,sd,viscnts}
+echo 2. export fd_dev=the device in \"iostat\" that is used as FD.
+echo 3. export sd_dev=the device in \"iostat\" that is used as SD.
 echo 4. Restart your shell to make changes take effect

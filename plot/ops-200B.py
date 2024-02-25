@@ -43,7 +43,7 @@ versions = {
         'pattern': '\\\\\\',
         'color': plt.get_cmap('Set2')(1),
     },
-    'rocksdb-sd': {
+    'rocksdb-fd': {
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
     },
@@ -54,7 +54,7 @@ figs = [
         'title': '(a) hotspot-5%',
         'skewness': 'hotspot0.05',
         'ticks': [0, 4e4, 8e4, 12e4],
-        'versions': ['promote-stably-hot', 'rocksdb-sd']
+        'versions': ['promote-stably-hot', 'rocksdb-fd']
     },
     {
         'title': '(b) uniform',

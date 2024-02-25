@@ -22,12 +22,12 @@ uniform_workloads=(
 
 source common.sh
 
-function run-rocksdb-sd {
+function run-rocksdb-fd {
 	workload=$1
 	version=$2
 	IP=$3
 	./checkout-rocksdb $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-sd-110GB-200B.sh ../config/$workload ../../data/$workload/$version"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB-200B.sh ../config/$workload ../../data/$workload/$version"
 	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
@@ -53,7 +53,7 @@ function run-hotrap {
 
 for workload in "${hotspot_workloads[@]}"; do
 	cloud-run run-hotrap $workload promote-stably-hot
-	cloud-run run-rocksdb-sd $workload rocksdb-sd
+	cloud-run run-rocksdb-fd $workload rocksdb-fd
 done
 for workload in "${uniform_workloads[@]}"; do
 	cloud-run run-hotrap $workload promote-stably-hot

@@ -3,7 +3,7 @@ use std::{
     env,
     error::Error,
     fs::File,
-    io::{self, BufRead, BufReader, Read, BufWriter, Write},
+    io::{self, BufRead, BufReader, BufWriter, Read, Write},
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -20,11 +20,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let dir = std::path::PathBuf::from(args.next().unwrap());
     let data_dir = std::path::PathBuf::from(args.next().unwrap());
 
-    let mut first_level_in_cd =
-        File::open(data_dir.join("first-level-in-cd")).unwrap();
+    let mut first_level_in_sd =
+        File::open(data_dir.join("first-level-in-sd")).unwrap();
     let mut buf = String::new();
-    first_level_in_cd.read_to_string(&mut buf).unwrap();
-    let first_level_in_cd: usize = buf.trim().parse().unwrap();
+    first_level_in_sd.read_to_string(&mut buf).unwrap();
+    let first_level_in_sd: usize = buf.trim().parse().unwrap();
 
     let mut key_hits = HashMap::new();
     let mut i = 0;
@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let mut s = line.split(' ');
             let key = s.next().unwrap();
             let level: usize = s.next().unwrap().parse().unwrap();
-            if level < first_level_in_cd {
+            if level < first_level_in_sd {
                 key_hits
                     .entry(key.to_owned())
                     .and_modify(|v| *v += 1)
@@ -73,7 +73,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let mut writer = BufWriter::new(File::create(data_dir.join("hit")).unwrap());
+    let mut writer =
+        BufWriter::new(File::create(data_dir.join("hit")).unwrap());
     write!(&mut writer, "key-rank occurrences").unwrap();
     if hits_cdf.len() != 1 {
         write!(&mut writer, " hits").unwrap();

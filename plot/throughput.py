@@ -30,18 +30,18 @@ def read_table(file):
     iostat = iostat_raw[['rkB/s', 'wkB/s']].groupby(iostat_raw.index // mean_step).mean()
     iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
     return iostat
+fd = read_table(d + '/iostat-fd.txt')
 sd = read_table(d + '/iostat-sd.txt')
-cd = read_table(d + '/iostat-cd.txt')
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/throughput.pdf'
 
+plt.plot(fd['Time(Seconds)'], fd['rkB/s'] * 1024 / 1e6)
+plt.plot(fd['Time(Seconds)'], fd['wkB/s'] * 1024 / 1e6)
 plt.plot(sd['Time(Seconds)'], sd['rkB/s'] * 1024 / 1e6)
 plt.plot(sd['Time(Seconds)'], sd['wkB/s'] * 1024 / 1e6)
-plt.plot(cd['Time(Seconds)'], cd['rkB/s'] * 1024 / 1e6)
-plt.plot(cd['Time(Seconds)'], cd['wkB/s'] * 1024 / 1e6)
 plt.legend(['read (FD)', 'write (FD)', 'read (SD)', 'write (SD)'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Throughput (MB/s)', fontdict=fonten)

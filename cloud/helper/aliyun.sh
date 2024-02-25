@@ -1,21 +1,21 @@
 sudo sed -i '/^\(root hard nofile 65535\|\* hard nofile 65535\)$/d' /etc/security/limits.conf
 
 sudo mkfs.ext4 /dev/nvme0n1
-sudo mkdir /mnt/sd
-sudo mount /dev/nvme0n1 /mnt/sd
-sudo chown $USER:$USER /mnt/sd
-mkdir -p /mnt/sd/{db,sd,viscnts}
-sudo bash -c "echo \"/dev/nvme0n1 /mnt/sd ext4 defaults 0 0\" >> /etc/fstab"
+sudo mkdir /mnt/fd
+sudo mount /dev/nvme0n1 /mnt/fd
+sudo chown $USER:$USER /mnt/fd
+mkdir -p /mnt/fd/{db,fd,viscnts}
+sudo bash -c "echo \"/dev/nvme0n1 /mnt/fd ext4 defaults 0 0\" >> /etc/fstab"
 
 mkdir testdb
 cd testdb
-ln -s /mnt/sd/{db,sd,viscnts} .
-mkdir cd
+ln -s /mnt/fd/{db,fd,viscnts} .
+mkdir sd
 cd ..
 
-# Sometimes sd_dev would be nvme0c0n1
-echo "export sd_dev=$(iostat | grep "nvme0" | awk '{print $1}')" >> ~/.profile
-echo 'export cd_dev=vda' >> ~/.profile
+# Sometimes fd_dev would be nvme0c0n1
+echo "export fd_dev=$(iostat | grep "nvme0" | awk '{print $1}')" >> ~/.profile
+echo 'export sd_dev=vda' >> ~/.profile
 
 
 mkdir -p ~/.cargo

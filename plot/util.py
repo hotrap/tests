@@ -30,19 +30,19 @@ def read_table(file):
     iostat = iostat_raw[['%util']].groupby(iostat_raw.index // mean_step).mean()
     iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
     return iostat
+fd = read_table(d + '/iostat-fd.txt')
 sd = read_table(d + '/iostat-sd.txt')
-cd = read_table(d + '/iostat-cd.txt')
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
     os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/util.pdf'
 
+plt.plot(fd['Time(Seconds)'], fd['%util'])
 plt.plot(sd['Time(Seconds)'], sd['%util'])
-plt.plot(cd['Time(Seconds)'], cd['%util'])
-plt.legend(['SD', 'CD'], prop={'size': fontsize})
+plt.legend(['FD', 'SD'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
-plt.title('Percentage of utilization of SD and CD')
+plt.title('Percentage of utilization of FD and SD')
 plt.savefig(pdf_path)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:

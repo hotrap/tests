@@ -12,11 +12,11 @@ workloads=(
 	"ycsba_zipfian_110GB"
 	"ycsbc_zipfian_110GB"
 )
-function run-rocksdb-sd {
+function run-rocksdb-fd {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-sd
+	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
-	./test-rocksdb-sd-110GB.sh ../config/$1 $DIR
+	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-secondary-cache {
@@ -42,7 +42,7 @@ function run-hotrap {
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${workloads[@]}"; do
-	run-rocksdb-sd $workload
+	run-rocksdb-fd $workload
 	run-secondary-cache $workload
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload promote-stably-hot

@@ -31,7 +31,7 @@ class MulticolorPatchHandler(object):
         return ret
 
 def read_hit_rates(data_dir):
-    first_level_in_cd = int(open(os.path.join(data_dir, 'first-level-in-cd')).read())
+    first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
     last_tier0 = 0
     last_total = 0
     hit_rates = []
@@ -43,7 +43,7 @@ def read_hit_rates(data_dir):
         for (level, num_accesses) in enumerate(res[1:]):
             num_accesses = int(num_accesses)
             total += num_accesses
-            if level < first_level_in_cd:
+            if level < first_level_in_sd:
                 tier0 += num_accesses
         if total - last_total != 0:
             hit_rate = (tier0 - last_tier0) / (total - last_total)
@@ -103,7 +103,7 @@ def read_compaction_bytes(data_dir):
     compaction_bytes.columns = ['Timestamp(ns)', 'read', 'write']
     return compaction_bytes
 
-def read_compaction_bytes_sd_cd(data_dir, first_level_in_cd):
+def read_compaction_bytes_fd_sd(data_dir, first_level_in_sd):
     compaction_bytes = []
     compaction_stats = open(os.path.join(data_dir, 'compaction-stats'))
     while True:
@@ -115,10 +115,10 @@ def read_compaction_bytes_sd_cd(data_dir, first_level_in_cd):
         timestamp = int(s[1])
         line = compaction_stats.readline()
         assert line == 'Level Read Write\n'
+        fd_read = 0
+        fd_write = 0
         sd_read = 0
         sd_write = 0
-        cd_read = 0
-        cd_write = 0
         level = 0
         while True:
             line = compaction_stats.readline()
@@ -128,34 +128,34 @@ def read_compaction_bytes_sd_cd(data_dir, first_level_in_cd):
             assert s[0] == 'L' + str(level)
             read = int(s[1])
             write = int(s[2])
-            if level < first_level_in_cd:
+            if level < first_level_in_sd:
+                fd_read += read
+                fd_write += write
+            else:
                 sd_read += read
                 sd_write += write
-            else:
-                cd_read += read
-                cd_write += write
             level += 1
-        compaction_bytes.append(pd.Series([timestamp, sd_read, sd_write, cd_read, cd_write]))
+        compaction_bytes.append(pd.Series([timestamp, fd_read, fd_write, sd_read, sd_write]))
     compaction_bytes = pd.concat(compaction_bytes, axis=1).T
-    compaction_bytes.columns = ['Timestamp(ns)', 'sd-read', 'sd-write', 'cd-read', 'cd-write']
+    compaction_bytes.columns = ['Timestamp(ns)', 'fd-read', 'fd-write', 'sd-read', 'sd-write']
     return compaction_bytes
 
-def read_rand_read_bytes_sd_cd(data_dir, first_level_in_cd):
+def read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd):
     rand_read_bytes = []
     for line in open(os.path.join(data_dir, 'rand-read-bytes')):
         if line == '':
             break
         s = line.split(' ')
+        fd = 0
         sd = 0
-        cd = 0
         timestamp_ns = int(s[0])
         for level, bytes in enumerate(s[1:]):
             bytes = int(bytes)
-            if level < first_level_in_cd:
-                sd += bytes
+            if level < first_level_in_sd:
+                fd += bytes
             else:
-                cd += bytes
-        rand_read_bytes.append(pd.Series([timestamp_ns, sd, cd]))
+                sd += bytes
+        rand_read_bytes.append(pd.Series([timestamp_ns, fd, sd]))
     rand_read_bytes = pd.concat(rand_read_bytes, axis=1).T
-    rand_read_bytes.columns = ['Timestamp(ns)', 'sd', 'cd']
+    rand_read_bytes.columns = ['Timestamp(ns)', 'fd', 'sd']
     return rand_read_bytes

@@ -30,18 +30,18 @@ def read_table(file):
     iostat = iostat_raw[['r/s', 'w/s']].groupby(iostat_raw.index // mean_step).mean()
     iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
     return iostat
+fd = read_table(d + '/iostat-fd.txt')
 sd = read_table(d + '/iostat-sd.txt')
-cd = read_table(d + '/iostat-cd.txt')
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/tps.pdf'
 
+plt.plot(fd['Time(Seconds)'], fd['r/s'])
+plt.plot(fd['Time(Seconds)'], fd['w/s'])
 plt.plot(sd['Time(Seconds)'], sd['r/s'])
 plt.plot(sd['Time(Seconds)'], sd['w/s'])
-plt.plot(cd['Time(Seconds)'], cd['r/s'])
-plt.plot(cd['Time(Seconds)'], cd['w/s'])
 plt.legend(['r/s (FD)', 'w/s (FD)', 'r/s (SD)', 'w/s (SD)'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.title('Read/Write per second of FD and SD')

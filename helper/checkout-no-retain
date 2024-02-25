@@ -9,9 +9,9 @@ cd ../hotrap
 git checkout no-retain
 build_rocksdb
 
-cd ../viscnts-lsm
-build_viscnts_lsm
+cd ../RALT
+build_ralt
 
 cd ../kvexe
 git checkout main
-build_kvexe_viscnts_lsm
+build_kvexe_ralt

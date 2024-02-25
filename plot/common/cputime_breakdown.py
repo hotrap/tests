@@ -47,8 +47,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         'path': 'promote-stably-hot',
         'colors': colors_left,
     }
-    rocksdb_sd = {
-        'path': 'rocksdb-sd',
+    rocksdb_fd = {
+        'path': 'rocksdb-fd',
         'colors': colors_right,
     }
     rocksdb_fat = {
@@ -59,7 +59,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
 
     gs = gridspec.GridSpec(1, 3)
 
-    versions=[promote_stably_hot, rocksdb_sd]
+    versions=[promote_stably_hot, rocksdb_fd]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
     subfig_anchor_y = 1.1
@@ -110,8 +110,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[2], color=version['colors'][2], edgecolor='black', linewidth=0.5)
                 bottom += height
                 if version_idx == 0:
-                    first_level_in_cd = int(open(os.path.join(data_dir, 'first-level-in-cd')).read())
-                    checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_cd - 1) + '-cputime'), delim_whitespace=True)
+                    first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
+                    checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_sd - 1) + '-cputime'), delim_whitespace=True)
                     checker = checker[(timestamp_start <= checker['Timestamp(ns)']) & (checker['Timestamp(ns)'] < timestamp_end)]
                     height = (checker.iloc[-1] - checker.iloc[0])['cputime(ns)'] / 1e9
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
@@ -138,7 +138,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     subfig.legend(
         [
             MulticolorPatch(colors=promote_stably_hot['colors']),
-            MulticolorPatch(colors=rocksdb_sd['colors']),
+            MulticolorPatch(colors=rocksdb_fd['colors']),
         ],
         ['HotRAP', 'RocksDB(FD)'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
@@ -151,7 +151,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     subfig.legend(
         [
             MulticolorPatch(colors=promote_stably_hot['colors']),
-            MulticolorPatch(colors=rocksdb_sd['colors']),
+            MulticolorPatch(colors=rocksdb_fd['colors']),
         ],
         ['HotRAP', 'RocksDB(FD)'],
         handler_map={MulticolorPatch: MulticolorPatchHandler()},

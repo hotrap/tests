@@ -21,7 +21,7 @@ function throughput {
 		}
 	" < $1
 }
+echo FD
+throughput iostat-fd.txt
 echo SD
 throughput iostat-sd.txt
-echo CD
-throughput iostat-cd.txt

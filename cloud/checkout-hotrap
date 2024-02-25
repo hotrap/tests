@@ -8,6 +8,6 @@ IP=$2
 version=$3
 cd ../..
 rsync -zPrt -e ssh hotrap $user@$IP:~/ --exclude='build'
-rsync -zPrt -e ssh viscnts-lsm $user@$IP:~/ --exclude='build'
+rsync -zPrt -e ssh RALT $user@$IP:~/ --exclude='build'
 rsync -zPrt -e ssh kvexe $user@$IP:~/ --exclude='build'
 ssh $user@$IP "./tests/helper/checkout-$version"

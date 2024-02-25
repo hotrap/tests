@@ -46,8 +46,8 @@ def draw_io_breakdown(dir, size, pdf_name):
         'colors': colors_left,
         'legend-colors': colors_left,
     }
-    rocksdb_sd = {
-        'path': 'rocksdb-sd',
+    rocksdb_fd = {
+        'path': 'rocksdb-fd',
         'colors': colors_right,
         'legend-colors': [colors_right[i] for i in [1, 3, 4]],
     }
@@ -60,7 +60,7 @@ def draw_io_breakdown(dir, size, pdf_name):
 
     gs = gridspec.GridSpec(1, 3)
 
-    versions=[promote_stably_hot, rocksdb_sd]
+    versions=[promote_stably_hot, rocksdb_fd]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
     subfig_anchor_y = 1.1
@@ -87,43 +87,43 @@ def draw_io_breakdown(dir, size, pdf_name):
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
                 timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
                 timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
-                first_level_in_cd = int(open(os.path.join(data_dir, 'first-level-in-cd')).read())
+                first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
                 def run_time_io_kB(fname):
                     iostat = pd.read_table(os.path.join(data_dir, fname), delim_whitespace=True)
                     iostat = iostat[(timestamp_start <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < timestamp_end)]
                     return iostat[['rkB/s', 'wkB/s']].sum().sum()
-                device_io = (run_time_io_kB('iostat-sd.txt') + run_time_io_kB('iostat-cd.txt')) / 1e9
+                device_io = (run_time_io_kB('iostat-fd.txt') + run_time_io_kB('iostat-sd.txt')) / 1e9
 
                 bottom = 0
 
-                rand_read_bytes = common.read_rand_read_bytes_sd_cd(data_dir, first_level_in_cd)
+                rand_read_bytes = common.read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd)
                 rand_read_bytes = rand_read_bytes[(timestamp_start <= rand_read_bytes['Timestamp(ns)']) & (rand_read_bytes['Timestamp(ns)'] < timestamp_end)]
                 rand_read_bytes = rand_read_bytes.iloc[-1] - rand_read_bytes.iloc[0]
 
-                if version['path'] == 'rocksdb-sd':
-                    assert rand_read_bytes['cd'] == 0
+                if version['path'] == 'rocksdb-fd':
+                    assert rand_read_bytes['sd'] == 0
                 else:
-                    height = rand_read_bytes['cd'] / 1e12
+                    height = rand_read_bytes['sd'] / 1e12
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[0], color=version['colors'][0], edgecolor='black', linewidth=0.5)
                     bottom += height
 
-                height = rand_read_bytes['sd'] / 1e12
+                height = rand_read_bytes['fd'] / 1e12
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[1], color=version['colors'][1], edgecolor='black', linewidth=0.5)
                 bottom += height
 
-                compaction_bytes = common.read_compaction_bytes_sd_cd(data_dir, first_level_in_cd)
+                compaction_bytes = common.read_compaction_bytes_fd_sd(data_dir, first_level_in_sd)
                 compaction_bytes = compaction_bytes[(timestamp_start <= compaction_bytes['Timestamp(ns)']) & (compaction_bytes['Timestamp(ns)'] < timestamp_end)]
                 compaction_bytes = compaction_bytes.iloc[-1] - compaction_bytes.iloc[0]
 
-                if version['path'] == 'rocksdb-sd':
-                    assert compaction_bytes['cd-read'] == 0
-                    assert compaction_bytes['cd-write'] == 0
+                if version['path'] == 'rocksdb-fd':
+                    assert compaction_bytes['sd-read'] == 0
+                    assert compaction_bytes['sd-write'] == 0
                 else:
-                    height = (compaction_bytes['cd-read'] + compaction_bytes['cd-write']) / 1e12
+                    height = (compaction_bytes['sd-read'] + compaction_bytes['sd-write']) / 1e12
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[2], color=version['colors'][2], edgecolor='black', linewidth=0.5)
                     bottom += height
 
-                height = (compaction_bytes['sd-read'] + compaction_bytes['sd-write']) / 1e12
+                height = (compaction_bytes['fd-read'] + compaction_bytes['fd-write']) / 1e12
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                 bottom += height
 
@@ -152,7 +152,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     subfig.legend(
         [
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
-            common.MulticolorPatch(colors=rocksdb_sd['legend-colors']),
+            common.MulticolorPatch(colors=rocksdb_fd['legend-colors']),
         ],
         ['HotRAP', 'RocksDB(FD)'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
@@ -165,7 +165,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     subfig.legend(
         [
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
-            common.MulticolorPatch(colors=rocksdb_sd['legend-colors']),
+            common.MulticolorPatch(colors=rocksdb_fd['legend-colors']),
         ],
         ['HotRAP', 'RocksDB(FD)'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},

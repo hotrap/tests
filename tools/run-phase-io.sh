@@ -20,10 +20,10 @@ function throughput {
 		}
 	" < $1
 }
+fd_res=$(throughput iostat-fd.txt)
+echo "$fd_res" | awk '{print "FD", $0}'
 sd_res=$(throughput iostat-sd.txt)
 echo "$sd_res" | awk '{print "SD", $0}'
-cd_res=$(throughput iostat-cd.txt)
-echo "$cd_res" | awk '{print "CD", $0}'
+fd_total=$(echo "$fd_res" | awk '{if (NR == 3) print $2}')
 sd_total=$(echo "$sd_res" | awk '{if (NR == 3) print $2}')
-cd_total=$(echo "$cd_res" | awk '{if (NR == 3) print $2}')
-echo "total $(echo $sd_total + $cd_total | bc) GB"
+echo "total $(echo $fd_total + $sd_total | bc) GB"

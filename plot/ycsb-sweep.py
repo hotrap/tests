@@ -82,7 +82,7 @@ versions=[
         'color': plt.get_cmap('Set2')(3),
     },
     {
-        'path': 'rocksdb-sd',
+        'path': 'rocksdb-fd',
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
     },
@@ -143,7 +143,7 @@ def speedup_ratio_skewness(ratio, skewness):
     hotrap_ops = version_ops['promote-stably-hot']
     other_sys_max_ops = 0
     for (version, ops) in version_ops.items():
-        if version == 'promote-stably-hot' or version == 'rocksdb-sd':
+        if version == 'promote-stably-hot' or version == 'rocksdb-fd':
             continue
         other_sys_max_ops = max(other_sys_max_ops, ops)
     return hotrap_ops / other_sys_max_ops
