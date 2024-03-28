@@ -29,13 +29,13 @@ if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/du.pdf'
 plt.plot(time, du['DB'])
+plt.plot(time, du['FD'])
 plt.plot(time, du['SD'])
-plt.plot(time, du['CD'])
 plt.plot(time, du['VisCnts'])
-plt.legend(['DB', 'SD', 'CD', 'VisCnts'], prop={'size': fontsize})
+plt.legend(['DB', 'FD', 'SD', 'VisCnts'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Size (Bytes)', fontdict=fonten)
-plt.title('Disk usage of DB, SD, and CD')
+plt.title('Disk usage of DB, FD, and SD')
 plt.savefig(pdf_path)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:

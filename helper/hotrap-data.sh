@@ -7,7 +7,7 @@ DIR=$(realpath "$1")
 mydir=$(realpath $(dirname $0))
 cd $mydir
 cd ../../testdb
-du -sh db/ sd/ cd/ >> "$DIR"/log.txt
+du -sh db/ fd/ sd/ >> "$DIR"/log.txt
 cd db
 if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count

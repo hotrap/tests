@@ -7,7 +7,7 @@ DIR=$(realpath "$1")
 mydir=$(realpath $(dirname $0))
 cd $mydir
 cd ../../testdb
-du -sh db/ sd/ cd/ >> "$DIR"/log.txt
+du -sh db/ fd/ sd/ >> "$DIR"/log.txt
 cd db
 mv LOG rocksdb-stats*.txt latency-* first-level-in-sd period_stats progress cpu cputimes mem info.json compaction-stats timers worker-cpu-nanos rand-read-bytes "$DIR"/
 if [ -f 0_key_only_trace_70_100 ]; then
