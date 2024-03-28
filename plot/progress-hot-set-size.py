@@ -30,6 +30,7 @@ figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.66, c
 
 figs = [
     {
+        'title': '(a) Read-only workloads with different skewnesses',
         'versions': [
             {
                 'path': 'uniform',
@@ -63,6 +64,7 @@ figs = [
     #     'yticks': [0, 1, 2, 3],
     # },
     {
+        'title': '(b) Hotspot shifting workloads',
         'versions': [
             {
                 'path': 'hotspotshifting0.5-0.5',
@@ -81,12 +83,13 @@ figs = [
 gs = gridspec.GridSpec(1, len(figs), figure=figure)
 
 for (i, fig) in enumerate(figs):
-    plt.subplot(gs[0, i])
+    subfig = plt.subplot(gs[0, i])
     ax = plt.gca()
     for version in fig['versions']:
         data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hot-set-size'], delim_whitespace=True)
         plt.plot(data['progress'], data['hot-set-size'] / 1e9, linewidth=0.5, marker=version['marker'], markersize=3, markevery=int(len(data['progress']) / 5))
     plt.xlabel('Completed operation count', fontsize=8)
+    subfig.text(0.5, -0.35, fig['title'], fontsize=8, ha='center', va='center', transform=subfig.transAxes)
     plt.xticks(fontsize=8)
     ax.ticklabel_format(useMathText=True)
     ax.xaxis.get_offset_text().set_fontsize(8)
