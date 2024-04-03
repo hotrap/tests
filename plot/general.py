@@ -2,6 +2,11 @@
 
 import sys
 import os
+
+if len(sys.argv) < 2 and 'DISPLAY' not in os.environ:
+    print('Error: No display and no output file.')
+    exit(1)
+
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
