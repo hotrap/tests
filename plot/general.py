@@ -1,9 +1,35 @@
 #!/usr/bin/env python3
 
 import sys
-import os
+import getopt
+def print_help():
+    print(sys.argv[0] + ' [-o <outputfile>] [--xlable=] [--ylabel=]')
 
-if len(sys.argv) < 2 and 'DISPLAY' not in os.environ:
+try:
+    opts, args = getopt.getopt(sys.argv[1:], 'ho:', ['xlabel=', 'ylabel='])
+except getopt.GetoptError:
+    print_help()
+    exit(1)
+
+pdf_path = None
+xlabel = None
+ylabel = None
+for opt, arg in opts:
+    if opt == '-h':
+        print_help()
+        exit()
+    elif opt == '-o':
+        pdf_path = arg
+    elif opt == '--xlabel':
+        xlabel = arg
+    elif opt == '--ylabel':
+        ylabel = arg
+
+if xlabel is not None:
+    assert ylabel is not None
+ 
+import os
+if pdf_path is None and 'DISPLAY' not in os.environ:
     print('Error: No display and no output file.')
     exit(1)
 
@@ -21,10 +47,14 @@ mpl.rcParams.update({
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
-header = shlex.split(sys.stdin.readline())
-xlabel = header[0]
-legends = header[1:]
-n = len(legends)
+legends = None
+if xlabel is None:
+    header = shlex.split(sys.stdin.readline())
+    xlabel = header[0]
+    legends = header[1:]
+    n = len(legends)
+else:
+    n = 1
 x = []
 ys = []
 for _ in range(0, n):
@@ -37,9 +67,11 @@ for line in sys.stdin:
 for y in ys:
     plt.plot(x, y)
 plt.xlabel(xlabel, fontdict=fonten)
-plt.legend(legends, prop={'size': fontsize})
-if len(sys.argv) == 2:
-    pdf_path = sys.argv[1]
+if ylabel is not None:
+    plt.ylabel(ylabel, fontdict=fonten)
+if legends is not None:
+    plt.legend(legends, prop={'size': fontsize})
+if pdf_path is not None:
     plt.savefig(pdf_path)
     print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
