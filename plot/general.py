@@ -3,15 +3,16 @@
 import sys
 import getopt
 def print_help():
-    print(sys.argv[0] + ' [-o <outputfile>] [--xlable=] [--ylabel=]')
+    print(sys.argv[0] + ' [-o <outputfile>] [-t line|scatter] [--xlable=] [--ylabel=]')
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'ho:', ['xlabel=', 'ylabel='])
+    opts, args = getopt.getopt(sys.argv[1:], 'ho:t:', ['xlabel=', 'ylabel='])
 except getopt.GetoptError:
     print_help()
     exit(1)
 
 pdf_path = None
+chart_type = 'line'
 xlabel = None
 ylabel = None
 for opt, arg in opts:
@@ -20,6 +21,8 @@ for opt, arg in opts:
         exit()
     elif opt == '-o':
         pdf_path = arg
+    elif opt == '-t':
+        chart_type = arg
     elif opt == '--xlabel':
         xlabel = arg
     elif opt == '--ylabel':
@@ -60,12 +63,17 @@ ys = []
 for _ in range(0, n):
     ys.append([])
 for line in sys.stdin:
-    line = line.split(' ')
+    line = line.rstrip().split(' ')
     x.append(float(line[0]))
     for i in range(0, n):
-        ys[i].append(int(line[i+1]))
-for y in ys:
-    plt.plot(x, y)
+        ys[i].append(float(line[i+1]))
+if chart_type == 'line':
+    for y in ys:
+        plt.plot(x, y)
+else:
+    assert chart_type == 'scatter'
+    assert len(ys) == 1
+    plt.scatter(x, ys[0])
 plt.xlabel(xlabel, fontdict=fonten)
 if ylabel is not None:
     plt.ylabel(ylabel, fontdict=fonten)
