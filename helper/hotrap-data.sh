@@ -21,7 +21,11 @@ find . \
 	\! -name LOCK \
 	\! -regex "\./MANIFEST-[0-9]*" \
 	\! -regex "\./OPTIONS-[0-9]*\.dbtmp" \
+	\! -regex "ans_[0-9]*" \
 	-exec mv {} "$DIR" \;
+if [ -f ans_0 ]; then
+	sha256sum ans_* > "$DIR"/ans.sha256
+fi
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
 $mydir/latency-after "$DIR"/
