@@ -10,6 +10,7 @@ all: ${RUSTTARGETS}
 	cd src/hit && cargo build --release && cd - > /dev/null
 	cd src/latency-after && cargo build --release && cd - > /dev/null
 	cd src/read-keys-from-dump && cargo build --release && cd - > /dev/null
+	cd src/twitter-to-plain && cargo build --release && cd - > /dev/null
 
 clean:
 	${RM} ${RUSTTARGETS}
