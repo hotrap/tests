@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+if [[ $# < 3 || $# > 4 ]]; then
+	echo Usage: $0 trace-file-load trace-file-run output-dir [switches]
+	exit 1
+fi
+set -e
+set -o pipefail
+# To make set -e take effect if the output dir does not exists
+mkdir -p $3
+res="$(ls -A $3)"
+if [ "$res" ]; then
+	echo "$3" is not empty!
+	exit 1
+fi
+trace_file_load=$(realpath $1)
+trace_file_run=$(realpath $2)
+DIR=$(realpath "$3")
+max_memory=$(humanfriendly --parse-size=1.1GB)
+if [ $4 ]; then
+	switches=$4
+else
+	switches=0x1
+fi
+workspace=$(realpath $(dirname $0)/../..)
+kvexe_dir=$workspace/kvexe-rocksdb/build/
+
+ulimit -n 100000
+cd $DIR
+$kvexe_dir/rocksdb-kvexe --load --format=plain-length-only --switches=$switches --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=67108864 --enable_fast_process --db_path=$workspace/testdb/db/ --db_paths="{{$workspace/testdb/fd,1000000000000}}" --trace=$trace_file_load 2>> log.txt
+$workspace/tests/helper/exe-while.sh . bash -c "systemd-run --user -E LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4 --scope -p MemoryMax=$max_memory $kvexe_dir/rocksdb-kvexe --run --format=plain-length-only --switches=$switches --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=67108864 --enable_fast_process --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,1000000000000}}\" --trace=$trace_file_run 2>> log.txt"
+bash $workspace/tests/helper/rocksdb-data.sh .
