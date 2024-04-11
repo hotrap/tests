@@ -3,10 +3,10 @@
 import sys
 import getopt
 def print_help():
-    print(sys.argv[0] + ' [-o <outputfile>] [-t line|scatter] [--xlable=] [--ylabel=]')
+    print(sys.argv[0] + ' [-o <outputfile>] [-t line|scatter] [--xlable=] [--ylabel=] [--scatter-label] [--scatter-color]')
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'ho:t:i', ['xlabel=', 'ylabel='])
+    opts, args = getopt.getopt(sys.argv[1:], 'ho:t:i', ['xlabel=', 'ylabel=', 'scatter-label', 'scatter-color'])
 except getopt.GetoptError:
     print_help()
     exit(1)
@@ -16,6 +16,8 @@ chart_type = 'line'
 interactive = False
 xlabel = None
 ylabel = None
+scatter_label = False
+scatter_color = False
 for opt, arg in opts:
     if opt == '-h':
         print_help()
@@ -30,6 +32,10 @@ for opt, arg in opts:
         xlabel = arg
     elif opt == '--ylabel':
         ylabel = arg
+    elif opt == '--scatter-label':
+        scatter_label = True
+    elif opt == '--scatter-color':
+        scatter_color = True
 
 if xlabel is not None:
     assert ylabel is not None
@@ -78,11 +84,15 @@ if chart_type == 'line':
         ax.plot(x, y)
 else:
     assert chart_type == 'scatter'
-    assert len(c) == 3
-    x = [float(v) for v in c[0]]
-    y = [float(v) for v in c[1]]
-    labels = c[2]
-    scatter = ax.scatter(x, y)
+    args = {
+        'x': [float(v) for v in c[0]],
+        'y': [float(v) for v in c[1]],
+    }
+    if scatter_label:
+        labels = c[2]
+    if scatter_color:
+        args['c'] = c[3]
+    scatter = ax.scatter(**args)
 ax.set_xlabel(xlabel, fontdict=fonten)
 if ylabel is not None:
     ax.set_ylabel(ylabel, fontdict=fonten)
