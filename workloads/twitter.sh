@@ -23,7 +23,7 @@ function run-hotrap {
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
 	# Reserve 330MB for VisCnts
-	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 9.67GB 5.5GB 330MB
+	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 9.67GB 5.5GB 330MB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
 	../helper/hotrap-plot.sh $DIR
 }
 
