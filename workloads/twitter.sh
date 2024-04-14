@@ -1,4 +1,5 @@
 workloads=(
+	"cluster17-80x"
 	"cluster29"
 )
 function run-rocksdb-fd {
