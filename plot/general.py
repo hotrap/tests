@@ -3,10 +3,10 @@
 import sys
 import getopt
 def print_help():
-    print(sys.argv[0] + ' [-o <outputfile>] [-t line|scatter] [--xlable=] [--ylabel=] [--scatter-label] [--scatter-color]')
+    print(sys.argv[0] + ' [-o <outputfile>] [-t line|scatter] [--xlable=] [--ylabel=] [--title] [--scatter-label] [--scatter-color]')
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'ho:t:i', ['xlabel=', 'ylabel=', 'scatter-label', 'scatter-color'])
+    opts, args = getopt.getopt(sys.argv[1:], 'ho:t:i', ['xlabel=', 'ylabel=', 'title=', 'scatter-label', 'scatter-color'])
 except getopt.GetoptError:
     print_help()
     exit(1)
@@ -16,6 +16,7 @@ chart_type = 'line'
 interactive = False
 xlabel = None
 ylabel = None
+title = None
 scatter_label = False
 scatter_color = False
 for opt, arg in opts:
@@ -32,6 +33,8 @@ for opt, arg in opts:
         xlabel = arg
     elif opt == '--ylabel':
         ylabel = arg
+    elif opt == '--title':
+        title = arg
     elif opt == '--scatter-label':
         scatter_label = True
     elif opt == '--scatter-color':
@@ -96,6 +99,8 @@ else:
 ax.set_xlabel(xlabel, fontdict=fonten)
 if ylabel is not None:
     ax.set_ylabel(ylabel, fontdict=fonten)
+if title is not None:
+    ax.set_title(title, fontdict=fonten)
 if legends is not None:
     plt.legend(legends, prop={'size': fontsize})
 if pdf_path is not None:
