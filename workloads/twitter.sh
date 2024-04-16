@@ -18,6 +18,14 @@ function run-secondary-cache {
 	./test-secondary-cache-replay-110GB.sh $prefix-load $prefix-run $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
+function run-rocksdb {
+	../helper/checkout-$2
+	DIR=../../data/$1/$2
+	echo Result directory: $DIR
+	prefix=../../twitter/processed/$1
+	./test-rocksdb-replay-110GB.sh $prefix-load $prefix-run $DIR 10GB
+	../helper/rocksdb-plot.sh $DIR
+}
 function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
@@ -31,5 +39,6 @@ function run-hotrap {
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-hotrap $workload promote-stably-hot
+	run-rocksdb $workload rocksdb-fat
 	run-secondary-cache $workload
 done
