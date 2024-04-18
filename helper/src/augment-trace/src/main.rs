@@ -51,7 +51,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         prefix.push(String::new());
     }
 
-    let mut kv = HashMap::new();
+    let mut timestamp = 0;
+    let mut load = HashMap::<String, (usize, usize)>::new();
     let mut buf = String::new();
 
     let mut load_reader =
@@ -66,7 +67,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         let key = s.next().unwrap();
         assert_eq!(op, "INSERT");
         let value_size: usize = s.next().unwrap().parse().unwrap();
-        assert!(kv.insert(key.to_owned(), value_size).is_none());
+        timestamp += 1;
+        assert!(load
+            .insert(key.to_owned(), (value_size, timestamp))
+            .is_none());
     }
 
     let mut run_reader =
@@ -89,10 +93,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         let key = s.next().unwrap();
         if op == "INSERT" {
             let value_size = s.next().unwrap().parse().unwrap();
-            if let Some(v) = kv.get_mut(key) {
-                *v = value_size;
+            timestamp += 1;
+            if let Some(v) = load.get_mut(key) {
+                *v = (value_size, timestamp);
             } else {
-                kv.insert(key.to_owned(), value_size);
+                load.insert(key.to_owned(), (value_size, timestamp));
             }
         }
     }
@@ -120,7 +125,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut load_writer =
         BufWriter::new(File::create(out_prefix.clone() + "-load").unwrap());
-    for (key, value_size) in kv {
+    let mut load: Vec<(String, (usize, usize))> = load.drain().collect();
+    load.sort_unstable_by(|a, b| a.1 .1.cmp(&b.1 .1));
+    for (key, (value_size, _)) in load {
         for i in 0..multiple {
             writeln!(
                 &mut load_writer,

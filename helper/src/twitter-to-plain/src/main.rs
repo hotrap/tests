@@ -38,18 +38,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     ]);
 
     let mut run = VecDeque::new();
-    let mut load = HashMap::<String, usize>::new();
+    let mut load = HashMap::<String, (usize, usize)>::new();
+    let mut timestamp = 0;
     let mut add = |run: &mut VecDeque<Operation>, op: Operation| {
         if run.len() == max_num_run_op {
             match run.pop_front().unwrap() {
                 Operation::Insert(key, value_size) => {
+                    timestamp += 1;
                     load.entry(key)
-                        .and_modify(|v| *v = value_size)
-                        .or_insert(value_size);
+                        .and_modify(|v| *v = (value_size, timestamp))
+                        .or_insert((value_size, timestamp));
                 }
                 Operation::Read(key, value_size) => {
                     if value_size > 0 {
-                        assert!(load.insert(key, value_size).is_none());
+                        assert!(load.insert(key, (value_size, 0)).is_none());
                     }
                 }
             }
@@ -125,7 +127,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             Operation::Read(key, value_size) => {
                 writeln!(&mut run_writer, "READ {}", &key).unwrap();
                 if value_size > 0 {
-                    assert!(load.insert(key, value_size).is_none());
+                    assert!(load.insert(key, (value_size, 0)).is_none());
                 }
             }
         }
@@ -133,7 +135,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut load_writer =
         BufWriter::new(File::create(prefix.clone() + "-load").unwrap());
-    for (key, value_size) in load {
+    let mut load: Vec<(String, (usize, usize))> = load.drain().collect();
+    load.sort_unstable_by(|a, b| a.1 .1.cmp(&b.1 .1));
+    for (key, (value_size, _)) in load {
         writeln!(&mut load_writer, "INSERT {} {}", key, value_size).unwrap();
     }
 
