@@ -27,9 +27,13 @@ done
 source common.sh
 
 function upload-trace {
-	ssh $user@$IP "mkdir -p twitter/processed"
-	rsync -zpt --partial -e ssh ../../twitter/processed/$workload-*.zst $user@$IP:~/twitter/processed/
-	ssh $user@$IP "unzstd twitter/processed/$workload-*.zst"
+	if [ -f ../../upload-trace ]; then
+		../../upload-trace $user $IP $workload
+	else
+		ssh $user@$IP "mkdir -p twitter/processed"
+		rsync -zpt --partial -e ssh ../../twitter/processed/$workload-*.zst $user@$IP:~/twitter/processed/
+		ssh $user@$IP "unzstd twitter/processed/$workload-*.zst"
+	fi
 	prefix=../../twitter/processed/$workload
 }
 
