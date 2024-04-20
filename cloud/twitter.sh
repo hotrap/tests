@@ -8,6 +8,7 @@ user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
 workloads=(
+	"cluster04-3x"
 	"cluster17-80x"
 	"cluster29"
 )
@@ -27,7 +28,8 @@ source common.sh
 
 function upload-trace {
 	ssh $user@$IP "mkdir -p twitter/processed"
-	rsync -zpt --partial -e ssh ../../twitter/processed/$workload-* $user@$IP:~/twitter/processed/
+	rsync -zpt --partial -e ssh ../../twitter/processed/$workload-*.zst $user@$IP:~/twitter/processed/
+	ssh $user@$IP "unzstd twitter/processed/$workload-*.zst"
 	prefix=../../twitter/processed/$workload
 }
 
