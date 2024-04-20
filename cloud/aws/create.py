@@ -32,6 +32,17 @@ response = client.run_instances(
     SecurityGroupIds=[
         config['SecurityGroupId'],
     ],
+    TagSpecifications=[
+        {
+            'ResourceType': 'instance',
+            'Tags': [
+                {
+                    'Key': 'Name',
+                    'Value': config['InstanceName'],
+                },
+            ],
+        },
+    ],
     EbsOptimized=True,
 )
 assert len(response['Instances']) == 1
