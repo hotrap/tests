@@ -5,16 +5,14 @@ if [[ $# < 3 || $# > 4 ]]; then
 fi
 set -e
 set -o pipefail
-# To make set -e take effect if the output dir does not exists
+trace_file_load=$(realpath $1)
+trace_file_run=$(realpath $2)
 mkdir -p $3
-res="$(ls -A $3)"
-if [ "$res" ]; then
+DIR=$(realpath "$3")
+if [ "$(ls -A $DIR)" ]; then
 	echo "$3" is not empty!
 	exit 1
 fi
-trace_file_load=$(realpath $1)
-trace_file_run=$(realpath $2)
-DIR=$(realpath "$3")
 extra_kvexe_args="$4"
 workspace=$(realpath $(dirname $0)/../..)
 kvexe_dir=$workspace/kvexe-rocksdb/build/
