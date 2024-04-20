@@ -7,7 +7,7 @@ user=$1
 IP=$2
 version=$3
 cd ../..
-rsync -zPrt -e ssh hotrap $user@$IP:~/ --exclude='build'
-rsync -zPrt -e ssh RALT $user@$IP:~/ --exclude='build'
-rsync -zPrt -e ssh kvexe $user@$IP:~/ --exclude='build'
+rsync -zrpt --partial -e ssh hotrap $user@$IP:~/ --exclude='build'
+rsync -zrpt --partial -e ssh RALT $user@$IP:~/ --exclude='build'
+rsync -zrpt --partial -e ssh kvexe $user@$IP:~/ --exclude='build'
 ssh $user@$IP "./tests/helper/checkout-$version"

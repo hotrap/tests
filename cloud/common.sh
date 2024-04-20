@@ -56,7 +56,7 @@ function cloud-run-bg {
 	ssh $user@$IP "bash -s" -- < ../apt.sh
 	ssh $user@$IP "bash -s" -- < helper/cloud.sh
 	ssh $user@$IP "bash -s" -- < helper/$vendor.sh
-	rsync -zPrL -e ssh .. $user@$IP:~/tests --exclude='target'
+	rsync -zrpL --partial -e ssh .. $user@$IP:~/tests --exclude='target'
 
 	ssh $user@$IP -o ServerAliveInterval=60 "rm -rf data/$2/$3"
 

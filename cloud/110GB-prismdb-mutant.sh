@@ -35,7 +35,7 @@ function run {
 	fi
 	./checkout-$version $user $IP $version
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-$version-110GB.sh ../config/$workload_file ../../data/$workload/$version"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/plot-prismdb-mutant.sh $output_dir/$workload/$version
 }
 

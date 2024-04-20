@@ -30,7 +30,7 @@ function run-rocksdb-fd {
 	IP=$3
 	./checkout-rocksdb $user $IP
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 function run-rocksdb {
@@ -39,7 +39,7 @@ function run-rocksdb {
 	IP=$3
 	./checkout-$version $user $IP
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB.sh ../config/$workload ../../data/$workload/$version 10GB"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 function run-secondary-cache {
@@ -48,7 +48,7 @@ function run-secondary-cache {
 	IP=$3
 	./checkout-secondary-cache $user $IP
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-secondary-cache-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 function run-hotrap {
@@ -58,7 +58,7 @@ function run-hotrap {
 	./checkout-hotrap $user $IP $version
 	# Reserve 330MB for VisCnts
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.67GB 5.5GB 330MB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size\""
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
 

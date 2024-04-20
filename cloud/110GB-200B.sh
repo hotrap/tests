@@ -28,7 +28,7 @@ function run-rocksdb-fd {
 	IP=$3
 	./checkout-rocksdb $user $IP
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB-200B.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 function run-rocksdb {
@@ -37,7 +37,7 @@ function run-rocksdb {
 	IP=$3
 	./checkout-$version $user $IP
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB-200B.sh ../config/$workload ../../data/$workload/$version 10GB"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 function run-hotrap {
@@ -47,7 +47,7 @@ function run-hotrap {
 	./checkout-hotrap $user $IP $version
 	# Reserve 1.65GB for VisCnts
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB-200B.sh ../config/$workload ../../data/$workload/$version 8.35GB 5.5GB 1.65GB"
-	rsync -zPrt -e ssh $user@$IP:~/data/$workload $output_dir/
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
 
