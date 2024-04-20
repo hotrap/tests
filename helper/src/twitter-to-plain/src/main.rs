@@ -1,16 +1,20 @@
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, BufWriter, Write};
 
-enum Operation {
+use serde::{Deserialize, Serialize};
+use serde_queue::SerdeQueue;
+
+#[derive(Serialize, Deserialize)]
+enum Operation<'a> {
     // Key, value size
-    Insert(String, usize),
+    Insert(&'a str, usize),
     // value size > 0 if it's the first occurrence of the key
     // value size == 0 if it's not the first occurrence of the key
     // value size == -1 if it's getting a non-existing key
-    Read(String, isize),
+    Read(&'a str, isize),
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -39,29 +43,36 @@ fn main() -> Result<(), Box<dyn Error>> {
         "decr".to_owned(),
     ]);
 
-    let mut run = VecDeque::new();
+    let mut run = SerdeQueue::new();
     let mut load = HashMap::<String, (usize, usize)>::new();
     let mut timestamp = 0;
-    let mut add = |run: &mut VecDeque<Operation>, op: Operation| {
+    // Useful unstable feature: closure_lifetime_binder
+    fn add<'a, 'b>(
+        run: &'a mut SerdeQueue,
+        op: Operation<'b>,
+        max_num_run_op: usize,
+        timestamp: &mut usize,
+        load: &mut HashMap<String, (usize, usize)>,
+    ) {
         if run.len() == max_num_run_op {
-            match run.pop_front().unwrap() {
+            match run.pop().unwrap().unwrap() {
                 Operation::Insert(key, value_size) => {
-                    timestamp += 1;
-                    load.entry(key)
-                        .and_modify(|v| *v = (value_size, timestamp))
-                        .or_insert((value_size, timestamp));
+                    *timestamp += 1;
+                    load.entry(key.to_owned())
+                        .and_modify(|v| *v = (value_size, *timestamp))
+                        .or_insert((value_size, *timestamp));
                 }
                 Operation::Read(key, value_size) => {
                     if value_size > 0 {
                         assert!(load
-                            .insert(key, (value_size as usize, 0))
+                            .insert(key.to_owned(), (value_size as usize, 0))
                             .is_none());
                     }
                 }
             }
         }
-        run.push_back(op);
-    };
+        run.push(&op).unwrap();
+    }
 
     let mut kv = HashMap::<String, usize>::new();
     let mut db_size = 0;
@@ -98,13 +109,28 @@ fn main() -> Result<(), Box<dyn Error>> {
                     db_size += key.len() + value_size;
                     add(
                         &mut run,
-                        Operation::Read(key.to_owned(), value_size as isize),
+                        Operation::Read(key, value_size as isize),
+                        max_num_run_op,
+                        &mut timestamp,
+                        &mut load,
                     );
                 } else {
-                    add(&mut run, Operation::Read(key.to_owned(), -1));
+                    add(
+                        &mut run,
+                        Operation::Read(key, -1),
+                        max_num_run_op,
+                        &mut timestamp,
+                        &mut load,
+                    );
                 }
             } else {
-                add(&mut run, Operation::Read(key.to_owned(), 0));
+                add(
+                    &mut run,
+                    Operation::Read(key, 0),
+                    max_num_run_op,
+                    &mut timestamp,
+                    &mut load,
+                );
             }
         } else if insert_op.contains(op) {
             if let Some(old_value_len) = kv.get_mut(key) {
@@ -114,7 +140,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 kv.insert(key.to_owned(), value_size);
                 db_size += key.len() + value_size;
             }
-            add(&mut run, Operation::Insert(key.to_owned(), value_size));
+            add(
+                &mut run,
+                Operation::Insert(key, value_size),
+                max_num_run_op,
+                &mut timestamp,
+                &mut load,
+            );
         } else if op == "delete" {
             // Temporarily ignore it.
         } else {
@@ -132,7 +164,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut num_run_inserts: usize = 0;
     let mut num_reads: usize = 0;
     let mut num_empty_reads: usize = 0;
-    for operation in run {
+    while let Some(operation) = run.pop().unwrap() {
         match operation {
             Operation::Insert(key, value_size) => {
                 num_run_inserts += 1;
@@ -144,7 +176,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 writeln!(&mut run_writer, "READ {}", &key).unwrap();
                 if value_size > 0 {
                     assert!(load
-                        .insert(key, (value_size as usize, 0))
+                        .insert(key.to_owned(), (value_size as usize, 0))
                         .is_none());
                 } else if value_size == -1 {
                     num_empty_reads += 1;

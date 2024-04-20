@@ -9,7 +9,7 @@ output_dir=$2
 output_prefix=$output_dir/$(basename $trace_file)
 target_db_size=110000000000
 max_num_run_op=500000000
-~/tests/helper/twitter-to-plain $output_prefix $target_db_size $max_num_run_op < $trace_file | tee $output_prefix.log
+time ~/tests/helper/twitter-to-plain $output_prefix $target_db_size $max_num_run_op < $trace_file | tee $output_prefix.log
 zstdmt $output_prefix-load $output_prefix-run
 db_size=$(jq -r ".\"db-size\"" < $output_prefix.json)
 if [ $db_size -lt $target_db_size ]; then
