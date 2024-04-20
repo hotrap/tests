@@ -7,8 +7,10 @@ use std::io::{self, BufRead, BufReader, BufWriter, Write};
 enum Operation {
     // Key, value size
     Insert(String, usize),
-    // value size > 0 iff it's the first occurrence of the key
-    Read(String, usize),
+    // value size > 0 if it's the first occurrence of the key
+    // value size == 0 if it's not the first occurrence of the key
+    // value size == -1 if it's getting a non-existing key
+    Read(String, isize),
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -51,7 +53,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
                 Operation::Read(key, value_size) => {
                     if value_size > 0 {
-                        assert!(load.insert(key, (value_size, 0)).is_none());
+                        assert!(load
+                            .insert(key, (value_size as usize, 0))
+                            .is_none());
                     }
                 }
             }
@@ -88,10 +92,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         let value_size = value_size.parse().expect(&nr.to_string());
         if read_op.contains(op) {
-            if !kv.contains_key(key) && value_size > 0 {
-                kv.insert(key.to_owned(), value_size);
-                db_size += key.len() + value_size;
-                add(&mut run, Operation::Read(key.to_owned(), value_size));
+            if !kv.contains_key(key) {
+                if value_size > 0 {
+                    kv.insert(key.to_owned(), value_size);
+                    db_size += key.len() + value_size;
+                    add(
+                        &mut run,
+                        Operation::Read(key.to_owned(), value_size as isize),
+                    );
+                } else {
+                    add(&mut run, Operation::Read(key.to_owned(), -1));
+                }
             } else {
                 add(&mut run, Operation::Read(key.to_owned(), 0));
             }
@@ -118,16 +129,25 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut run_writer =
         BufWriter::new(File::create(prefix.clone() + "-run").unwrap());
     let num_run_op = run.len();
+    let mut num_run_inserts: usize = 0;
+    let mut num_reads: usize = 0;
+    let mut num_empty_reads: usize = 0;
     for operation in run {
         match operation {
             Operation::Insert(key, value_size) => {
+                num_run_inserts += 1;
                 writeln!(&mut run_writer, "INSERT {} {}", key, value_size)
                     .unwrap();
             }
             Operation::Read(key, value_size) => {
+                num_reads += 1;
                 writeln!(&mut run_writer, "READ {}", &key).unwrap();
                 if value_size > 0 {
-                    assert!(load.insert(key, (value_size, 0)).is_none());
+                    assert!(load
+                        .insert(key, (value_size as usize, 0))
+                        .is_none());
+                } else if value_size == -1 {
+                    num_empty_reads += 1;
                 }
             }
         }
@@ -137,8 +157,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         BufWriter::new(File::create(prefix.clone() + "-load").unwrap());
     let mut load: Vec<(String, (usize, usize))> = load.drain().collect();
     load.sort_unstable_by(|a, b| a.1 .1.cmp(&b.1 .1));
+    let num_load_op = load.len();
+    let mut load_key_len = 0;
+    let mut load_value_len = 0;
     for (key, (value_size, _)) in load {
         writeln!(&mut load_writer, "INSERT {} {}", key, value_size).unwrap();
+        load_key_len += key.len();
+        load_value_len += value_size;
     }
 
     println!(
@@ -150,9 +175,24 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     writeln!(
         BufWriter::new(File::create(prefix + ".json").unwrap()),
-        "{{\n\t\"num-run-op\": {},\n\t\"db-size\": {}\n}}",
+        "{{
+\t\"db-size\": {},
+\t\"num-load-op\": {},
+\t\"num-run-op\": {},
+\t\"num-run-inserts\": {},
+\t\"num-reads\": {},
+\t\"num-empty-reads\": {},
+\t\"load-avg-key-len\": {},
+\t\"load-avg-value-len\": {}
+}}",
+        db_size,
+        num_load_op,
         num_run_op,
-        db_size
+        num_run_inserts,
+        num_reads,
+        num_empty_reads,
+        load_key_len / num_load_op,
+        load_value_len / num_load_op,
     )
     .unwrap();
 

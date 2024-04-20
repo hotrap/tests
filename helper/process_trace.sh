@@ -12,5 +12,6 @@ max_num_run_op=500000000
 ~/tests/helper/twitter-to-plain $output_prefix $target_db_size $max_num_run_op < $trace_file | tee $output_prefix.log
 db_size=$(jq -r ".\"db-size\"" < $output_prefix.json)
 if [ $db_size -lt $target_db_size ]; then
-	~/tests/helper/augment-trace $output_prefix $max_num_run_op $((($target_db_size + $db_size - 1) / $db_size))
+	multiple=$((($target_db_size + $db_size - 1) / $db_size))
+	~/tests/helper/augment-trace $output_prefix $max_num_run_op $multiple
 fi
