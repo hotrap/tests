@@ -6,7 +6,6 @@ function check-workload-files {
 		fi
 	done
 }
-check-workload-files "${workloads[@]}"
 
 vendor=$(cat $config_file | jq -er ".vendor")
 if [ "$vendor" == 'aliyun' ]; then

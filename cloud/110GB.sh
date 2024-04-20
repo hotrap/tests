@@ -23,6 +23,7 @@ workloads=(
 )
 
 source common.sh
+check-workload-files "${workloads[@]}"
 
 function run-rocksdb-fd {
 	workload=$1
