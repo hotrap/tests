@@ -13,3 +13,5 @@ sudo apt install -y gawk
 sudo apt install -y libjemalloc-dev libevent-dev libdouble-conversion-dev libnuma-dev libboost-regex-dev libsodium-dev libboost-context-dev libboost-filesystem-dev libsnappy-dev libunwind-dev
 # PrismDB
 sudo apt install -y libtbb-dev
+# twitter trace
+sudo apt install -y time

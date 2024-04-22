@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
-if [ ! $2 ]; then
-	echo Usage: $0 trace-file output-dir
+if [ ! $1 ]; then
+	echo Usage: $0 output-prefix
 	exit 1
 fi
 set -e
-trace_file=$1
-output_dir=$2
-output_prefix=$output_dir/$(basename $trace_file)
+output_prefix=$1
 target_db_size=110000000000
 max_num_run_op=500000000
-time ~/tests/helper/twitter-to-plain $output_prefix $target_db_size $max_num_run_op < $trace_file | tee $output_prefix.log
+/bin/time ~/tests/helper/twitter-to-plain $output_prefix $target_db_size $max_num_run_op |& tee $output_prefix.log
 zstdmt $output_prefix-load $output_prefix-run
 db_size=$(jq -r ".\"db-size\"" < $output_prefix.json)
 if [ $db_size -lt $target_db_size ]; then
