@@ -37,8 +37,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     .unwrap();
 
     let mut num_prefix_digits = 0;
-    let mut n = multiple;
-    while n > 1 {
+    let mut n = multiple - 1;
+    while n > 0 {
         num_prefix_digits += 1;
         n /= 10;
     }
