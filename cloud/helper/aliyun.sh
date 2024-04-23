@@ -39,4 +39,3 @@ EOF
 source ~/.profile
 sh <(curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh) -y
 source "$HOME/.cargo/env"
-
