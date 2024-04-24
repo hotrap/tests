@@ -136,8 +136,8 @@ dependencies = [
 
 [[package]]
 name = "serde-queue"
-version = "0.1.0"
-source = "git+https://github.com/seekstar/serde-queue#bbbb4094d9855fbbdca9a14b109d295a20a7c7ce"
+version = "0.1.1"
+source = "git+https://github.com/seekstar/serde-queue#b94a4bf4cb8b1af3f055310147b5726fb0462915"
 dependencies = [
  "postcard",
  "serde",
