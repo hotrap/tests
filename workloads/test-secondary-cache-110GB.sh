@@ -5,15 +5,13 @@ if [[ $# < 2 || $# > 3 ]]; then
 fi
 set -e
 set -o pipefail
-# To make set -e take effect if the output dir does not exists
-mkdir -p $2
-res="$(ls -A $2)"
-if [ "$res" ]; then
-        echo "$2" is not empty!
-        exit 1
-fi
 workload_file=$(realpath $1)
+mkdir -p $2
 DIR=$(realpath "$2")
+if [ "$(ls -A $DIR)" ]; then
+	echo "$2" is not empty!
+	exit 1
+fi
 max_memory=$(humanfriendly --parse-size=1.5GB)
 if [ $3 ]; then
 	switches=$3

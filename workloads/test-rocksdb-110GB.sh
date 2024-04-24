@@ -5,15 +5,13 @@ if [[ $# < 3 || $# > 4 ]]; then
 fi
 set -e
 set -o pipefail
-# To make set -e take effect if the output dir does not exists
+workload_file=$(realpath $1)
 mkdir -p $2
-res="$(ls -A $2)"
-if [ "$res" ]; then
+DIR=$(realpath "$2")
+if [ "$(ls -A $DIR)" ]; then
         echo "$2" is not empty!
         exit 1
 fi
-workload_file=$(realpath $1)
-DIR=$(realpath "$2")
 fd_size=$(humanfriendly --parse-size=$3)
 max_memory=$(humanfriendly --parse-size=1.1GB)
 extra_kvexe_args="$4"

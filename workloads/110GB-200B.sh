@@ -14,14 +14,14 @@ function run-rocksdb-fd {
 	../helper/checkout-rocksdb
 	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
-	./test-rocksdb-fd-110GB-200B.sh ../config/$1 $DIR
+	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR --optimize_filters_for_hits
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-rocksdb-110GB-200B.sh ../config/$1 $DIR 10GB
+	./test-rocksdb-110GB.sh ../config/$1 $DIR 10GB --optimize_filters_for_hits
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -29,7 +29,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	# Reserve 1.65GB for VisCnts
-	./test-hotrap-110GB-200B.sh ../config/$1 $DIR 8.35GB 5.5GB 1.65GB
+	./test-hotrap-110GB.sh ../config/$1 $DIR 8.35GB 5.5GB 1.65GB --optimize_filters_for_hits
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${hotspot_workloads[@]}"; do

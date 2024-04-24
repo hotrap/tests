@@ -27,7 +27,7 @@ function run-rocksdb-fd {
 	version=$2
 	IP=$3
 	./checkout-rocksdb $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB-200B.sh ../config/$workload ../../data/$workload/$version"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB.sh ../config/$workload ../../data/$workload/$version --optimize_filters_for_hits"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
@@ -36,7 +36,7 @@ function run-rocksdb {
 	version=$2
 	IP=$3
 	./checkout-$version $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB-200B.sh ../config/$workload ../../data/$workload/$version 10GB"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB.sh ../config/$workload ../../data/$workload/$version 10GB --optimize_filters_for_hits"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
@@ -46,7 +46,7 @@ function run-hotrap {
 	IP=$3
 	./checkout-hotrap $user $IP $version
 	# Reserve 1.65GB for VisCnts
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB-200B.sh ../config/$workload ../../data/$workload/$version 8.35GB 5.5GB 1.65GB"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 8.35GB 5.5GB 1.65GB --optimize_filters_for_hits"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
