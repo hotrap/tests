@@ -7,12 +7,9 @@ set -e
 cluster_id=$1
 
 trace_prefix=$cluster_id
+augment=$(jq -er ".augment" < $trace_prefix.json)
+if [ $? -eq 0 ]; then
+	trace_prefix=$trace_prefix-${augment}x
+fi
 mkdir -p stats
 cat $trace_prefix-load $trace_prefix-run | $(dirname $0)/analyze-plain.sh stats/$trace_prefix
-db_size=$(jq -r ".\"db-size\"" < $trace_prefix.json)
-target_db_size=110000000000
-if [ $db_size -lt $target_db_size ]; then
-	multiple=$((($target_db_size + $db_size - 1) / $db_size))
-	trace_prefix=$trace_prefix-${multiple}x
-	cat $trace_prefix-load $trace_prefix-run | $(dirname $0)/analyze-plain.sh stats/$trace_prefix
-fi
