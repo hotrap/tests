@@ -8,9 +8,23 @@ user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
 workloads=(
+	"cluster03-138x"
 	"cluster04-3x"
+	"cluster05"
+	"cluster06-7x"
+	"cluster08-95x"
+	"cluster10"
+	"cluster11-26x"
+	"cluster12"
+	"cluster13"
+	"cluster14-3x"
+	"cluster15"
+	"cluster16-68x"
 	"cluster17-80x"
+	"cluster19-3x"
 	"cluster29"
+	"cluster46"
+	"cluster48-5x"
 )
 for workload in "${workloads[@]}"; do
 	trace_dir=../../twitter/processed
