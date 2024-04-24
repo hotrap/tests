@@ -7,8 +7,7 @@ set -e
 cluster_id=$1
 
 trace_prefix=$cluster_id
-augment=$(jq -er ".augment" < $trace_prefix.json)
-if [ $? -eq 0 ]; then
+if augment=$(jq -er ".augment" < $trace_prefix.json); then
 	trace_prefix=$trace_prefix-${augment}x
 fi
 mkdir -p stats

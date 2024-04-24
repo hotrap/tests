@@ -12,8 +12,7 @@ max_num_run_op=500000000
 mydir=$(dirname $0)
 output_prefix=$output_dir/$cluster_id
 $mydir/unzstd-trace.sh $cluster_id | /bin/time $mydir/twitter-to-plain $output_prefix $target_db_size $max_num_run_op |& tee $output_prefix.log
-augment=$(jq -er ".augment" < $output_prefix.json)
-if [ $? -eq 0 ]; then
+if augment=$(jq -er ".augment" < $output_prefix.json); then
 	output_prefix=$output_prefix-${augment}x
 fi
 zstdmt --no-progress $output_prefix-load $output_prefix-run
