@@ -73,11 +73,11 @@ if xlabel is None:
     legends = header[1:]
     c = [[] for _ in range(0, n)]
 else:
-    line = sys.stdin.readline().rstrip().split(' ')
+    line = shlex.split(sys.stdin.readline())
     n = len(line)
     c = [[v] for v in line]
 for line in sys.stdin:
-    line = line.rstrip().split(' ')
+    line = shlex.split(line)
     assert len(line) == n
     for i in range(0, n):
         c[i].append(line[i])
