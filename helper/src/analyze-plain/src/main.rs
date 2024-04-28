@@ -1,35 +1,36 @@
 use std::collections::HashMap;
-use std::env;
-use std::error::Error;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, BufWriter, Write};
+use std::sync::atomic::{self, AtomicBool, AtomicU64};
+use std::time::Duration;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let mut args = env::args();
-    let arg0 = args.next().unwrap();
-    // args.len(): Returns the exact remaining length of the iterator.
-    if args.len() < 1 || args.len() > 2 {
-        eprintln!("{} output-prefix [num-unique-keys]", arg0);
-        return Err(Box::new(io::Error::new(
-            io::ErrorKind::Other,
-            "Invalid arguments",
-        )));
-    }
-    let output_prefix = args.next().unwrap();
-    let num_unique_keys: Option<usize> =
-        args.next().map(|s| s.parse().unwrap());
+use clap::Parser;
 
-    let mut stats_out = BufWriter::new(File::create(&output_prefix).unwrap());
+#[derive(Parser)]
+struct Args {
+    output_prefix: String,
+    #[arg(long)]
+    num_unique_keys: Option<usize>,
+    #[arg(long, default_value_t = false)]
+    progress: bool,
+}
+
+fn work(args: &Args, progress: &AtomicU64) {
+    let mut stats_out =
+        BufWriter::new(File::create(&args.output_prefix).unwrap());
     let mut write_size_since_last_write_out = BufWriter::new(
-        File::create(output_prefix.clone() + "-write-size-since-last-write")
-            .unwrap(),
+        File::create(
+            args.output_prefix.clone() + "-write-size-since-last-write",
+        )
+        .unwrap(),
     );
     let mut num_reads_since_last_read_out = BufWriter::new(
-        File::create(output_prefix.clone() + "-num-reads-since-last-read")
+        File::create(args.output_prefix.clone() + "-num-reads-since-last-read")
             .unwrap(),
     );
     let mut read_size_since_last_read_out = BufWriter::new(
-        File::create(output_prefix + "-read-size-since-last-read").unwrap(),
+        File::create(args.output_prefix.clone() + "-read-size-since-last-read")
+            .unwrap(),
     );
 
     struct KeyInfo {
@@ -39,7 +40,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         non_empty_read_size: usize,
     }
     let mut keys: HashMap<Box<[u8]>, KeyInfo>;
-    if let Some(num_unique_keys) = num_unique_keys {
+    if let Some(num_unique_keys) = args.num_unique_keys {
         eprint!("Allocating hash map with capacity {}...", num_unique_keys);
         keys = HashMap::with_capacity(num_unique_keys);
         eprintln!("finished. Actually capacity is {}", keys.capacity());
@@ -65,6 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     loop {
         buf.clear();
         nr += 1;
+        progress.fetch_add(1, atomic::Ordering::Release);
         if reader.read_line(&mut buf).unwrap() == 0 {
             break;
         }
@@ -177,6 +179,22 @@ fn main() -> Result<(), Box<dyn Error>> {
         num_empty_reads as f64 / num_reads as f64,
     )
     .unwrap();
+}
 
-    Ok(())
+fn main() {
+    let args = Args::parse();
+
+    let should_stop = AtomicBool::new(false);
+    let progress = AtomicU64::new(0);
+    crossbeam::scope(|s: &crossbeam::thread::Scope<'_>| {
+        s.spawn(|_| {
+            while !should_stop.load(atomic::Ordering::Relaxed) {
+                eprintln!("{}", progress.load(atomic::Ordering::Relaxed));
+                std::thread::sleep(Duration::from_secs(1));
+            }
+        });
+        work(&args, &progress);
+        should_stop.store(true, atomic::Ordering::Relaxed);
+    })
+    .unwrap();
 }

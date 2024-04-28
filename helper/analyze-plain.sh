@@ -7,7 +7,7 @@ set -e
 output_prefix=$1
 mydir=$(dirname $0)
 
-$mydir/analyze-plain $output_prefix $2
+$mydir/analyze-plain $output_prefix --num-unique-keys=$2
 source $output_prefix
 
 function ratio-gt {
