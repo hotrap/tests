@@ -5,6 +5,7 @@ use std::sync::atomic::{self, AtomicBool, AtomicU64};
 use std::time::Duration;
 
 use clap::Parser;
+use thin_boxed_slice::ThinBoxedSlice;
 
 #[derive(Parser)]
 struct Args {
@@ -39,7 +40,7 @@ fn work(args: &Args, progress: &AtomicU64) {
         num_non_empty_reads: usize,
         non_empty_read_size: usize,
     }
-    let mut keys: HashMap<Box<[u8]>, KeyInfo>;
+    let mut keys: HashMap<ThinBoxedSlice<u8>, KeyInfo>;
     if let Some(num_unique_keys) = args.num_unique_keys {
         eprint!("Allocating hash map with capacity {}...", num_unique_keys);
         keys = HashMap::with_capacity(num_unique_keys);
@@ -123,7 +124,7 @@ fn work(args: &Args, progress: &AtomicU64) {
                 num_non_empty_reads += 1;
                 non_empty_read_size += key.len() + value_size;
                 keys.insert(
-                    key.as_bytes().to_owned().into_boxed_slice(),
+                    key.as_bytes().into(),
                     KeyInfo {
                         value_size,
                         total_write_size: 0,
@@ -156,7 +157,7 @@ fn work(args: &Args, progress: &AtomicU64) {
             } else {
                 total_increased_size += (key.len() + value_size) as isize;
                 keys.insert(
-                    key.as_bytes().to_owned().into_boxed_slice(),
+                    key.as_bytes().into(),
                     KeyInfo {
                         value_size,
                         total_write_size,

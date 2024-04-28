@@ -3,11 +3,18 @@
 version = 3
 
 [[package]]
+name = "allocator-api2"
+version = "0.2.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c6cb57a04249c6480766f7f7cef5467412af1490f8d1e243141daddada3264f"
+
+[[package]]
 name = "analyze-plain"
 version = "0.1.0"
 dependencies = [
  "clap",
  "crossbeam",
+ "thin-boxed-slice",
 ]
 
 [[package]]
@@ -199,6 +206,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "thin-boxed-slice"
+version = "0.1.0"
+source = "git+https://github.com/seekstar/thin-boxed-slice#f6d9ff03ba578fd5b976b449efceda93b9c5ccb7"
+dependencies = [
+ "allocator-api2",
 ]
 
 [[package]]
