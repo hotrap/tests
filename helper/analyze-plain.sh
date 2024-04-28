@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-if [ ! $1 ]; then
-	echo Usage: $0 output-prefix
+if [[ $# < 1 || $# > 2 ]]; then
+	echo Usage: $0 output-prefix [num-unique-keys]
 	exit 1
 fi
 set -e
 output_prefix=$1
 mydir=$(dirname $0)
 
-$mydir/analyze-plain $output_prefix
+$mydir/analyze-plain $output_prefix $2
 source $output_prefix
 
 function ratio-gt {

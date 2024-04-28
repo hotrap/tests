@@ -10,5 +10,6 @@ trace_prefix=$cluster_id
 if augment=$(jq -er ".augment" < $trace_prefix.json); then
 	trace_prefix=$trace_prefix-${augment}x
 fi
+num_unique_keys=$(jq -er ".\"num-unique-keys\"" < $trace_prefix.json)
 mkdir -p stats
-cat $trace_prefix-load $trace_prefix-run | $(dirname $0)/analyze-plain.sh stats/$trace_prefix
+cat $trace_prefix-load $trace_prefix-run | $(dirname $0)/analyze-plain.sh stats/$trace_prefix $num_unique_keys

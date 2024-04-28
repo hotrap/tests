@@ -8,14 +8,16 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut args = env::args();
     let arg0 = args.next().unwrap();
     // args.len(): Returns the exact remaining length of the iterator.
-    if args.len() != 1 {
-        eprintln!("{} output-prefix", arg0);
+    if args.len() < 1 || args.len() > 2 {
+        eprintln!("{} output-prefix [num-unique-keys]", arg0);
         return Err(Box::new(io::Error::new(
             io::ErrorKind::Other,
             "Invalid arguments",
         )));
     }
     let output_prefix = args.next().unwrap();
+    let num_unique_keys: Option<usize> =
+        args.next().map(|s| s.parse().unwrap());
 
     let mut stats_out = BufWriter::new(File::create(&output_prefix).unwrap());
     let mut write_size_since_last_write_out = BufWriter::new(
@@ -36,7 +38,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         num_non_empty_reads: usize,
         non_empty_read_size: usize,
     }
-    let mut keys = HashMap::<String, KeyInfo>::new();
+    let mut keys: HashMap<Box<[u8]>, KeyInfo>;
+    if let Some(num_unique_keys) = num_unique_keys {
+        eprint!("Allocating hash map with capacity {}...", num_unique_keys);
+        keys = HashMap::with_capacity(num_unique_keys);
+        eprintln!("finished. Actually capacity is {}", keys.capacity());
+    } else {
+        keys = HashMap::new();
+    }
 
     let mut preload_size = 0;
     let mut total_increased_size: isize = 0;
@@ -73,7 +82,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if op == "READ" {
             num_reads += 1;
             let write_size_since_last_write;
-            if let Some(info) = keys.get_mut(key) {
+            if let Some(info) = keys.get_mut(key.as_bytes()) {
                 write_size_since_last_write =
                     total_write_size - info.total_write_size;
 
@@ -112,7 +121,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 num_non_empty_reads += 1;
                 non_empty_read_size += key.len() + value_size;
                 keys.insert(
-                    key.to_owned(),
+                    key.as_bytes().to_owned().into_boxed_slice(),
                     KeyInfo {
                         value_size,
                         total_write_size: 0,
@@ -132,7 +141,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         } else if op == "INSERT" {
             let value_size = value_size.unwrap();
             total_write_size += key.len() + value_size;
-            if let Some(old_info) = keys.get_mut(key) {
+            if let Some(old_info) = keys.get_mut(key.as_bytes()) {
                 total_increased_size = total_increased_size
                     - old_info.value_size as isize
                     + value_size as isize;
@@ -145,7 +154,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             } else {
                 total_increased_size += (key.len() + value_size) as isize;
                 keys.insert(
-                    key.to_owned(),
+                    key.as_bytes().to_owned().into_boxed_slice(),
                     KeyInfo {
                         value_size,
                         total_write_size,

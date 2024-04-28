@@ -191,7 +191,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut stats_writer =
         BufWriter::new(File::create(prefix.clone() + ".json").unwrap());
-    writeln!(&mut stats_writer, "{{\n\t\"db-size\": {},", db_size).unwrap();
+    writeln!(
+        &mut stats_writer,
+        "{{\n\t\"db-size\": {},\n\t\"num-unique-keys\": {},",
+        db_size,
+        keys.len()
+    )
+    .unwrap();
 
     let mut augment_prefix = Vec::new();
     let mut num_prefix_digits = 0;
@@ -214,6 +220,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 default_augment -= 1;
                 augmented_db_size -= db_size;
             }
+            let mut num_unique_keys = 0;
             for (key, info) in keys.iter_mut() {
                 if augmented_db_size >= target_db_size {
                     info.augment = default_augment - 1;
@@ -222,16 +229,25 @@ fn main() -> Result<(), Box<dyn Error>> {
                     augmented_db_size +=
                         num_prefix_digits + key.len() + info.value_size;
                 }
+                num_unique_keys += info.augment;
             }
             writeln!(
                 &mut stats_writer,
-                "\t\"augment\": {},\n\t\"augmented-db-size\": {},",
-                default_augment, augmented_db_size
+                "\t\"augment\": {}\n}}",
+                default_augment
             )
             .unwrap();
             prefix.push('-');
             prefix += &default_augment.to_string();
             prefix.push('x');
+            stats_writer =
+                BufWriter::new(File::create(prefix.clone() + ".json").unwrap());
+            writeln!(
+                &mut stats_writer,
+                "{{\n\t\"db-size\": {},\n\t\"num-unique-keys\": {},",
+                augmented_db_size, num_unique_keys
+            )
+            .unwrap();
             for i in 0..default_augment {
                 augment_prefix.push(format!("{:01$}", i, num_prefix_digits));
             }
@@ -326,7 +342,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    println!("Skipped: {}\nUnique keys: {}", skipped, keys.len());
+    println!("Skipped: {}", skipped);
 
     writeln!(
         &mut stats_writer,
