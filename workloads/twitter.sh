@@ -1,6 +1,22 @@
 workloads=(
+	"cluster05"
+	"cluster07-12x"
+	"cluster09-118x"
+	"cluster10"
+	"cluster12"
+	"cluster13"
+	"cluster15"
 	"cluster17-80x"
+	"cluster18-197x"
+	"cluster20-16x"
+	"cluster21-3x"
+	"cluster22-9x"
+	"cluster23"
+	"cluster24-11x"
+	"cluster25-223x"
+	"cluster26-8x"
 	"cluster29"
+	"cluster52-3x"
 )
 function run-rocksdb-fd {
 	../helper/checkout-rocksdb
