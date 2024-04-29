@@ -40,7 +40,7 @@ fn work(args: &Args, progress: &AtomicU64) {
         num_non_empty_reads: usize,
         non_empty_read_size: usize,
     }
-    let mut keys: HashMap<ThinBoxedSlice<u8>, KeyInfo>;
+    let mut keys: HashMap<ThinBoxedSlice<u8>, Box<KeyInfo>>;
     if let Some(num_unique_keys) = args.num_unique_keys {
         eprint!("Allocating hash map with capacity {}...", num_unique_keys);
         keys = HashMap::with_capacity(num_unique_keys);
@@ -125,12 +125,12 @@ fn work(args: &Args, progress: &AtomicU64) {
                 non_empty_read_size += key.len() + value_size;
                 keys.insert(
                     key.as_bytes().into(),
-                    KeyInfo {
+                    Box::new(KeyInfo {
                         value_size,
                         total_write_size: 0,
                         num_non_empty_reads,
                         non_empty_read_size,
-                    },
+                    }),
                 );
                 preload_size += key.len() + value_size;
                 write_size_since_last_write = total_write_size;
@@ -148,22 +148,22 @@ fn work(args: &Args, progress: &AtomicU64) {
                 total_increased_size = total_increased_size
                     - old_info.value_size as isize
                     + value_size as isize;
-                *old_info = KeyInfo {
+                *old_info = Box::new(KeyInfo {
                     value_size,
                     total_write_size,
                     num_non_empty_reads: 0,
                     non_empty_read_size: 0,
-                };
+                });
             } else {
                 total_increased_size += (key.len() + value_size) as isize;
                 keys.insert(
                     key.as_bytes().into(),
-                    KeyInfo {
+                    Box::new(KeyInfo {
                         value_size,
                         total_write_size,
                         num_non_empty_reads: 0,
                         non_empty_read_size: 0,
-                    },
+                    }),
                 );
             }
         } else {
