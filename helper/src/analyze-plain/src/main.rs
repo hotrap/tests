@@ -148,12 +148,12 @@ fn work(args: &Args, progress: &AtomicU64) {
                 total_increased_size = total_increased_size
                     - old_info.value_size as isize
                     + value_size as isize;
-                *old_info = Box::new(KeyInfo {
+                **old_info = KeyInfo {
                     value_size,
                     total_write_size,
                     num_non_empty_reads: 0,
                     non_empty_read_size: 0,
-                });
+                };
             } else {
                 total_increased_size += (key.len() + value_size) as isize;
                 keys.insert(
