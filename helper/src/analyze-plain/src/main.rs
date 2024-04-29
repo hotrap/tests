@@ -40,7 +40,11 @@ fn work(args: &Args, progress: &AtomicU64) {
         num_non_empty_reads: usize,
         non_empty_read_size: usize,
     }
-    let mut keys: HashMap<ThinBoxedSlice<u8>, Box<KeyInfo>>;
+    let bump = bumpalo::Bump::new();
+    let mut keys: HashMap<
+        ThinBoxedSlice<u8, &bumpalo::Bump>,
+        bumpalo::boxed::Box<KeyInfo>,
+    >;
     if let Some(num_unique_keys) = args.num_unique_keys {
         eprint!("Allocating hash map with capacity {}...", num_unique_keys);
         keys = HashMap::with_capacity(num_unique_keys);
@@ -67,10 +71,10 @@ fn work(args: &Args, progress: &AtomicU64) {
     loop {
         buf.clear();
         nr += 1;
-        progress.fetch_add(1, atomic::Ordering::Release);
         if reader.read_line(&mut buf).unwrap() == 0 {
             break;
         }
+        progress.fetch_add(1, atomic::Ordering::Release);
         let mut s = buf.trim_end().split(' ');
         let op = s.next().expect(&nr.to_string());
         let key = s.next().expect(&nr.to_string());
@@ -124,13 +128,16 @@ fn work(args: &Args, progress: &AtomicU64) {
                 num_non_empty_reads += 1;
                 non_empty_read_size += key.len() + value_size;
                 keys.insert(
-                    key.as_bytes().into(),
-                    Box::new(KeyInfo {
-                        value_size,
-                        total_write_size: 0,
-                        num_non_empty_reads,
-                        non_empty_read_size,
-                    }),
+                    ThinBoxedSlice::new_in(key.as_bytes(), &bump),
+                    bumpalo::boxed::Box::new_in(
+                        KeyInfo {
+                            value_size,
+                            total_write_size: 0,
+                            num_non_empty_reads,
+                            non_empty_read_size,
+                        },
+                        &bump,
+                    ),
                 );
                 preload_size += key.len() + value_size;
                 write_size_since_last_write = total_write_size;
@@ -157,19 +164,23 @@ fn work(args: &Args, progress: &AtomicU64) {
             } else {
                 total_increased_size += (key.len() + value_size) as isize;
                 keys.insert(
-                    key.as_bytes().into(),
-                    Box::new(KeyInfo {
-                        value_size,
-                        total_write_size,
-                        num_non_empty_reads: 0,
-                        non_empty_read_size: 0,
-                    }),
+                    ThinBoxedSlice::new_in(key.as_bytes(), &bump),
+                    bumpalo::boxed::Box::new_in(
+                        KeyInfo {
+                            value_size,
+                            total_write_size,
+                            num_non_empty_reads: 0,
+                            non_empty_read_size: 0,
+                        },
+                        &bump,
+                    ),
                 );
             }
         } else {
             panic!("Unknown operation {}", op);
         }
     }
+    eprintln!("Final hash table capacity: {}", keys.capacity());
 
     writeln!(
         &mut stats_out,

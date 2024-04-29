@@ -12,6 +12,7 @@ checksum = "5c6cb57a04249c6480766f7f7cef5467412af1490f8d1e243141daddada3264f"
 name = "analyze-plain"
 version = "0.1.0"
 dependencies = [
+ "bumpalo",
  "clap",
  "crossbeam",
  "thin-boxed-slice",
@@ -63,6 +64,15 @@ checksum = "1cd54b81ec8d6180e24654d0b371ad22fc3dd083b6ff8ba325b72e00c87660a7"
 dependencies = [
  "anstyle",
  "windows-sys",
+]
+
+[[package]]
+name = "bumpalo"
+version = "3.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "79296716171880943b8470b5f8d03aa55eb2e645a4874bdbb28adb49162e012c"
+dependencies = [
+ "allocator-api2",
 ]
 
 [[package]]
@@ -210,8 +220,8 @@ dependencies = [
 
 [[package]]
 name = "thin-boxed-slice"
-version = "0.1.0"
-source = "git+https://github.com/seekstar/thin-boxed-slice#f6d9ff03ba578fd5b976b449efceda93b9c5ccb7"
+version = "0.1.1"
+source = "git+https://github.com/seekstar/thin-boxed-slice#72a2643dffa79810675fd9c308db7768b0fadb08"
 dependencies = [
  "allocator-api2",
 ]
