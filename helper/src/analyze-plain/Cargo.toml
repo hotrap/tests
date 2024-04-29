@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-thin-boxed-slice = { git = "https://github.com/seekstar/thin-boxed-slice", version = "^0.1.1" }
+thin-boxed-slice = "^0.1.1"
 clap = { version = "4.5.4", features = ["derive"] }
 crossbeam = "^0.8.4"
 bumpalo = { version = "^3.16.0", features = ["allocator-api2", "boxed"] }
