@@ -22,6 +22,6 @@ workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe-rocksdb/build/
 
 ulimit -n 100000
-../helper/exe-while.sh $DIR bash -c "systemd-run --user -E LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4 --scope -p MemoryMax=$max_memory perf record --call-graph=fp -o $DIR/perf.data $kvexe_dir/rocksdb-kvexe --run --switches=0x1 --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=67108864 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}}\" $extra_kvexe_args 2>> $DIR/log.txt"
+../helper/exe-while.sh $DIR bash -c "systemd-run --user -E LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4 --scope -p MemoryMax=$max_memory perf record --call-graph=fp -o $DIR/perf.data $kvexe_dir/rocksdb-kvexe --run --switches=0x1 --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=671088640 --enable_fast_generator --enable_fast_process --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}}\" $extra_kvexe_args 2>> $DIR/log.txt"
 bash ../helper/rocksdb-data.sh "$DIR"
 perf script -i $DIR/perf.data | inferno-collapse-perf > $DIR/perf.folded
