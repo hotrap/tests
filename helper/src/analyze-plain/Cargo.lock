@@ -220,9 +220,9 @@ dependencies = [
 
 [[package]]
 name = "thin-boxed-slice"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5e716d19d01d26375fd1a59647b3e99dfbf25691352de11a0cc72c0d2729fc7"
+checksum = "7922edd7e7df6da8161275035db7d1f3a2651ccc5e15230bdfc4f7a88c1459da"
 dependencies = [
  "allocator-api2",
 ]
