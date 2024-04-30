@@ -16,9 +16,13 @@ fi
 extra_kvexe_args="$4"
 workspace=$(realpath $(dirname $0)/../..)
 kvexe_dir=$workspace/kvexe-secondary-cache/build/
+fd_size=4030000000
+
+memtable_size=$((64 * 1024 * 1024))
+L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
 
 ulimit -n 100000
 cd $DIR
-$kvexe_dir/rocksdb-kvexe --load --format=plain-length-only --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=335544320 --secondary_cache_size=6000000000 --enable_fast_process --db_path=$workspace/testdb/db/ --db_paths="{{$workspace/testdb/fd,4030000000},{$workspace/testdb/sd,1000000000000}}" --trace=$trace_file_load $extra_kvexe_args 2>> log.txt
-$workspace/tests/helper/exe-while.sh . bash -c "$kvexe_dir/rocksdb-kvexe --run --format=plain-length-only --switches=0x1 --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=335544320 --secondary_cache_size=6000000000 --enable_fast_process --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,4030000000},{$workspace/testdb/sd,1000000000000}}\" --trace=$trace_file_run $extra_kvexe_args 2>> log.txt"
+$kvexe_dir/rocksdb-kvexe --load --format=plain-length-only --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=$L1_size --secondary_cache_size=6000000000 --enable_fast_process --db_path=$workspace/testdb/db/ --db_paths="{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}}" --trace=$trace_file_load $extra_kvexe_args 2>> log.txt
+$workspace/tests/helper/exe-while.sh . bash -c "$kvexe_dir/rocksdb-kvexe --run --format=plain-length-only --switches=0x1 --num_threads=16 --max_background_jobs=4 --block_size=16384 --cache_size=75497472 --max_bytes_for_level_base=$L1_size --secondary_cache_size=6000000000 --enable_fast_process --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}}\" --trace=$trace_file_run $extra_kvexe_args 2>> log.txt"
 bash $workspace/tests/helper/rocksdb-data.sh .
