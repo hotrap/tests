@@ -74,6 +74,15 @@ def progress_to_timestamp(data_dir, progress):
         return info['run-end-timestamp(ns)']
     return v.iloc[0]['Timestamp(ns)']
 
+def ops_during_interval(data_dir, start_progress, end_progress):
+    timestamp_start = progress_to_timestamp(data_dir, start_progress)
+    timestamp_end = progress_to_timestamp(data_dir, end_progress)
+    progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+    progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
+    operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
+    seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
+    return operations_executed / seconds
+
 def read_compaction_bytes(data_dir):
     compaction_bytes = []
     compaction_stats = open(os.path.join(data_dir, 'compaction-stats'))

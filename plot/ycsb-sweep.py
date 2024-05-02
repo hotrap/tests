@@ -3,9 +3,8 @@
 import sys
 
 if len(sys.argv) != 2:
-	print('Usage: ' + sys.argv[0] + ' dir')
-	exit()
-
+    print('Usage: ' + sys.argv[0] + ' dir')
+    exit()
 dir=sys.argv[1]
 
 import os
@@ -20,9 +19,8 @@ import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 
 # Paper specific settings
-STANDARD_WIDTH = 17.8
-SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
-DOUBLE_COL_WIDTH = STANDARD_WIDTH
+SINGLE_COL_WIDTH = 8.5
+DOUBLE_COL_WIDTH = 17.8
 def cm_to_inch(value):
     return value/2.54
 
@@ -119,13 +117,7 @@ for i in range(len(skewnesses)):
             if version_idx < 4:
                 workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
                 data_dir = os.path.join(dir, workload, version['path'])
-                timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
-                timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
-                progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
-                progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
-                operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
-                seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9
-                skewness_ratio_version_ops[skewness][ratio][version['path']] = operations_executed / seconds
+                skewness_ratio_version_ops[skewness][ratio][version['path']] = common.ops_during_interval(data_dir, start_progress, end_progress)
             else:
                 workload = 'workload_110GB_' + ratios_prismdb_mutant[ratio] + '_' + skewness
                 data_dir = os.path.join(dir, workload, version['path'])
