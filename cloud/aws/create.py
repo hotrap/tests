@@ -19,7 +19,7 @@ response = client.run_instances(
                 'Iops': 16000,
                 'VolumeSize': 512, # GiBs
                 'VolumeType': 'gp3',
-                'Throughput': 600, # MiB/s
+                'Throughput': 1000, # MiB/s
                 'Encrypted': False
             },
         },
