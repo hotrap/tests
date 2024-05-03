@@ -198,15 +198,19 @@ fn main() {
 
     let should_stop = AtomicBool::new(false);
     let progress = AtomicU64::new(0);
-    crossbeam::scope(|s: &crossbeam::thread::Scope<'_>| {
-        s.spawn(|_| {
-            while !should_stop.load(atomic::Ordering::Relaxed) {
-                eprintln!("{}", progress.load(atomic::Ordering::Relaxed));
-                std::thread::sleep(Duration::from_secs(1));
-            }
-        });
+    if args.progress {
+        crossbeam::scope(|s: &crossbeam::thread::Scope<'_>| {
+            s.spawn(|_| {
+                while !should_stop.load(atomic::Ordering::Relaxed) {
+                    eprintln!("{}", progress.load(atomic::Ordering::Relaxed));
+                    std::thread::sleep(Duration::from_secs(1));
+                }
+            });
+            work(&args, &progress);
+            should_stop.store(true, atomic::Ordering::Relaxed);
+        })
+        .unwrap();
+    } else {
         work(&args, &progress);
-        should_stop.store(true, atomic::Ordering::Relaxed);
-    })
-    .unwrap();
+    }
 }
