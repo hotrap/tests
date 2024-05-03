@@ -24,53 +24,33 @@ def cm_to_inch(value):
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)))
 
-ids=[
-    1,
-    5,
-    6,
-    7,
-    8,
-    9,
-    14,
-    15,
-    16,
-    17,
-    19,
-    22,
-    23,
-    24,
-    46,
-    48,
+workloads=[
+    'cluster02-283x',
+    'cluster05',
+    'cluster06-7x',
+    'cluster08-95x',
+    'cluster09-113x',
+    'cluster10',
+    'cluster11-25x',
+    'cluster14-3x',
+    'cluster16-67x',
+    'cluster17-80x',
+    'cluster18-185x',
+    'cluster19-3x',
+    'cluster22-9x',
+    'cluster23',
+    'cluster24-11x',
+    'cluster46',
+    'cluster48-5x',
 ]
-workloads={
-    1: 'cluster01-4247x',
-    5: 'cluster05',
-    6: 'cluster06-7x',
-    7: 'cluster07-12x',
-    8: 'cluster08-95x',
-    9: 'cluster09-118x',
-    11: 'cluster11-26x',
-    14: 'cluster14-3x',
-    15: 'cluster15',
-    16: 'cluster16-68x',
-    17: 'cluster17-80x',
-    18: 'cluster18-197x',
-    19: 'cluster19-3x',
-    22: 'cluster22-9x',
-    23: 'cluster23',
-    24: 'cluster24-11x',
-    29: 'cluster29',
-    36: 'cluster36-18x',
-    46: 'cluster46',
-    48: 'cluster48-5x',
-}
 
+ids = []
 x = []
 y = []
 speedup = []
-for id in ids:
-    workload=workloads[id]
-    x.append(float(open(os.path.join(stat_dir, 'cluster' + '{:02}'.format(id) + '.000-read-hot-5p-read')).read()))
+for workload in workloads:
+    ids.append(int(workload.split('-')[0][7:]))
+    x.append(float(open(os.path.join(stat_dir, workload + '-read-hot-5p-read')).read()))
     y.append(float(open(os.path.join(stat_dir, workload + '-read-with-more-than-5p-write-size')).read()))
 
     workload_dir = os.path.join(dir, workload)
@@ -86,9 +66,12 @@ for id in ids:
 
 plt.scatter(x, y)
 for i in range(0, len(x)):
-    plt.text(x[i] + 0.02, y[i] - 0.02, '{:.2f}x'.format(speedup[i]), fontsize=8)
-plt.xticks(fontsize=8)
-plt.yticks(fontsize=8)
+    plt.text(x[i] - 0.077, y[i] - 0.03, '{:02}'.format(ids[i]), fontsize=8, c='gray')
+    plt.text(x[i] + 0.02, y[i] - 0.03, '{:.2f}x'.format(speedup[i]), fontsize=8)
+
+plt.xlim(-0.03, 1.03)
+plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
+plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
 plt.xlabel('Skewness of reads', fontsize=8)
 plt.ylabel('Age of reads', fontsize=8)
 plt.tight_layout()
