@@ -15,12 +15,14 @@ enum Operation<'a> {
     // value size == 0 if it's not the first occurrence of the key
     // value size == -1 if it's getting a non-existing key
     Read(&'a str, isize),
+    Delete(&'a str),
 }
 impl<'a> Operation<'a> {
     fn key(&'a self) -> &'a str {
         match self {
             Self::Insert(key, _) => key,
             Self::Read(key, _) => key,
+            Self::Delete(key) => key,
         }
     }
 }
@@ -72,6 +74,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                         .insert(key.to_owned(), (value_size as usize, 0))
                         .is_none());
                 }
+            }
+            Operation::Delete(key) => {
+                load.remove(key);
             }
         }
     }
@@ -179,7 +184,16 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &mut load,
             );
         } else if op == "delete" {
-            // Temporarily ignore it.
+            if let Some(info) = keys.remove(key) {
+                db_size -= key.len() + info.value_size;
+            }
+            add(
+                &mut run,
+                Operation::Delete(key),
+                max_num_run_op,
+                &mut timestamp,
+                &mut load,
+            );
         } else {
             for c in op.as_bytes() {
                 if !c.is_ascii_digit() {
@@ -280,10 +294,16 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut num_run_inserts: usize = 0;
     let mut num_reads: usize = 0;
     let mut num_empty_reads: usize = 0;
+    let mut num_deletes: usize = 0;
+    let mut num_empty_deletes: usize = 0;
     while let Some(operation) = run.pop().unwrap() {
         match operation {
             Operation::Insert(key, value_size) => {
-                let augment = keys.get(key).unwrap().augment;
+                let augment = if let Some(info) = keys.get(key) {
+                    info.augment
+                } else {
+                    default_augment
+                };
                 num_run_inserts += augment;
                 for i in 0..augment {
                     writeln!(
@@ -305,16 +325,35 @@ fn main() -> Result<(), Box<dyn Error>> {
                     writeln!(
                         &mut run_writer,
                         "READ {}{}",
-                        augment_prefix[i], &key
+                        augment_prefix[i], key
                     )
                     .unwrap();
                 }
                 if value_size > 0 {
-                    assert!(load
-                        .insert(key.to_owned(), (value_size as usize, 0))
-                        .is_none());
+                    // It seems that this is possible in the trace:
+                    // read key1 123
+                    // delete key1
+                    // read key1 123
+                    load.insert(key.to_owned(), (value_size as usize, 0));
                 } else if value_size == -1 {
                     num_empty_reads += augment;
+                }
+            }
+            Operation::Delete(key) => {
+                let augment = if let Some(info) = keys.get(key) {
+                    info.augment
+                } else {
+                    num_empty_deletes += default_augment;
+                    default_augment
+                };
+                num_deletes += augment;
+                for i in 0..augment {
+                    writeln!(
+                        &mut run_writer,
+                        "DELETE {}{}",
+                        augment_prefix[i], &key
+                    )
+                    .unwrap();
                 }
             }
         }
@@ -328,7 +367,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut load_key_len = 0;
     let mut load_value_len = 0;
     for (key, (value_size, _)) in load {
-        let augment = keys.get(&key).unwrap().augment;
+        let augment = if let Some(info) = keys.get(&key) {
+            info.augment
+        } else {
+            default_augment
+        };
         num_load_op += augment;
         load_key_len += (num_prefix_digits + key.len()) * augment;
         load_value_len += value_size * augment;
@@ -351,6 +394,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 \t\"num-run-inserts\": {},
 \t\"num-reads\": {},
 \t\"num-empty-reads\": {},
+\t\"num-deletes\": {},
+\t\"num-empty-deletes\": {},
 \t\"load-avg-key-len\": {},
 \t\"load-avg-value-len\": {}
 }}",
@@ -359,6 +404,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         num_run_inserts,
         num_reads,
         num_empty_reads,
+        num_deletes,
+        num_empty_deletes,
         load_key_len / num_load_op,
         load_value_len / num_load_op,
     )

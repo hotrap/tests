@@ -8,7 +8,7 @@ output_prefix=$1
 mydir=$(dirname $0)
 
 $mydir/analyze-plain $output_prefix --num-unique-keys=$2
-source $output_prefix
+db_size=$(jq -er ".\"db-size\"" < $output_prefix.json)
 
 function ratio-gt {
 	input=$1

@@ -17,8 +17,9 @@ struct Args {
 }
 
 fn work(args: &Args, progress: &AtomicU64) {
-    let mut stats_out =
-        BufWriter::new(File::create(&args.output_prefix).unwrap());
+    let mut stats_out = BufWriter::new(
+        File::create(args.output_prefix.clone() + ".json").unwrap(),
+    );
     let mut write_size_since_last_write_out = BufWriter::new(
         File::create(
             args.output_prefix.clone() + "-write-size-since-last-write",
@@ -64,6 +65,8 @@ fn work(args: &Args, progress: &AtomicU64) {
 
     let mut num_reads = 0;
     let mut num_empty_reads = 0;
+    let mut num_deletes = 0;
+    let mut num_empty_deletes = 0;
 
     let mut reader = BufReader::new(io::stdin());
     let mut nr: usize = 0;
@@ -151,11 +154,11 @@ fn work(args: &Args, progress: &AtomicU64) {
         } else if op == "INSERT" {
             let value_size = value_size.unwrap();
             total_write_size += key.len() + value_size;
-            if let Some(old_info) = keys.get_mut(key.as_bytes()) {
+            if let Some(info) = keys.get_mut(key.as_bytes()) {
                 total_increased_size = total_increased_size
-                    - old_info.value_size as isize
+                    - info.value_size as isize
                     + value_size as isize;
-                **old_info = KeyInfo {
+                **info = KeyInfo {
                     value_size,
                     total_write_size,
                     num_non_empty_reads: 0,
@@ -176,6 +179,15 @@ fn work(args: &Args, progress: &AtomicU64) {
                     ),
                 );
             }
+        } else if op == "DELETE" {
+            assert!(value_size.is_none());
+            total_write_size += key.len();
+            num_deletes += 1;
+            if let Some(info) = keys.get_mut(key.as_bytes()) {
+                total_increased_size -= (key.len() + info.value_size) as isize;
+            } else {
+                num_empty_deletes += 1;
+            }
         } else {
             panic!("Unknown operation {}", op);
         }
@@ -184,11 +196,20 @@ fn work(args: &Args, progress: &AtomicU64) {
 
     writeln!(
         &mut stats_out,
-        "db_size={}\nnum_reads={}\nnum_empty_reads={}\nempty_read_ratio={}",
+        "{{
+\t\"db-size\": {},
+\t\"num-reads\": {},
+\t\"num-empty-reads\": {},
+\t\"empty-read-ratio\": {},
+\t\"num-deletes\": {},
+\t\"num-empty-deletes\": {}
+}}",
         preload_size as isize + total_increased_size,
         num_reads,
         num_empty_reads,
         num_empty_reads as f64 / num_reads as f64,
+        num_deletes,
+        num_empty_deletes,
     )
     .unwrap();
 }
