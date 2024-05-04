@@ -1,6 +1,6 @@
 sudo apt install -y g++ cmake libtcmalloc-minimal4 nocache
 # tests
-sudo apt install -y jq rsync
+sudo apt install -y jq rsync bc
 # iostat
 sudo apt install -y sysstat
 # RocksDB
