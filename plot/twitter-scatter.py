@@ -29,7 +29,6 @@ workloads=[
     'cluster05',
     'cluster06-7x',
     'cluster08-95x',
-    'cluster09-113x',
     'cluster10',
     'cluster11-25x',
     'cluster14-3x',
@@ -40,8 +39,10 @@ workloads=[
     'cluster22-9x',
     'cluster23',
     'cluster24-11x',
+    'cluster30-10x',
     'cluster46',
     'cluster48-5x',
+    'cluster52-3x',
 ]
 
 ids = []

@@ -1,7 +1,7 @@
 workloads=(
 	"cluster05"
 	"cluster07-12x"
-	"cluster09-118x"
+	"cluster09-113x"
 	"cluster10"
 	"cluster12"
 	"cluster13"
@@ -16,6 +16,7 @@ workloads=(
 	"cluster25-223x"
 	"cluster26-8x"
 	"cluster29"
+	"cluster50"
 	"cluster52-3x"
 )
 function run-rocksdb-fd {
@@ -48,7 +49,7 @@ function run-hotrap {
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
 	# Reserve 330MB for VisCnts
-	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 9.67GB 5.5GB 330MB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
+	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 5.5GB 330MB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
 	../helper/hotrap-plot.sh $DIR
 }
 

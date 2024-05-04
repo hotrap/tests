@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [[ $# < 6 || $# > 7 ]]; then
-	echo Usage: $0 trace-file-load trace-file-run output-dir fd-size max-hot-size max-viscnts-size [extra-kvexe-args]
+if [[ $# < 5 || $# > 6 ]]; then
+	echo Usage: $0 trace-file-load trace-file-run output-dir max-hot-size max-viscnts-size [extra-kvexe-args]
 	exit 1
 fi
 trace_file_load=$(realpath -s "$1")
@@ -11,16 +11,16 @@ if [ "$(ls -A $DIR)" ]; then
 	echo "$3" is not empty!
 	exit 1
 fi
-fd_size=$(humanfriendly --parse-size=$4)
-max_hot_set_size=$(humanfriendly --parse-size=$5)
-max_viscnts_size=$(humanfriendly --parse-size=$6)
-extra_kvexe_args="$7"
+max_hot_set_size=$(humanfriendly --parse-size=$4)
+max_viscnts_size=$(humanfriendly --parse-size=$5)
+extra_kvexe_args="$6"
 cd "$(dirname $0)"
 workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe/build/
 
+fd_size=10000000000
 memtable_size=$((64 * 1024 * 1024))
-L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
+L1_size=$((($fd_size - $max_viscnts_size) / 12 / $memtable_size * $memtable_size))
 
 ulimit -n 100000
 # Dump core when crash
