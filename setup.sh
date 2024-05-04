@@ -1,10 +1,7 @@
 pip3 install pandas matplotlib humanfriendly json5
 pip3 install aliyun-python-sdk-ecs
 
-tmp=$(mktemp)
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf > $tmp
-sh $tmp -y
-rm $tmp
+sh <(curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf) -y
 source ~/.cargo/env
 
 cd helper
