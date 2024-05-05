@@ -4,6 +4,8 @@ pip3 install aliyun-python-sdk-ecs
 sh <(curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf) -y
 source ~/.cargo/env
 
+cargo install huniq
+
 cd helper
 make
 cd ..
