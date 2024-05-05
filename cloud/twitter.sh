@@ -8,20 +8,24 @@ user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
 workloads=(
+	"cluster01-4168x"
+	"cluster02-283x"
+	"cluster03-135x"
 	"cluster03-138x"
 	"cluster04-3x"
 	"cluster05"
 	"cluster06-7x"
 	"cluster08-95x"
+	"cluster09-113x"
 	"cluster10"
-	"cluster11-26x"
+	"cluster11-25x"
 	"cluster12"
 	"cluster13"
 	"cluster14-3x"
 	"cluster15"
-	"cluster16-68x"
+	"cluster16-67x"
 	"cluster17-80x"
-	"cluster18-197x"
+	"cluster18-185x"
 	"cluster19-3x"
 	"cluster20-16x"
 	"cluster21-3x"
@@ -36,28 +40,36 @@ workloads=(
 	"cluster30-10x"
 	"cluster31-2x"
 	"cluster32"
+	"cluster33-5x"
 	"cluster34-9x"
 	"cluster35"
 	"cluster36-18x"
+	"cluster37"
 	"cluster38"
 	"cluster39"
 	"cluster40-5x"
 	"cluster41-6x"
+	"cluster42-15x"
+	"cluster43-4x"
 	"cluster44-40x"
+	"cluster45-18x"
 	"cluster46"
+	"cluster47-74x"
 	"cluster48-5x"
 	"cluster49-17x"
 	"cluster50"
+	"cluster51-175x"
 	"cluster52-3x"
+	"cluster53-12x"
 	"cluster54-11x"
 )
 for workload in "${workloads[@]}"; do
 	trace_dir=../../twitter/processed
-	if [ ! -f $trace_dir/$workload-load ]; then
+	if [ ! -f $trace_dir/$workload-load.zst ]; then
 		echo $workload-load does not exist
 		exit 1
 	fi
-	if [ ! -f $trace_dir/$workload-run ]; then
+	if [ ! -f $trace_dir/$workload-run.zst ]; then
 		echo $workload-run does not exist
 		exit 1
 	fi
@@ -70,7 +82,7 @@ function upload-trace {
 		../../upload-trace $user $IP $workload
 	else
 		ssh $user@$IP "mkdir -p twitter/processed"
-		rsync -zpt --partial -e ssh ../../twitter/processed/$workload-*.zst $user@$IP:~/twitter/processed/
+		rsync -pt --partial -e ssh ../../twitter/processed/$workload-*.zst $user@$IP:~/twitter/processed/
 		ssh $user@$IP "unzstd twitter/processed/$workload-*.zst"
 	fi
 	prefix=../../twitter/processed/$workload
@@ -113,7 +125,7 @@ function run-hotrap {
 	upload-trace
 	./checkout-hotrap $user $IP $version
 	# Reserve 330MB for VisCnts
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version 9.67GB 5.5GB 330MB"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version 5.5GB 330MB"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
