@@ -16,7 +16,6 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from matplotlib.ticker import ScalarFormatter
 
 # Paper specific settings
 SINGLE_COL_WIDTH = 8.5
@@ -98,10 +97,6 @@ versions=[
 version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)', 'Mutant', 'PrismDB']
 size='110GB'
 
-gs = gridspec.GridSpec(1, len(skewnesses))
-bar_width = 1 / (len(versions) + 1)
-cluster_width = bar_width * len(versions)
-
 skewness_ratio_version_ops = {}
 for i in range(len(skewnesses)):
     skewness = skewnesses[i]
@@ -167,6 +162,10 @@ print('\defmacro{OverheadUniformRocksDBFat}{%.1f\\%%}' %(overhead * 100), file=t
 tex = tex.getvalue()
 print(tex)
 open(os.path.join(dir, 'ycsb-sweep.tex'), mode='w').write(tex)
+
+gs = gridspec.GridSpec(1, len(skewnesses))
+bar_width = 1 / (len(versions) + 1)
+cluster_width = bar_width * len(versions)
 
 for i in range(len(skewnesses)):
     subfig = plt.subplot(gs[0, i])
