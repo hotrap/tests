@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [[ $# < 5 || $# > 6 ]]; then
-	echo Usage: $0 workload-file output-dir fd-size max-hot-size max-viscnts-size [extra-kvexe-args]
+if [[ $# < 4 || $# > 5 ]]; then
+	echo Usage: $0 workload-file output-dir max-hot-size max-viscnts-size [extra-kvexe-args]
 	exit 1
 fi
 workload_file=$(realpath -s "$1")
@@ -10,14 +10,14 @@ if [ "$(ls -A $DIR)" ]; then
 	echo "$2" is not empty!
 	exit 1
 fi
-fd_size=$(humanfriendly --parse-size=$3)
-max_hot_set_size=$(humanfriendly --parse-size=$4)
-max_viscnts_size=$(humanfriendly --parse-size=$5)
-extra_kvexe_args="$6"
+max_hot_set_size=$(humanfriendly --parse-size=$3)
+max_viscnts_size=$(humanfriendly --parse-size=$4)
+extra_kvexe_args="$5"
 cd "$(dirname $0)"
 workspace=$(realpath ../..)
 kvexe_dir=$workspace/kvexe/build/
 
+fd_size=10000000000
 memtable_size=$((64 * 1024 * 1024))
 L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
 
