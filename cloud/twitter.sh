@@ -11,10 +11,10 @@ workloads=(
 	"cluster01-4168x"
 	"cluster02-283x"
 	"cluster03-135x"
-	"cluster03-138x"
 	"cluster04-3x"
 	"cluster05"
 	"cluster06-7x"
+	"cluster07-12x"
 	"cluster08-95x"
 	"cluster09-113x"
 	"cluster10"
@@ -66,11 +66,11 @@ workloads=(
 for workload in "${workloads[@]}"; do
 	trace_dir=../../twitter/processed
 	if [ ! -f $trace_dir/$workload-load.zst ]; then
-		echo $workload-load does not exist
+		echo $workload-load.zst does not exist
 		exit 1
 	fi
 	if [ ! -f $trace_dir/$workload-run.zst ]; then
-		echo $workload-run does not exist
+		echo $workload-run.zst does not exist
 		exit 1
 	fi
 done
@@ -124,16 +124,29 @@ function run-hotrap {
 	IP=$3
 	upload-trace
 	./checkout-hotrap $user $IP $version
-	# Reserve 330MB for VisCnts
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version 5.5GB 330MB"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
 
-for workload in "${workloads[@]}"; do
+num=${#workloads[@]}
+max_concurrent=10
+i=0
+running=0
+while [ $i -lt $num ]; do
+	workload="${workloads[$i]}"
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-fat
 	cloud-run run-secondary-cache $workload secondary-cache
 	cloud-run run-hotrap $workload promote-stably-hot
+	i=$(($i + 1))
+	running=$(($running + 1))
+	if [ $running -eq $max_concurrent ]; then
+		wait -n
+		wait -n
+		wait -n
+		wait -n
+		running=$(($running - 1))
+	fi
 done
 wait
