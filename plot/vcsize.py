@@ -5,8 +5,10 @@ import sys
 if len(sys.argv) != 2:
 	print('Usage: ' + sys.argv[0] + ' dir')
 	exit()
+data_dir = sys.argv[1]
 
 import os
+import json5
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -20,15 +22,17 @@ mpl.rcParams.update({
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
-d = sys.argv[1]
-du = pd.read_table(d + '/vc_param', delim_whitespace=True,header=None)
-time = (du[0] - du[0][0]) / 1e9
+info = os.path.join(data_dir, 'info.json')
+info = json5.load(open(info))
+vcsize = pd.read_table(os.path.join(data_dir, 'vc_param'), delim_whitespace=True, header=None)
+vcsize = vcsize[(vcsize[0] >= info['run-start-timestamp(ns)']) & (vcsize[0] < info['run-end-timestamp(ns)'])]
+time = (vcsize[0] - vcsize[0].iloc[0]) / 1e9
 
-plot_dir = d + '/plot'
+plot_dir = os.path.join(data_dir, 'plot')
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
-pdf_path = plot_dir + '/vc_param.pdf'
-plt.plot(time, du[1])
+pdf_path = os.path.join(plot_dir, 'vc_param.pdf')
+plt.plot(time, vcsize[1])
 plt.legend([1], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Size (Bytes)', fontdict=fonten)
