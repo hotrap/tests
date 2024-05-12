@@ -19,7 +19,7 @@ kvexe_dir=$workspace/kvexe/build/
 
 fd_size=10000000000
 memtable_size=$((64 * 1024 * 1024))
-L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
+L1_size=$((($fd_size - $max_viscnts_size) / 12 / $memtable_size * $memtable_size))
 
 ulimit -n 100000
 # Dump core when crash
