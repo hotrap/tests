@@ -56,8 +56,7 @@ function run-hotrap {
 	version=$2
 	IP=$3
 	./checkout-hotrap $user $IP $version
-	# Reserve 330MB for VisCnts
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 9.67GB 5.5GB 330MB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size\""
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 5.5GB 330MB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
