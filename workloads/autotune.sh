@@ -1,16 +1,16 @@
 workloads=(
-	"read_0.5_insert_0.5_hotspot0.05_110GB_165GB"
-	"read_0.75_insert_0.25_hotspot0.05_110GB_165GB"
-	"ycsba_hotspot0.05_110GB_165GB"
-	"ycsbc_hotspot0.05_110GB_165GB"
-	"read_0.5_insert_0.5_zipfian_110GB_165GB"
-	"read_0.75_insert_0.25_zipfian_110GB_165GB"
-	"ycsba_zipfian_110GB_165GB"
-	"ycsbc_zipfian_110GB_165GB"
-	"read_0.5_insert_0.5_uniform_110GB_165GB"
-	"read_0.75_insert_0.25_uniform_110GB_165GB"
-	"ycsba_uniform_110GB_165GB"
-	"ycsbc_uniform_110GB_165GB"
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
+	"ycsba_hotspot0.05_110GB_220GB"
+	"ycsbc_hotspot0.05_110GB_220GB"
+	"read_0.5_insert_0.5_zipfian_110GB_220GB"
+	"read_0.75_insert_0.25_zipfian_110GB_220GB"
+	"ycsba_zipfian_110GB_220GB"
+	"ycsbc_zipfian_110GB_220GB"
+	"read_0.5_insert_0.5_uniform_110GB_220GB"
+	"read_0.75_insert_0.25_uniform_110GB_220GB"
+	"ycsba_uniform_110GB_220GB"
+	"ycsbc_uniform_110GB_220GB"
 )
 function run-hotrap {
 	../helper/checkout-$2
