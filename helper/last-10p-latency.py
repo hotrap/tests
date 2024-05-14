@@ -14,7 +14,7 @@ i = 0
 latencies = []
 while True:
     try:
-        f = open(os.path.join(data_dir, 'latency_' + str(i)))
+        f = open(os.path.join(data_dir, 'latency-' + str(i)))
     except FileNotFoundError:
         break
     i += 1

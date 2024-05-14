@@ -44,7 +44,7 @@ function build_kvexe_prismdb {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/prismdb/include -DROCKSDB_LIB=$workspace/prismdb/build
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE=$workspace/prismdb/include -DROCKSDB_LIB=$workspace/prismdb/build
 	make
 	cd ..
 }

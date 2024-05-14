@@ -20,7 +20,7 @@ function run-prismdb {
 	DIR=../../data/$1/prismdb
 	echo Result directory: $DIR
 	./test-prismdb-110GB.sh ../config/$1 $DIR
-	../helper/plot-prismdb-mutant.sh $DIR
+	../helper/rocksdb-plot.sh $DIR
 }
 
 function run-mutant {
