@@ -3,17 +3,7 @@ if [ ! $1 ]; then
 	echo Usage: $0 output-dir
 	exit 1
 fi
-DIR=$(realpath "$1")
-mydir=$(realpath $(dirname $0))
-cd $mydir
-cd ../../testdb
-du -sh db/ fd/ sd/ >> "$DIR"/log.txt
-cd db
-mv LOG rocksdb-stats*.txt latency-* first-level-in-sd period_stats progress cpu cputimes mem info.json compaction-stats timers worker-cpu-nanos rand-read-bytes "$DIR"/
-if [ -f 0_key_only_trace_70_100 ]; then
-	find . -name "*_key_only_trace_70_100" -exec cat {} \; | awk '{if ($1 == "READ" || $1 == "RMW") print $2}' | $mydir/bin/occurrences > occurrences
-fi
-$mydir/latency-after "$DIR"/
-if [ -f ans_0 ]; then
-	sha256sum ans_* > "$DIR"/ans.sha256
-fi
+mydir=$(dirname "$0")
+db_dir="$mydir/../../testdb/db"
+"$mydir"/save-common-data.sh "$db_dir" "$1"
+mv $db_dir/{rocksdb-stats*.txt,first-level-in-sd,compaction-stats,rand-read-bytes} "$1"
