@@ -16,7 +16,7 @@ response = client.run_instances(
             'DeviceName': '/dev/xvda',
             'Ebs': {
                 'DeleteOnTermination': True,
-                'Iops': 16000,
+                'Iops': 10000,
                 'VolumeSize': 512, # GiBs
                 'VolumeType': 'gp3',
                 'Throughput': 1000, # MiB/s
