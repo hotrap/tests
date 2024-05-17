@@ -15,7 +15,7 @@ function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-hotrap-110GB.sh ../config/$1 $DIR 5.5GB 330MB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size $3"
+	./test-hotrap-110GB.sh ../config/$1 $DIR 5GB 1.5GB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size $3"
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${workloads[@]}"; do
