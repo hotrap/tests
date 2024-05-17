@@ -1,16 +1,15 @@
 workloads=(
-	"read_0.5_insert_0.5_hotspot0.05_110GB"
-	"read_0.75_insert_0.25_hotspot0.05_110GB"
-	"ycsba_hotspot0.05_110GB"
-	"ycsbc_hotspot0.05_110GB"
-	"read_0.5_insert_0.5_uniform_110GB"
-	"read_0.75_insert_0.25_uniform_110GB"
-	"ycsba_uniform_110GB"
-	"ycsbc_uniform_110GB"
-	"read_0.5_insert_0.5_zipfian_110GB"
-	"read_0.75_insert_0.25_zipfian_110GB"
-	"ycsba_zipfian_110GB"
-	"ycsbc_zipfian_110GB"
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
+	"ycsba_hotspot0.05_110GB_220GB"
+	"ycsbc_hotspot0.05_110GB_220GB"
+	"read_0.5_insert_0.5_zipfian_110GB_220GB"
+	"read_0.75_insert_0.25_zipfian_110GB_220GB"
+	"ycsba_zipfian_110GB_220GB"
+	"ycsbc_zipfian_110GB_220GB"
+	"read_0.5_insert_0.5_uniform_110GB_220GB"
+	"read_0.75_insert_0.25_uniform_110GB_220GB"
+	"ycsba_uniform_110GB_220GB"
+	"ycsbc_uniform_110GB_220GB"
 )
 function run-rocksdb-fd {
 	../helper/checkout-rocksdb
@@ -37,7 +36,7 @@ function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-hotrap-110GB.sh ../config/$1 $DIR 5.5GB 330MB
+	./test-hotrap-110GB.sh ../config/$1 $DIR 5GB 1.5GB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size $3"
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${workloads[@]}"; do
@@ -46,7 +45,13 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload promote-stably-hot
 done
-run-hotrap "ycsbc_hotspotshifting0.05_110GB" promote-stably-hot
-run-hotrap "ycsbc_uniform_110GB" promote-accessed
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-retain
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-promote-by-compaction
+workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+run-rocksdb-fd $workload
+run-secondary-cache $workload
+run-rocksdb $workload rocksdb-fat
+run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
+
+run-hotrap "ycsbc_hotspotshifting0.05_110GB_220GB" promote-stably-hot
+run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
+run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
+run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction

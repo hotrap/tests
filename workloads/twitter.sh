@@ -5,9 +5,10 @@ workloads=(
 	"cluster10"
 	"cluster12"
 	"cluster13"
+	"cluster14-3x"
 	"cluster15"
 	"cluster17-80x"
-	"cluster18-197x"
+	"cluster18-186x"
 	"cluster20-16x"
 	"cluster21-3x"
 	"cluster22-9x"
@@ -16,6 +17,11 @@ workloads=(
 	"cluster25-223x"
 	"cluster26-8x"
 	"cluster29"
+	"cluster31-2x"
+	"cluster32"
+	"cluster34-9x"
+	"cluster40-5x"
+	"cluster41-6x"
 	"cluster50"
 	"cluster52-3x"
 )
@@ -48,8 +54,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	# Reserve 330MB for VisCnts
-	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 5.5GB 330MB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
+	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 5GB 1.5GB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
 	../helper/hotrap-plot.sh $DIR
 }
 
