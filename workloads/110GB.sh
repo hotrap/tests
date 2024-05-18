@@ -39,17 +39,19 @@ function run-hotrap {
 	./test-hotrap-110GB.sh ../config/$1 $DIR 5GB 1.5GB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size $3"
 	../helper/hotrap-plot.sh $DIR
 }
+
+workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+run-rocksdb-fd $workload
+run-secondary-cache $workload
+run-rocksdb $workload rocksdb-fat
+run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
+
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-secondary-cache $workload
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload promote-stably-hot
 done
-workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
-run-rocksdb-fd $workload
-run-secondary-cache $workload
-run-rocksdb $workload rocksdb-fat
-run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
 
 run-hotrap "ycsbc_hotspotshifting0.05_110GB_220GB" promote-stably-hot
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
