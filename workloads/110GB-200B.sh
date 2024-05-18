@@ -29,7 +29,7 @@ function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-hotrap-110GB.sh ../config/$1 $DIR 5GB 1.5GB "--optimize_filters_for_hits --enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
+	./test-hotrap-110GB.sh ../config/$1 $DIR "--optimize_filters_for_hits"
 	../helper/hotrap-plot.sh $DIR
 }
 for workload in "${hotspot_workloads[@]}"; do

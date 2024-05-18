@@ -10,7 +10,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	# Reserve 330MB for VisCnts
-	./test-hotrap-110GB.sh ../config/$1 $DIR 9.67GB 1.1GB 330MB
+	./test-hotrap-110GB.sh ../config/$1 $DIR
 	../helper/hotrap-plot.sh $DIR
 }
 run-rocksdb 'ycsbc_hotspot0.01_load_110GB_run_1GB' rocksdb-fat

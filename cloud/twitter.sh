@@ -124,7 +124,7 @@ function run-hotrap {
 	IP=$3
 	upload-trace
 	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version 5.5GB 330MB"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }

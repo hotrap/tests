@@ -54,7 +54,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR 5GB 1.5GB "--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size"
+	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR
 	../helper/hotrap-plot.sh $DIR
 }
 

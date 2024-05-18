@@ -56,7 +56,7 @@ function run-hotrap {
 	version=$2
 	IP=$3
 	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 5GB 1.5GB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size ${@:4}\""
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version \"${@:4}\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
