@@ -10,31 +10,11 @@ function check-workload-files {
 vendor=$(cat $config_file | jq -er ".vendor")
 if [ "$vendor" == 'aliyun' ]; then
 	suffix=1
-	instance_name_prefix=$(cat $config_file | jq -er ".instance_name_prefix")
-	function create_instance_if_none {
-		if [ $1 ]; then
-			instance_id=$1
-		else
-			while ! ./aliyun/instance-name-unused.py $config_file "$instance_name_prefix$suffix"; do
-				suffix=$(($suffix+1))
-			done
-			instance_id=$(./aliyun/create.py $config_file "$instance_name_prefix$suffix")
-			suffix=$(($suffix+1))
-		fi
-	}
-else
-	function create_instance_if_none {
-		if [ $1 ]; then
-			instance_id=$1
-		else
-			instance_id=$(./aws/create.py $config_file)
-		fi
-	}
 fi
 
 function cloud-run-bg {
-	instance_id=$4
-	echo $1 $2 $3 with instance $instance_id
+	instance_id=$1
+	echo ${@:2} with instance $instance_id
 	if [ "$vendor" == "aliyun" ]; then
 		./aliyun/start.py $config_file $instance_id
 	else
@@ -58,9 +38,9 @@ function cloud-run-bg {
 	ssh $user@$IP "bash -s" -- < helper/$vendor.sh
 	rsync -zrpL --partial -e ssh .. $user@$IP:~/tests --exclude='target'
 
-	ssh $user@$IP -o ServerAliveInterval=60 "rm -rf data/$2/$3"
+	ssh $user@$IP -o ServerAliveInterval=60 "rm -rf data/$3/$4"
 
-	$1 $2 $3 $IP
+	$2 $3 $4 $IP ${@:5}
 
 	if [ "$vendor" == "aliyun" ]; then
 		./aliyun/delete.py $config_file $instance_id
@@ -69,24 +49,40 @@ function cloud-run-bg {
 	fi
 }
 
-function cloud-run {
-	if [[ $# < 3 || $# > 4 ]]; then
-		echo Usage: $0 command-to-run workload version [instance-id]. workload, version, and instance-ip \(a instance will be created if not provided\) will be passed to \"command-to-run\" as arguments.
-		return 1
-	fi
-	# Don't Create instance inside subprocess, otherwise the instance names are likely to collide
-	create_instance_if_none $4
-	if [ ! "$instance_id" ]; then
-		echo Fail to create instance
-		return 1
-	fi
-	echo -n "$1 $2 $3 with instance $instance_id "
+function run-with-instance {
+	instance_id=$1
+	echo -n "${@:2} with instance $instance_id "
 	if [ "$vendor" == 'aliyun' ]; then
 		./aliyun/hostname.py $config_file $instance_id
 	else
 		echo
 	fi
-	DIR=$output_dir/$2/$3
+	DIR=$output_dir/$3/$4
 	mkdir -p $DIR
-	cloud-run-bg $1 $2 $3 $instance_id > $DIR/$vendor.txt 2>&1 &
+	cloud-run-bg $* > $DIR/$vendor.txt 2>&1 &
+}
+
+function cloud-run {
+	if [[ $# < 3 ]]; then
+		echo Usage: $0 command-to-run workload version other-arguments. workload, version, instance-ip, and other arguments will be passed to \"command-to-run\" as arguments.
+		return 1
+	fi
+
+	# Don't Create instance inside subprocess, otherwise the instance names are likely to collide
+	if [ "$vendor" == 'aliyun' ]; then
+		instance_name_prefix=$(cat $config_file | jq -er ".instance_name_prefix")
+		while ! ./aliyun/instance-name-unused.py $config_file "$instance_name_prefix$suffix"; do
+			suffix=$(($suffix+1))
+		done
+		instance_id=$(./aliyun/create.py $config_file "$instance_name_prefix$suffix")
+		suffix=$(($suffix+1))
+	else
+		instance_id=$(./aws/create.py $config_file)
+	fi
+
+	if [ ! "$instance_id" ]; then
+		echo Fail to create instance
+		return 1
+	fi
+	run-with-instance $instance_id $*
 }

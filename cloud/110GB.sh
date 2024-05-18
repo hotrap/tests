@@ -8,7 +8,6 @@ user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
 workloads=(
-	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
 	"ycsbc_hotspot0.05_110GB_220GB"
@@ -57,10 +56,16 @@ function run-hotrap {
 	version=$2
 	IP=$3
 	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 5GB 1.5GB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size\""
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 5GB 1.5GB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size ${@:4}\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
+
+workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+cloud-run run-rocksdb-fd $workload rocksdb-fd
+cloud-run run-rocksdb $workload rocksdb-fat
+cloud-run run-secondary-cache $workload secondary-cache
+cloud-run run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
 
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
