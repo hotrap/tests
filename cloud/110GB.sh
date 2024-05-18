@@ -8,18 +8,18 @@ user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
 workloads=(
-	"read_0.5_insert_0.5_hotspot0.05_110GB"
-	"read_0.75_insert_0.25_hotspot0.05_110GB"
-	"ycsba_hotspot0.05_110GB"
-	"ycsbc_hotspot0.05_110GB"
-	"read_0.5_insert_0.5_zipfian_110GB"
-	"read_0.75_insert_0.25_zipfian_110GB"
-	"ycsba_zipfian_110GB"
-	"ycsbc_zipfian_110GB"
-	"read_0.5_insert_0.5_uniform_110GB"
-	"read_0.75_insert_0.25_uniform_110GB"
-	"ycsba_uniform_110GB"
-	"ycsbc_uniform_110GB"
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
+	"ycsba_hotspot0.05_110GB_220GB"
+	"ycsbc_hotspot0.05_110GB_220GB"
+	"read_0.5_insert_0.5_zipfian_110GB_220GB"
+	"read_0.75_insert_0.25_zipfian_110GB_220GB"
+	"ycsba_zipfian_110GB_220GB"
+	"ycsbc_zipfian_110GB_220GB"
+	"read_0.5_insert_0.5_uniform_110GB_220GB"
+	"read_0.75_insert_0.25_uniform_110GB_220GB"
+	"ycsba_uniform_110GB_220GB"
+	"ycsbc_uniform_110GB_220GB"
 )
 
 source common.sh
@@ -57,7 +57,7 @@ function run-hotrap {
 	version=$2
 	IP=$3
 	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 5.5GB 330MB"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version 5GB 1.5GB \"--enable_dynamic_vc_param_in_lsm --enable_dynamic_only_vc_phy_size\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
@@ -68,8 +68,8 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-secondary-cache $workload secondary-cache
 	cloud-run run-hotrap $workload promote-stably-hot
 done
-cloud-run run-hotrap "ycsbc_hotspotshifting0.05_110GB_150GB" promote-stably-hot
-cloud-run run-hotrap "ycsbc_uniform_110GB" promote-accessed
-cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-retain
-cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB" no-promote-by-compaction
+cloud-run run-hotrap "ycsbc_hotspotshifting0.05_110GB_220GB" promote-stably-hot
+cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
+cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
+cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
 wait
