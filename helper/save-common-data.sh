@@ -6,7 +6,7 @@ fi
 db_dir="$1"
 DIR="$2"
 mydir=$(realpath $(dirname $0))
-testdb_dir="$db_dir/.."
+testdb_dir=$(realpath -L "$db_dir/..")
 du -sh $testdb_dir/db/ $testdb_dir/fd/ $testdb_dir/sd/ >> "$DIR"/log.txt
 mv $db_dir/{LOG,latency-*,period_stats,progress,cpu,cputimes,mem,info.json,timers,worker-cpu-nanos} "$DIR"/
 if [ -f 0_key_only_trace ]; then
