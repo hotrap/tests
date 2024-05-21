@@ -63,11 +63,11 @@ def timestamp_to_progress(progress, timestamp):
 
 def warmup_finish_progress(data_dir):
     hit_rates = read_hit_rates(data_dir)
-    progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+    progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
     return timestamp_to_progress(progress, warmup_finish_timestamp(hit_rates))
 
 def progress_to_timestamp(data_dir, progress):
-    v = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+    v = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
     v = v[v['operations-executed'] >= progress]
     if len(v) == 0:
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
@@ -77,7 +77,7 @@ def progress_to_timestamp(data_dir, progress):
 def ops_during_interval(data_dir, start_progress, end_progress):
     timestamp_start = progress_to_timestamp(data_dir, start_progress)
     timestamp_end = progress_to_timestamp(data_dir, end_progress)
-    progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+    progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
     progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
     operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
     seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9

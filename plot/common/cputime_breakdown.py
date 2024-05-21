@@ -66,10 +66,10 @@ def draw_cputime_breakdown(dir, size, pdf_name):
 
     def start_progress_fn(data_dir):
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
         return timestamp_to_progress(progress, info['run-start-timestamp(ns)'])
     def end_progress_fn(data_dir):
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
         return progress.iloc[-1]['operations-executed']
 
     def draw_cputime(start_progress_fn, end_progress_fn, min_max_portion):
@@ -88,12 +88,12 @@ def draw_cputime_breakdown(dir, size, pdf_name):
             for (version_idx, version) in enumerate(versions):
                 data_dir = os.path.join(workload_dir, version['path'])
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-                cputimes = pd.read_table(os.path.join(data_dir, 'cputimes'), delim_whitespace=True)
+                cputimes = pd.read_table(os.path.join(data_dir, 'cputimes'), sep='\s+')
                 timestamp_start = progress_to_timestamp(data_dir, start_progress)
                 timestamp_end = progress_to_timestamp(data_dir, end_progress)
                 cputimes = cputimes[(timestamp_start <= cputimes['Timestamp(ns)']) & (cputimes['Timestamp(ns)'] < timestamp_end)]
                 cputimes = cputimes['cputime(s)'].iloc[-1] - cputimes['cputime(s)'].iloc[0]
-                timers = pd.read_table(os.path.join(data_dir, 'timers'), delim_whitespace=True)
+                timers = pd.read_table(os.path.join(data_dir, 'timers'), sep='\s+')
                 timers = timers[(timestamp_start <= timers['Timestamp(ns)']) & (timers['Timestamp(ns)'] < timestamp_end)]
                 timers = timers.iloc[-1] - timers.iloc[0]
                 bottom = 0
@@ -111,7 +111,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                 bottom += height
                 if version_idx == 0:
                     first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
-                    checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_sd - 1) + '-cputime'), delim_whitespace=True)
+                    checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_sd - 1) + '-cputime'), sep='\s+')
                     checker = checker[(timestamp_start <= checker['Timestamp(ns)']) & (checker['Timestamp(ns)'] < timestamp_end)]
                     height = (checker.iloc[-1] - checker.iloc[0])['cputime(ns)'] / 1e9
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)

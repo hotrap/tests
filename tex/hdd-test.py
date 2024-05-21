@@ -20,14 +20,14 @@ def run_phase(info_json, data):
 
 data_dir = os.path.join(dir, 'ycsbc_hotspot0.01_load_110GB_run_1GB', 'rocksdb-fat')
 info = json5.load(open(os.path.join(data_dir, 'info.json')))
-progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
 progress = run_phase(info, progress)['operations-executed']
 run_time = (info['run-end-timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 rocksdb_fat_ops = (progress.iloc[-1] - progress.iloc[0]) / run_time
 
 data_dir = os.path.join(dir, 'ycsbc_hotspot0.01_110GB', 'promote-stably-hot')
 info = json5.load(open(os.path.join(data_dir, 'info.json')))
-progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
 hit_rates = common.read_hit_rates(data_dir)
 stable_start_ts = common.warmup_finish_timestamp(hit_rates)
 stable_start_progress = common.timestamp_to_progress(progress, stable_start_ts)

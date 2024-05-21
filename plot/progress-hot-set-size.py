@@ -86,7 +86,7 @@ for (i, fig) in enumerate(figs):
     subfig = plt.subplot(gs[0, i])
     ax = plt.gca()
     for version in fig['versions']:
-        data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hot-set-size'], delim_whitespace=True)
+        data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hot-set-size'], sep='\s+')
         plt.plot(data['progress'], data['hot-set-size'] / 1e9, linewidth=0.5, marker=version['marker'], markersize=3, markevery=int(len(data['progress']) / 5))
     plt.xlabel('Completed operation count', fontsize=8)
     subfig.text(0.5, -0.35, fig['title'], fontsize=8, ha='center', va='center', transform=subfig.transAxes)

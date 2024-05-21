@@ -15,7 +15,7 @@ while True:
     path = 'latency-' + str(i)
     if not os.path.exists(path):
         break
-    latency = pd.read_table(path, delim_whitespace=True, names=['Timestamp(ns)', 'type', 'latency'])
+    latency = pd.read_table(path, sep='\s+', names=['Timestamp(ns)', 'type', 'latency'])
     latency = latency[latency['Timestamp(ns)'] >= run_70p_ts]
     latency = latency.groupby('type')['latency'].apply(list)
     if 'READ' in latency:

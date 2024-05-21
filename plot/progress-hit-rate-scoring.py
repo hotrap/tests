@@ -45,7 +45,7 @@ version_names = ['Exponential smoothing', 'LRU', 'CLOCK']
 
 ax = plt.gca()
 for version in versions:
-    data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hit-rate'], delim_whitespace=True)
+    data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hit-rate'], sep='\s+')
     plt.plot(data['progress'], data['hit-rate'], linewidth=0.5, marker=version['marker'], markersize=3, markevery=int(len(data['progress']) / 5))
 plt.xlabel('Completed operation count', fontsize=8, loc='left')
 ax.xaxis.set_label_coords(0.1, -0.19)

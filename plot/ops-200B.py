@@ -86,7 +86,7 @@ for fig in figs:
         workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
         data_dir = os.path.join(dir, workload, 'promote-stably-hot')
         start_progress = common.warmup_finish_progress(data_dir)
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
         end_progress = progress.iloc[-1]['operations-executed']
         skewness_ratio_version_ops[skewness][ratio] = {}
         for version in fig['versions']:
@@ -94,7 +94,7 @@ for fig in figs:
             data_dir = os.path.join(dir, workload, version)
             timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
             timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
-            progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+            progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
             progress = progress[(timestamp_start <= progress['Timestamp(ns)']) & (progress['Timestamp(ns)'] < timestamp_end)]
             operations_executed = progress.iloc[-1]['operations-executed'] - progress.iloc[0]['operations-executed']
             seconds = (progress.iloc[-1]['Timestamp(ns)'] - progress.iloc[0]['Timestamp(ns)']) / 1e9

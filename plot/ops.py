@@ -32,7 +32,7 @@ plt.rcParams['axes.unicode_minus'] = False
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(5)))
 
-progress = pd.read_table(data_dir + '/progress', delim_whitespace=True)
+progress = pd.read_table(data_dir + '/progress', sep='\s+')
 info = os.path.join(data_dir, 'info.json')
 info = json5.load(open(info))
 progress = progress[(progress['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (progress['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]

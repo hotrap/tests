@@ -71,7 +71,7 @@ for workload in workloads:
     workload_dir = os.path.join(dir, workload)
     data_dir = os.path.join(workload_dir, 'promote-stably-hot')
     start_progress = common.warmup_finish_progress(data_dir)
-    progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+    progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
     end_progress = progress.iloc[-1]['operations-executed']
 
     hotrap = common.ops_during_interval(data_dir, start_progress, end_progress)

@@ -34,7 +34,7 @@ markersize = 3
 info = os.path.join(data_dir, 'info.json')
 info = json5.load(open(info))
 
-num_bytes = pd.read_table(data_dir + '/promoted-or-retained-bytes', delim_whitespace=True)
+num_bytes = pd.read_table(data_dir + '/promoted-or-retained-bytes', sep='\s+')
 num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
 time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 

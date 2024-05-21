@@ -113,7 +113,7 @@ for (version_idx, version) in enumerate(versions):
             for fig in figs:
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
                 path = os.path.join(data_dir, 'read-latency')
-                latency = pd.read_table(path, delim_whitespace=True)
+                latency = pd.read_table(path, sep='\s+')
                 latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
                 value = latency[fig['percentile']]
                 fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)

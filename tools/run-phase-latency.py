@@ -10,7 +10,7 @@ import pandas as pd
 info = json5.load(open(os.path.join('.', 'info.json')))
 
 def work(t):
-    latency = pd.read_table(t + '-latency', delim_whitespace=True)
+    latency = pd.read_table(t + '-latency', sep='\s+')
     latency = latency[latency['Timestamp(ns)'] >= info['run-start-timestamp(ns)']].iloc[-1]
     print(latency)
 print('Read')

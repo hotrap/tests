@@ -20,7 +20,7 @@ def draw_throughput_breakdown(dir, versions, mean_step, linewidth, num_marks, ma
 		info = os.path.join(data_dir, 'info.json')
 		info = json5.load(open(info))
 		def read_table(file):
-			iostat_raw = pd.read_table(file, delim_whitespace=True)
+			iostat_raw = pd.read_table(file, sep='\s+')
 			iostat_raw = iostat_raw[(iostat_raw['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (iostat_raw['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
 			iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timestamp(ns)'].iloc[0]) / 1e9
 			iostat = iostat_raw[['rkB/s', 'wkB/s']].groupby(iostat_raw.index // mean_step).mean()

@@ -24,7 +24,7 @@ abspath = os.path.abspath(sys.argv[0])
 dname = os.path.dirname(abspath)
 
 d = sys.argv[1]
-rank_occurrence_hit = pd.read_table(d + '/hit', delim_whitespace=True)
+rank_occurrence_hit = pd.read_table(d + '/hit', sep='\s+')
 
 plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):

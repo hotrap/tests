@@ -21,7 +21,7 @@ mpl.rcParams.update({
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 d = sys.argv[1]
-mem = pd.read_table(d + '/mem', delim_whitespace=True)
+mem = pd.read_table(d + '/mem', sep='\s+')
 time = (mem['Timestamp(ns)'] - mem['Timestamp(ns)'][0]) / 1e9
 mem = mem['RSS(KB)'] / 1e6
 

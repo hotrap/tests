@@ -9,7 +9,7 @@ import json5
 import pandas as pd
 
 info = json5.load(open('info.json'))
-progress = pd.read_table('progress', delim_whitespace=True)
+progress = pd.read_table('progress', sep='\s+')
 run_start_progress = common.timestamp_to_progress(progress, info['run-start-timestamp(ns)'])
 run_end_progress = common.timestamp_to_progress(progress, info['run-end-timestamp(ns)'])
 warmup_progress = common.warmup_finish_progress('.')

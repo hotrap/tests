@@ -62,7 +62,7 @@ def draw(version, marker, text_y):
     info = os.path.join(data_dir, 'info.json')
     info = json5.load(open(info))
 
-    progress = pd.read_table(data_dir + '/progress', delim_whitespace=True)
+    progress = pd.read_table(data_dir + '/progress', sep='\s+')
     progress = run_phase(info, progress)
     progress['operations-executed'] -= progress.iloc[0]['operations-executed']
 

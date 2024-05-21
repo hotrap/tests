@@ -53,7 +53,7 @@ for (version_idx, version) in enumerate(versions):
     subfig = plt.subplot(gs[0, version_idx])
     data_dir = os.path.join(dir, version['path'])
 
-    progress = pd.read_table(data_dir + '/progress', delim_whitespace=True)
+    progress = pd.read_table(data_dir + '/progress', sep='\s+')
     info = os.path.join(data_dir, 'info.json')
     info = json5.load(open(info))
     progress = progress[(progress['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (progress['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]

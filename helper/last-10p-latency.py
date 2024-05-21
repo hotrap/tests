@@ -18,7 +18,7 @@ while True:
     except FileNotFoundError:
         break
     i += 1
-    latency = pd.read_table(f, names=['type', 'latency(ns)'], delim_whitespace=True)
+    latency = pd.read_table(f, names=['type', 'latency(ns)'], sep='\s+')
     latency = latency.iloc[len(latency) - len(latency) // 10:]
     latency = latency.groupby('type')['latency(ns)'].apply(list)['READ']
     latencies.append(latency)

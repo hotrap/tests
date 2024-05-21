@@ -67,10 +67,10 @@ def draw_io_breakdown(dir, size, pdf_name):
 
     def start_progress_fn(data_dir):
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
         return common.timestamp_to_progress(progress, info['run-start-timestamp(ns)'])
     def end_progress_fn(data_dir):
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
         return progress.iloc[-1]['operations-executed']
 
     def draw_io(start_progress_fn, end_progress_fn, min_max_portion):
@@ -89,7 +89,7 @@ def draw_io_breakdown(dir, size, pdf_name):
                 timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
                 first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
                 def run_time_io_kB(fname):
-                    iostat = pd.read_table(os.path.join(data_dir, fname), delim_whitespace=True)
+                    iostat = pd.read_table(os.path.join(data_dir, fname), sep='\s+')
                     iostat = iostat[(timestamp_start <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < timestamp_end)]
                     return iostat[['rkB/s', 'wkB/s']].sum().sum()
                 device_io = (run_time_io_kB('iostat-fd.txt') + run_time_io_kB('iostat-sd.txt')) / 1e9
@@ -128,7 +128,7 @@ def draw_io_breakdown(dir, size, pdf_name):
                 bottom += height
 
                 if version['path'] == 'promote-stably-hot':
-                    viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), delim_whitespace=True)
+                    viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), sep='\s+')
                     viscnts_io = viscnts_io[(timestamp_start <= viscnts_io['Timestamp(ns)']) & (viscnts_io['Timestamp(ns)'] < timestamp_end)]
                     viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]
                     height = (viscnts_io['read'] + viscnts_io['write']) / 1e12

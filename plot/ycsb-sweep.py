@@ -105,7 +105,7 @@ for i in range(len(skewnesses)):
         workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
         data_dir = os.path.join(dir, workload, 'promote-stably-hot')
         start_progress = common.warmup_finish_progress(data_dir)
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
         end_progress = progress.iloc[-1]['operations-executed']
         skewness_ratio_version_ops[skewness][ratio] = {}
         for (version_idx, version) in enumerate(versions):
@@ -116,7 +116,7 @@ for i in range(len(skewnesses)):
             else:
                 workload = 'workload_110GB_' + ratios_prismdb_mutant[ratio] + '_' + skewness
                 data_dir = os.path.join(dir, workload, version['path'])
-                progress = pd.read_table(os.path.join(data_dir, 'progress'), delim_whitespace=True)
+                progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
                 last = progress.iloc[-1]
                 progress = progress[progress['operations-executed'] != last['operations-executed']]
                 last = progress.iloc[-1]

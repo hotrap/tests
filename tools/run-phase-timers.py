@@ -6,7 +6,7 @@ import pandas as pd
 info = json5.load(open('info.json'))
 run_start_timestamp = info['run-start-timestamp(ns)']
 run_end_timestamp = info['run-end-timestamp(ns)']
-timers = pd.read_table('timers', delim_whitespace=True)
+timers = pd.read_table('timers', sep='\s+')
 timers = timers[(run_start_timestamp <= timers['Timestamp(ns)']) & (timers['Timestamp(ns)'] < run_end_timestamp)]
 timers = timers.iloc[-1] - timers.iloc[0]
 

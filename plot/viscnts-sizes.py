@@ -24,7 +24,7 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 info = os.path.join(data_dir, 'info.json')
 info = json5.load(open(info))
-data = pd.read_table(os.path.join(data_dir, 'viscnts-sizes'), delim_whitespace=True)
+data = pd.read_table(os.path.join(data_dir, 'viscnts-sizes'), sep='\s+')
 data = data[(data['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (data['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
 time = (data['Timestamp(ns)'] - data['Timestamp(ns)'].iloc[0]) / 1e9
 

@@ -25,7 +25,7 @@ d = sys.argv[1]
 mean_step = int(sys.argv[2])
 
 def read_table(file):
-    iostat_raw = pd.read_table(file, delim_whitespace=True)
+    iostat_raw = pd.read_table(file, sep='\s+')
     iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timestamp(ns)'][0]) / 1e9
     iostat = iostat_raw[['rkB/s', 'wkB/s']].groupby(iostat_raw.index // mean_step).mean()
     iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
