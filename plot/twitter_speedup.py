@@ -7,19 +7,18 @@ workloads=[
     'cluster11-25x',
     'cluster16-67x',
     'cluster17-80x',
-    'cluster18-185x',
+    'cluster18-186x',
     'cluster19-3x',
     'cluster22-9x',
     'cluster23',
-    'cluster24-11x',
     'cluster29',
-    'cluster30-10x',
     'cluster46',
     'cluster48-5x',
     'cluster52-3x',
+    'cluster53-12x',
 ]
 
-read_heavy = set([2, 11, 16, 17, 18, 24, 29, 30, 52])
+read_heavy = set([2, 11, 16, 17, 18, 24, 29, 30, 52, 53])
 read_write = set([19, 22, 46, 48])
 write_heavy = set([5, 8, 10, 23])
 
