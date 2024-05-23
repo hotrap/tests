@@ -9,7 +9,11 @@ stat_dir = sys.argv[2]
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
+import twitter_speedup
+from twitter_speedup import read_heavy, read_write, write_heavy, workload_id
 
+import json5
+import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -23,36 +27,73 @@ def cm_to_inch(value):
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(6)))
 
-workloads=[
-    'cluster02-283x',
-    'cluster05',
-    'cluster08-95x',
-    'cluster10',
-    'cluster11-25x',
-    'cluster16-67x',
-    'cluster17-80x',
-    'cluster18-185x',
-    'cluster19-3x',
-    'cluster22-9x',
-    'cluster23',
-    'cluster24-11x',
-    'cluster29',
-    'cluster30-10x',
-    'cluster46',
-    'cluster48-5x',
-    'cluster52-3x',
+workloads = [
+	"cluster01-4168x",
+	"cluster02-283x",
+	"cluster03-135x",
+	"cluster04-3x",
+	"cluster05",
+	"cluster06-7x",
+	"cluster07-12x",
+	"cluster08-95x",
+	"cluster09-113x",
+	"cluster10",
+	"cluster11-25x",
+	"cluster12",
+	"cluster13",
+	"cluster14-3x",
+	"cluster15",
+	"cluster16-67x",
+	"cluster17-80x",
+	"cluster18-185x",
+	"cluster19-3x",
+	"cluster20-16x",
+	"cluster21-3x",
+	"cluster22-9x",
+	"cluster23",
+	"cluster24-11x",
+	"cluster25-215x",
+	"cluster26-8x",
+	"cluster27-7x",
+	"cluster28-17x",
+	"cluster29",
+	"cluster30-10x",
+	"cluster31-2x",
+	"cluster32",
+	"cluster33-5x",
+	"cluster34-9x",
+	"cluster35",
+	"cluster36-18x",
+	"cluster37",
+	"cluster38",
+	"cluster39",
+	"cluster40-5x",
+	"cluster41-6x",
+	"cluster42-15x",
+	"cluster43-4x",
+	"cluster44-40x",
+	"cluster45-18x",
+	"cluster46",
+	"cluster47-74x",
+	"cluster48-5x",
+	"cluster49-17x",
+	"cluster50",
+	"cluster51-175x",
+	"cluster52-3x",
+	"cluster53-12x",
+	"cluster54-11x"
 ]
 
-read_heavy = set([2, 11, 16, 17, 18, 24, 29, 30, 52])
-read_write = set([19, 22, 46, 48])
-write_heavy = set([5, 8, 10, 23])
 
 ids = []
 xs = []
 ys = []
+markers = []
+sampled = []
+not_sampled = []
 speedup = []
-for workload in workloads:
-    id = int(workload.split('-')[0][7:])
+for (index, workload) in enumerate(workloads):
+    id = workload_id(workload)
     ids.append(id)
     x = float(open(os.path.join(stat_dir, workload + '-read-hot-5p-read')).read())
     xs.append(x)
@@ -65,35 +106,30 @@ for workload in workloads:
     elif id in write_heavy:
         marker ='s'
     else:
-        print('The type of cluster ' + str(id) + ' is unknown')
-        exit(1)
-
-    workload_dir = os.path.join(dir, workload)
-    data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-    start_progress = common.warmup_finish_progress(data_dir)
-    progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-    end_progress = progress.iloc[-1]['operations-executed']
-
-    hotrap = common.ops_during_interval(data_dir, start_progress, end_progress)
-    data_dir = os.path.join(workload_dir, "rocksdb-fat")
-    rocksdb_fat = common.ops_during_interval(data_dir, start_progress, end_progress)
-    speedup.append(hotrap / rocksdb_fat)
-    plt.scatter(x, y, c='C0', marker=marker)
-
-for i in range(0, len(xs)):
-    plt.text(xs[i] - 0.08, ys[i] - 0.03, '{:02}'.format(ids[i]), fontsize=8, c='gray')
-    plt.text(xs[i] + 0.02, ys[i] - 0.03, '{:.2f}x'.format(speedup[i]), fontsize=8)
-
-red_square = mlines.Line2D([], [], color='red', marker='s', linestyle='None',
-                          markersize=10, label='Red squares')
-purple_triangle = mlines.Line2D([], [], color='purple', marker='^', linestyle='None',
-                          markersize=10, label='Purple triangles')
+        stat = json5.load(open(os.path.join(stat_dir, workload + '.json')))
+        num_reads = stat['num-reads']
+        read_ratio = num_reads / stat['num-run-op']
+        if read_ratio > 0.75:
+            marker = 'o'
+        elif read_ratio > 0.5:
+            marker = '^'
+        else:
+            marker = 's'
+    markers.append(marker)
+    if workload in twitter_speedup.workloads:
+        sampled.append(index)
+    else:
+        not_sampled.append(index)
+for index in not_sampled:
+    plt.scatter(xs[index], ys[index], c='gray', alpha=0.5, marker=markers[index])
+for index in sampled:
+    plt.scatter(xs[index], ys[index], c='black', marker=markers[index])
 
 markersize=5
 handles=[
-    mlines.Line2D([], [], color='C0', marker='o', linestyle='None', markersize=markersize, label='read-heavy'),
-    mlines.Line2D([], [], color='C0', marker='^', linestyle='None', markersize=markersize, label='read-write'),
-    mlines.Line2D([], [], color='C0', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
+    mlines.Line2D([], [], color='black', marker='o', linestyle='None', markersize=markersize, label='read-heavy'),
+    mlines.Line2D([], [], color='black', marker='^', linestyle='None', markersize=markersize, label='read-write'),
+    mlines.Line2D([], [], color='black', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
 ]
 plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.45, 1.14))
 
