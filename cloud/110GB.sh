@@ -73,6 +73,7 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-secondary-cache $workload secondary-cache
 	cloud-run run-hotrap $workload promote-stably-hot
 done
+cloud-run run-hotrap "ycsbc_hotspot0.01_110GB_220GB" promote-stably-hot
 cloud-run run-hotrap "ycsbc_hotspotshifting0.05_110GB_220GB" promote-stably-hot
 cloud-run run-hotrap "ycsbc_hotspotshifting0.05_0.02_110GB_220GB" promote-stably-hot
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
