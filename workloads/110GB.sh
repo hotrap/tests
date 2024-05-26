@@ -15,7 +15,7 @@ function run-rocksdb-fd {
 	../helper/checkout-rocksdb
 	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
-	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR
+	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR "$2"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-secondary-cache {
@@ -57,3 +57,25 @@ run-hotrap "ycsbc_hotspotshifting0.05_110GB_220GB" promote-stably-hot
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
+
+hotspot_workloads=(
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB_200B"
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB_200B"
+	"ycsba_hotspot0.05_110GB_220GB_200B"
+	"ycsbc_hotspot0.05_110GB_220GB_200B"
+)
+uniform_workloads=(
+	"read_0.5_insert_0.5_uniform_110GB_220GB_200B"
+	"read_0.75_insert_0.25_uniform_110GB_220GB_200B"
+	"ycsba_uniform_110GB_220GB_200B"
+	"ycsbc_uniform_110GB_220GB_200B"
+)
+
+for workload in "${hotspot_workloads[@]}"; do
+	run-hotrap $workload promote-stably-hot
+	run-rocksdb-fd $workload
+done
+for workload in "${uniform_workloads[@]}"; do
+	run-hotrap $workload promote-stably-hot
+	run-rocksdb $workload rocksdb-fat
+done
