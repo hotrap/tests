@@ -21,7 +21,7 @@ find . \
 	\! -name LOCK \
 	\! -regex "\./MANIFEST-[0-9]*" \
 	\! -regex "\./OPTIONS-[0-9]*\.dbtmp" \
-	\! -regex "ans_[0-9]*" \
+	\! -regex "\./ans_[0-9]*" \
 	-exec mv {} "$DIR" \;
 if [ -f ans_0 ]; then
 	sha256sum ans_* > "$DIR"/ans.sha256
