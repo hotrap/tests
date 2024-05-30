@@ -26,17 +26,31 @@ function run-hotrap {
 	diff $DIR/ans.sha256 ../../data/$1/rocksdb-fd/ans.sha256
 }
 for workload in "${workloads[@]}"; do
-	workspace=../..
+	workspace=$(realpath ../..)
 	workload_file=$(realpath ../config/$workload)
+	function ycsb-gen {
+		(cd $workspace/YCSB &&
+			./bin/ycsb $1 basic -P $workload_file -s -p fieldcount=1 -p fieldlength=0 |
+				$workspace/tests/helper/bin/trace-cleaner |
+				awk '{
+					if ($1 == "INSERT" || $1 == "UPDATE" || $1 == "RMW") {
+						print $1, $3, 1000
+					} else {
+						print $1, $3
+					}
+				}'
+		)
+	}
 	if [ ! -f $workspace/YCSB-traces/$workload-load ]; then
-		(cd $workspace/YCSB && ./bin/ycsb load basic -P $workload_file -s) > $workspace/YCSB-traces/$workload-load 
+		ycsb-gen load > $workspace/YCSB-traces/$workload-load 
 	fi
 	if [ ! -f $workspace/YCSB-traces/$workload-run ]; then
-		(cd $workspace/YCSB && ./bin/ycsb run basic -P $workload_file -s) > $workspace/YCSB-traces/$workload-run
+		ycsb-gen run > $workspace/YCSB-traces/$workload-run
 	fi
 
 	run-rocksdb-fd $workload
 	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload viscnts-splay-rs
 done
 run-hotrap "ycsbc_uniform_11GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-retain
