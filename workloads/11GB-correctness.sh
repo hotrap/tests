@@ -1,12 +1,14 @@
 workloads=(
-	"read_0.75_insert_0.25_hotspot0.05_11GB"
 	"read_0.5_insert_0.5_hotspot0.05_11GB"
+	"read_0.75_insert_0.25_hotspot0.05_11GB"
 	"ycsba_hotspot0.05_11GB"
 	"ycsbc_hotspot0.05_11GB"
 	"read_0.5_insert_0.5_uniform_11GB"
+	"read_0.75_insert_0.25_uniform_11GB"
 	"ycsba_uniform_11GB"
 	"ycsbc_uniform_11GB"
 	"read_0.5_insert_0.5_zipfian_11GB"
+	"read_0.75_insert_0.25_zipfian_11GB"
 	"ycsba_zipfian_11GB"
 	"ycsbc_zipfian_11GB"
 )
