@@ -6,6 +6,8 @@ fi
 
 i=0
 while [ -f $1/ans-$i.xxh64 ]; do
-	diff $1/ans-$i.xxh64 $2/ans-$i.xxh64
+	command="diff $1/ans-$i.xxh64 $2/ans-$i.xxh64"
+	echo "$command"
+	$command
 	i=$(($i + 1))
 done
