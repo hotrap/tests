@@ -3,12 +3,12 @@ if [ ! $1 ]; then
 	echo Usage: $0 output-dir
 	exit 1
 fi
+mydir=$(dirname "$0")
+db_dir="$mydir/../../testdb/db"
+"$mydir"/save-common-data.sh "$db_dir" "$1"
+
 DIR=$(realpath "$1")
-mydir=$(realpath $(dirname $0))
-cd $mydir
-cd ../../testdb
-du -sh db/ fd/ sd/ >> "$DIR"/log.txt
-cd db
+cd $db_dir
 if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count
 	$mydir/hit . "$DIR"
@@ -23,9 +23,5 @@ find . \
 	\! -regex "\./OPTIONS-[0-9]*\.dbtmp" \
 	\! -regex "\./ans_[0-9]*" \
 	-exec mv {} "$DIR" \;
-if [ -f ans_0 ]; then
-	sha256sum ans_* > "$DIR"/ans.sha256
-fi
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
-$mydir/latency-after "$DIR"/

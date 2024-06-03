@@ -6,7 +6,7 @@ sudo apt install -y sysstat
 # RocksDB
 sudo apt install -y libgflags-dev
 # kvexe
-sudo apt install -y liburcu-dev libboost-program-options-dev
+sudo apt install -y liburcu-dev libboost-program-options-dev libxxhash-dev
 # iostat.sh
 sudo apt install -y gawk
 # CacheLib

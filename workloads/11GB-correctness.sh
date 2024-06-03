@@ -25,7 +25,7 @@ function run-hotrap {
 	echo Result directory: $DIR
 	./test-hotrap-correctness-11GB.sh $1 $DIR
 	../helper/hotrap-plot-11GB.sh $DIR
-	diff $DIR/ans.sha256 ../../data/$1/rocksdb-fd/ans.sha256
+	../helper/check-ans.sh ../../data/$1/rocksdb-fd/ $DIR/
 }
 for workload in "${workloads[@]}"; do
 	workspace=$(realpath ../..)

@@ -4,4 +4,4 @@ if [[ $# < 2 || $# > 3 ]]; then
 	exit 1
 fi
 workspace=$(realpath ../..)
-$(dirname $0)/test-rocksdb-fd-11GB-generic.sh "$2" "--load=$workspace/YCSB-traces/$1-load --run=$workspace/YCSB-traces/$1-run --format=plain-length-only --switches=0x3 $3"
+$(dirname $0)/test-rocksdb-fd-11GB-generic.sh "$2" "--load=$workspace/YCSB-traces/$1-load --run=$workspace/YCSB-traces/$1-run --format=plain-length-only --export_ans_xxh64 --switches=0x3 $3"
