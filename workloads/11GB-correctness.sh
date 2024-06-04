@@ -16,40 +16,19 @@ function run-rocksdb-fd {
 	../helper/checkout-rocksdb
 	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
-	./test-rocksdb-fd-correctness-11GB.sh $1 $DIR
+	./test-rocksdb-fd-replay-11GB.sh $1 $DIR
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
 function run-hotrap {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-hotrap-correctness-11GB.sh $1 $DIR
+	./test-hotrap-replay-11GB.sh $1 $DIR
 	../helper/hotrap-plot-11GB.sh $DIR
 	../helper/check-ans.sh ../../data/$1/rocksdb-fd/ $DIR/
 }
 for workload in "${workloads[@]}"; do
-	workspace=$(realpath ../..)
-	workload_file=$(realpath ../config/$workload)
-	function ycsb-gen {
-		(cd $workspace/YCSB &&
-			./bin/ycsb $1 basic -P $workload_file -s -p fieldcount=1 -p fieldlength=0 |
-				$workspace/tests/helper/bin/trace-cleaner |
-				awk '{
-					if ($1 == "INSERT" || $1 == "UPDATE" || $1 == "RMW") {
-						print $1, $3, 1000
-					} else {
-						print $1, $3
-					}
-				}'
-		)
-	}
-	if [ ! -f $workspace/YCSB-traces/$workload-load ]; then
-		ycsb-gen load > $workspace/YCSB-traces/$workload-load 
-	fi
-	if [ ! -f $workspace/YCSB-traces/$workload-run ]; then
-		ycsb-gen run > $workspace/YCSB-traces/$workload-run
-	fi
-
+	../helper/gen-ycsb-trace.sh ../config/$workload
 	run-rocksdb-fd $workload
 	run-hotrap $workload promote-stably-hot
 	run-hotrap $workload viscnts-splay-rs
