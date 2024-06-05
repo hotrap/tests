@@ -14,18 +14,18 @@ workloads=(
 )
 function run-rocksdb-fd {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd
+	DIR=../../data/$1/rocksdb-fd-correctness
 	echo Result directory: $DIR
-	./test-rocksdb-fd-replay-11GB.sh $1 $DIR
+	./test-rocksdb-fd-11GB-replay.sh $1 $DIR
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
 function run-hotrap {
 	../helper/checkout-$2
-	DIR=../../data/$1/$2
+	DIR=../../data/$1/$2-correctness
 	echo Result directory: $DIR
-	./test-hotrap-replay-11GB.sh $1 $DIR
+	./test-hotrap-11GB-replay.sh $1 $DIR
 	../helper/hotrap-plot-11GB.sh $DIR
-	../helper/check-ans.sh ../../data/$1/rocksdb-fd/ $DIR/
+	../helper/check-ans.sh ../../data/$1/rocksdb-fd-correctness/ $DIR/
 }
 for workload in "${workloads[@]}"; do
 	../helper/gen-ycsb-trace.sh ../config/$workload

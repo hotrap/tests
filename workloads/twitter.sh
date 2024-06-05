@@ -30,7 +30,7 @@ function run-rocksdb-fd {
 	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-rocksdb-fd-replay-110GB.sh $prefix-load $prefix-run $DIR
+	./test-rocksdb-fd-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-secondary-cache {
@@ -38,7 +38,7 @@ function run-secondary-cache {
 	DIR=../../data/$1/secondary-cache
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-secondary-cache-replay-110GB.sh $prefix-load $prefix-run $DIR
+	./test-secondary-cache-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-rocksdb {
@@ -46,7 +46,7 @@ function run-rocksdb {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-rocksdb-replay-110GB.sh $prefix-load $prefix-run $DIR 10GB
+	./test-rocksdb-110GB-replay.sh $prefix-load $prefix-run $DIR 10GB "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -54,7 +54,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-hotrap-replay-110GB.sh $prefix-load $prefix-run $DIR
+	./test-hotrap-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/hotrap-plot.sh $DIR
 }
 
