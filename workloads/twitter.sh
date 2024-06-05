@@ -59,7 +59,7 @@ function run-rocksdb {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-rocksdb-110GB-replay.sh $prefix-load $prefix-run $DIR 10GB "--enable_fast_process"
+	./test-rocksdb-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
