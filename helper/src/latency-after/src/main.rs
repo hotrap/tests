@@ -113,6 +113,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut insert = Stat::new(dir.join("insert-latency"));
     let mut update = Stat::new(dir.join("update-latency"));
     let mut rmw = Stat::new(dir.join("rmw-latency"));
+    let mut delete = Stat::new(dir.join("delete-latency"));
     let mut scan = Stat::new(dir.join("scan-latency"));
 
     let mut target_ts = run_end_timestamp_ns - 1000000000;
@@ -132,6 +133,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     "INSERT" => insert.insert(latency),
                     "UPDATE" => update.insert(latency),
                     "RMW" => rmw.insert(latency),
+                    "DELETE" => delete.insert(latency),
                     "SCAN" => scan.insert(latency),
                     _ => panic!("Unrecognized operation: {}", op),
                 }
@@ -142,6 +144,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         insert.print(target_ts);
         update.print(target_ts);
         rmw.print(target_ts);
+        delete.print(target_ts);
         scan.print(target_ts);
         target_ts = match target_ts.checked_sub(1000000000) {
             Some(x) => x,
