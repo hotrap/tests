@@ -51,6 +51,13 @@ if __name__ == '__main__':
     def cm_to_inch(value):
         return value/2.54
 
+    mpl.rcParams.update({
+        'hatch.linewidth': 0.5,
+        'font.family': 'sans-serif',
+        'font.sans-serif': ['Times New Roman'],
+        })
+    plt.rcParams['axes.unicode_minus'] = False
+
     fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(6)))
     ax = plt.gca()
     cmap = plt.get_cmap('coolwarm')
@@ -102,10 +109,10 @@ if __name__ == '__main__':
     cb.ax.tick_params(labelsize=7)
     for i in range(0, len(xs)):
         if workloads[i] in twitter_ops.workloads:
-            plt.text(xs[i] - 0.09, ys[i] - 0.03, '{:02}'.format(ids[i]), fontsize=7, c='black', weight='bold')
+            plt.text(xs[i] - 0.075, ys[i] - 0.025, '{:02}'.format(ids[i]), fontsize=7, c='black', weight='bold')
         else:
-            plt.text(xs[i] - 0.09, ys[i] - 0.03, '{:02}'.format(ids[i]), fontsize=7, c='gray')
-        plt.text(xs[i] + 0.02, ys[i] - 0.03, '{:.2f}x'.format(speedups[i]), fontsize=7)
+            plt.text(xs[i] - 0.075, ys[i] - 0.025, '{:02}'.format(ids[i]), fontsize=7, c='gray')
+        plt.text(xs[i] + 0.025, ys[i] - 0.025, '{:.2f}x'.format(speedups[i]), fontsize=7)
 
     markersize=5
     handles=[
@@ -118,8 +125,8 @@ if __name__ == '__main__':
     plt.xlim(-0.03, 1.03)
     plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-    plt.xlabel('Skewness of reads', fontsize=8)
-    plt.ylabel('Age of reads', fontsize=8)
+    plt.xlabel('Proportion of hot reads', fontsize=8)
+    plt.ylabel('Proportion of mature reads', fontsize=8)
     plt.tight_layout()
     pdf_path = dir + '/twitter-speedup.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)

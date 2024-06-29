@@ -25,6 +25,13 @@ DOUBLE_COL_WIDTH = 17.8
 def cm_to_inch(value):
     return value/2.54
 
+mpl.rcParams.update({
+    'hatch.linewidth': 0.5,
+    'font.family': 'sans-serif',
+    'font.sans-serif': ['Times New Roman'],
+    })
+plt.rcParams['axes.unicode_minus'] = False
+
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(6)))
 
 workloads = [
@@ -136,8 +143,8 @@ plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc
 plt.xlim(-0.03, 1.03)
 plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
 plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-plt.xlabel('Skewness of reads', fontsize=8)
-plt.ylabel('Age of reads', fontsize=8)
+plt.xlabel('Proportion of hot reads', fontsize=8)
+plt.ylabel('Proportion of mature reads', fontsize=8)
 plt.tight_layout()
 pdf_path = dir + '/twitter-scatter.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
