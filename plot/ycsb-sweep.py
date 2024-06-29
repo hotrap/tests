@@ -95,7 +95,7 @@ versions=[
     }
 ]
 version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)', 'Mutant', 'PrismDB']
-size='110GB'
+size='110GB_220GB'
 
 skewness_ratio_version_ops = {}
 for i in range(len(skewnesses)):

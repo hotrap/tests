@@ -71,7 +71,7 @@ ratios_ycsb = {
     'WH': 'read_0.5_insert_0.5',
     'UH': 'ycsba'
 }
-size='110GB_200B'
+size='110GB_220GB_200B'
 
 gs = gridspec.GridSpec(1, len(figs))
 num_clusters = 2

@@ -12,4 +12,4 @@ sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), 'common/'))
 from cputime_breakdown import *
 
 dir=sys.argv[1]
-draw_cputime_breakdown(dir, '110GB', 'cputime-breakdown.pdf')
+draw_cputime_breakdown(dir, '110GB_220GB', 'cputime-breakdown.pdf')

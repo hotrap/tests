@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), 'common/'))
 from io_breakdown import *
 
 dir=sys.argv[1]
-(min_portion, max_portion) = draw_io_breakdown(dir, '110GB_200B', 'io-breakdown-200B.pdf')
+(min_portion, max_portion) = draw_io_breakdown(dir, '110GB_220GB_200B', 'io-breakdown-200B.pdf')
 
 tex = io.StringIO()
 print('\defmacro{RaltIoPortionMin}{%.1f\\%%}' %(min_portion * 100), file=tex)

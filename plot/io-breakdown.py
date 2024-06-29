@@ -12,4 +12,4 @@ sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), 'common/'))
 from io_breakdown import *
 
 dir=sys.argv[1]
-draw_io_breakdown(dir, '110GB', 'io-breakdown.pdf')
+draw_io_breakdown(dir, '110GB_220GB', 'io-breakdown.pdf')

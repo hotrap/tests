@@ -36,13 +36,13 @@ figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_in
 xticks = ['RO', 'RW', 'WH']
 workloads = [
     {
-        'path': 'ycsbc_hotspot0.05_110GB',
+        'path': 'ycsbc_hotspot0.05_110GB_220GB',
     },
     {
-        'path': 'read_0.75_insert_0.25_hotspot0.05_110GB',
+        'path': 'read_0.75_insert_0.25_hotspot0.05_110GB_220GB',
     },
     {
-        'path': 'read_0.5_insert_0.5_hotspot0.05_110GB',
+        'path': 'read_0.5_insert_0.5_hotspot0.05_110GB_220GB',
     },
 ]
 versions=[
