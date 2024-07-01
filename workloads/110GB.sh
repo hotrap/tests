@@ -40,6 +40,13 @@ function run-hotrap {
 	../helper/hotrap-plot.sh $DIR
 }
 
+workload="u155243"
+../helper/checkout-promote-stably-hot
+DIR=../../data/$workload/promote-stably-hot
+echo Result directory: $DIR
+./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload --switches=0x1"
+../helper/hotrap-plot.sh $DIR
+
 workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 run-rocksdb-fd $workload
 run-secondary-cache $workload
