@@ -55,7 +55,8 @@ def read_hit_rates(data_dir):
     return hit_rates
 
 def warmup_finish_timestamp(hit_rates):
-    threshold = hit_rates['hit-rate'].max() * 0.95
+    # Reguard 99% percentile hit rate as max, which should be stable
+    threshold = np.quantile(hit_rates['hit-rate'], 0.99) * 0.95
     return hit_rates[hit_rates['hit-rate'] >= threshold].iloc[0]['Timestamp(ns)']
 
 def timestamp_to_progress(progress, timestamp):
