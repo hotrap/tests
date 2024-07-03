@@ -5,6 +5,27 @@ function build_rocksdb {
 	make -j$(nproc) rocksdb-shared
 	cd ..
 }
+function build_sas {
+	workspace=$(realpath ..)
+
+	# Additional "FindXXX.cmake" files are here (e.g. FindSodium.cmake)
+	CLCMAKE="$workspace/CacheLib/cachelib/cmake"
+
+	# After ensuring we are in the correct directory, set the installation prefix"
+	PREFIX="$workspace/opt/cachelib/"
+
+	CMAKE_PARAMS="-DCMAKE_INSTALL_PREFIX='$PREFIX' -DCMAKE_MODULE_PATH='$CLCMAKE'"
+
+	CMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH:-}:$PREFIX/lib/cmake:$PREFIX/lib64/cmake"
+	export CMAKE_PREFIX_PATH
+
+	mkdir -p build
+	cd build
+	cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DFAIL_ON_WARNINGS=OFF -DUSE_RTTI=true $CMAKE_PARAMS .. -DWITH_TESTS=OFF -DWITH_BENCHMARK_TOOLS=OFF
+	make -j$(nproc) rocksdb-shared
+	cd ..
+}
+
 function build_viscnts_splay_rs {
 	make ROCKSDB_INCLUDE=~/hotrap/include
 }
@@ -53,6 +74,14 @@ function build_kvexe_mutant {
 	mkdir -p build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/mutant/include -DROCKSDB_LIB=$workspace/mutant
+	make
+	cd ..
+}
+function build_kvexe_sas {
+	workspace=$(realpath ..)
+	mkdir -p build
+	cd build
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/SAS-Cache/include -DROCKSDB_LIB=$workspace/SAS-Cache/build
 	make
 	cd ..
 }

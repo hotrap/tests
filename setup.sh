@@ -29,6 +29,7 @@ EOF
 
 git clone git@github.com:hotrap/hotrap.git rocksdb
 cp -r rocksdb hotrap
+git clone -b SAS-Cache https://github.com/asu-idi/SAS-Cache.git
 git clone --recursive git@github.com:hotrap/prismdb.git
 git clone git@github.com:hotrap/mutant.git
 

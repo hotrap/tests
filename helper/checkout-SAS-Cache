@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)
+source common.sh
+cd ..
+
+cd ../SAS-Cache
+# I don't know why but the second compilation will fail. So we compile only when it's not compiled yet.
+if [ ! -d build ]; then
+	build_sas
+fi
+
+cd ../kvexe-SAS-Cache
+git checkout SAS-Cache
+build_kvexe_sas
