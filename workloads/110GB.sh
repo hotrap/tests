@@ -29,7 +29,7 @@ function run-sas-cache {
 	../helper/checkout-SAS-Cache
 	DIR=../../data/$1/SAS-Cache
 	echo Result directory: $DIR
-	./test-sas-cache-110GB.sh ../config/$1 $DIR
+	./test-SAS-Cache-110GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-rocksdb {
