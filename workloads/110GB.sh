@@ -25,6 +25,13 @@ function run-secondary-cache {
 	./test-secondary-cache-110GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
+function run-sas-cache {
+	../helper/checkout-SAS-Cache
+	DIR=../../data/$1/SAS-Cache
+	echo Result directory: $DIR
+	./test-sas-cache-110GB.sh ../config/$1 $DIR
+	../helper/rocksdb-plot.sh $DIR
+}
 function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
@@ -56,6 +63,7 @@ run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-secondary-cache $workload
+	run-sas-cache $workload
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload promote-stably-hot
 done
