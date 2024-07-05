@@ -54,6 +54,14 @@ function run-secondary-cache {
 	./test-secondary-cache-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
+function run-SAS-Cache {
+	../helper/checkout-SAS-Cache
+	DIR=../../data/$1/SAS-Cache
+	echo Result directory: $DIR
+	prefix=../../twitter/processed/$1
+	./test-SAS-Cache-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
+	../helper/rocksdb-plot.sh $DIR
+}
 function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
@@ -74,6 +82,7 @@ function run-hotrap {
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-secondary-cache $workload
+	run-SAS-Cache $workload
 	run-rocksdb $workload rocksdb-fat
 	run-hotrap $workload promote-stably-hot
 done
