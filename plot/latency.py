@@ -59,19 +59,19 @@ versions=[
         'workloads': workloads,
     },
     {
-        'path': 'secondary-cache',
-        'pattern': 'XXX',
-        'color': plt.get_cmap('Set2')(3),
-        'workloads': workloads,
-    },
-    {
         'path': 'rocksdb-fd',
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
         'workloads': workloads,
     },
+    {
+        'path': 'SAS-Cache',
+        'pattern': 'XXX',
+        'color': plt.get_cmap('Set2')(3),
+        'workloads': workloads,
+    },
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)']
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)', 'SAS-Cache']
 
 gs = gridspec.GridSpec(1, 3, figure=figure)
 bar_width = 1 / (len(versions) + 1)
@@ -108,16 +108,15 @@ for workload in workloads:
 for (version_idx, version) in enumerate(versions):
     for (pivot, workload) in enumerate(version['workloads']):
         data_dir = os.path.join(dir, workload['path'], version['path'])
-        if version_idx < 4:
-            warmup_finish_ts = common.progress_to_timestamp(data_dir, warmup_finish_progress[workload['path']])
-            for fig in figs:
-                x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-                path = os.path.join(data_dir, 'read-latency')
-                latency = pd.read_table(path, sep='\s+')
-                latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
-                value = latency[fig['percentile']]
-                fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
-                # print(workload['name'], version['path'], fig['percentile'], value)
+        warmup_finish_ts = common.progress_to_timestamp(data_dir, warmup_finish_progress[workload['path']])
+        for fig in figs:
+            x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
+            path = os.path.join(data_dir, 'read-latency')
+            latency = pd.read_table(path, sep='\s+')
+            latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
+            value = latency[fig['percentile']]
+            fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
+            # print(workload['name'], version['path'], fig['percentile'], value)
 
 for (i, fig) in enumerate(figs):
     subfig = fig['subfig']

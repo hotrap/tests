@@ -74,14 +74,14 @@ versions=[
         'color': plt.get_cmap('Set2')(1),
     },
     {
-        'path': 'secondary-cache',
-        'pattern': 'XXX',
-        'color': plt.get_cmap('Set2')(3),
-    },
-    {
         'path': 'rocksdb-fd',
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
+    },
+    {
+        'path': 'SAS-Cache',
+        'pattern': 'XXX',
+        'color': plt.get_cmap('Set2')(3),
     },
     {
         'path': 'mutant',
@@ -94,7 +94,7 @@ versions=[
         'color': plt.get_cmap('Set2')(5),
     }
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)', 'Mutant', 'PrismDB']
+version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)', 'SAS-Cache', 'Mutant', 'PrismDB']
 size='110GB_220GB'
 
 skewness_ratio_version_ops = {}
