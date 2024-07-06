@@ -24,24 +24,22 @@ def calc(data_dir):
     num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
     assert num_bytes['2sdfront'].max() == 0
     num_bytes = num_bytes.iloc[-1]
-    promoted = num_bytes['2fdlast'] + num_bytes['by-flush']
+    promoted_by_compaction = num_bytes['2fdlast']
+    promoted_by_flush = num_bytes['by-flush']
 
     compaction_bytes = run_phase(info, common.read_compaction_bytes(data_dir))
     compaction_bytes['read'] -= compaction_bytes.iloc[0]['read']
     compaction_bytes['write'] -= compaction_bytes.iloc[0]['write']
     compaction_io = compaction_bytes.iloc[-1]['read'] + compaction_bytes.iloc[-1]['write']
 
-    hit_rates = common.read_hit_rates(data_dir)
-    final_hit_rate = hit_rates['hit-rate'][int(len(hit_rates) * 0.99):].mean()
-
-    return (promoted, compaction_io, final_hit_rate)
-(hotrap_promoted, hotrap_compaction_io, hotrap_final_hit_rate) = calc(os.path.join(dir, 'promote-stably-hot'))
-(nbc_promoted, nbc_compaction_io, nbc_final_hit_rate) = calc(os.path.join(dir, 'no-promote-by-compaction'))
+    return (promoted_by_compaction, promoted_by_flush, compaction_io)
+(hotrap_promoted_by_compaction, hotrap_promoted_by_flush, hotrap_compaction_io) = calc(os.path.join(dir, 'promote-stably-hot'))
+(nbc_promoted_by_compaction, nbc_promoted_by_flush, nbc_compaction_io) = calc(os.path.join(dir, 'no-promote-by-compaction'))
 
 tex = io.StringIO()
-print('\\begin{tabular}{|c|c|c|c|}\n\t\\hline\n\tVersion & Promoted & Compaction & Final hit rate \\\\\n\t\hline', file=tex)
-print('\tHotRAP & %.1fGB & %.1fGB & %.1f\\%% \\\\\n\t\\hline' %(hotrap_promoted / 1e9, hotrap_compaction_io / 1e9, hotrap_final_hit_rate * 100), file=tex)
-print('\tno-by-compaction & %.1fGB & %.1fGB & %.1f\\%% \\\\\n\t\hline' %(nbc_promoted / 1e9, nbc_compaction_io / 1e9, nbc_final_hit_rate * 100), file=tex)
+print('\\begin{tabular}{|c|c|c|c|}\n\t\\hline\n\tVersion & By Compaction & By flush & Compaction \\\\\n\t\hline', file=tex)
+print('\tHotRAP & %.1fGB & %.1fGB & %.1fGB \\\\\n\t\\hline' %(hotrap_promoted_by_compaction / 1e9, hotrap_promoted_by_flush / 1e9, hotrap_compaction_io / 1e9), file=tex)
+print('\tno-by-compaction & %.1fGB & %.1fGB & %.1fGB \\\\\n\t\hline' %(nbc_promoted_by_compaction / 1e9, nbc_promoted_by_flush / 1e9, nbc_compaction_io / 1e9), file=tex)
 print('\\end{tabular}', file=tex)
 tex = tex.getvalue()
 print(tex)
