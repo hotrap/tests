@@ -6,8 +6,8 @@ fi
 mkdir -p $1
 DIR=$(realpath "$1")
 if [ "$(ls -A $DIR)" ]; then
-        echo "$1" is not empty!
-        exit 1
+    echo "$1" is not empty!
+    exit 1
 fi
 prefix="$2"
 extra_kvexe_args="$3"

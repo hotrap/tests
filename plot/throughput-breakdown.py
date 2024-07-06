@@ -43,12 +43,12 @@ versions=[
         'path': 'rocksdb-fat',
     },
     {
-        'name': '(c) RocksDB-secondary-cache',
-        'path': 'secondary-cache',
+        'name': '(c) RocksDB(FD)',
+        'path': 'rocksdb-fd',
     },
     {
-        'name': '(d) RocksDB(FD)',
-        'path': 'rocksdb-fd',
+        'name': '(d) SAS-Cache',
+        'path': 'SAS-Cache',
     },
 ]
 throughput_breakdown.draw_throughput_breakdown(dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)

@@ -52,17 +52,17 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(1),
         },
         {
-            'path': 'secondary-cache',
-            'pattern': 'XXX',
-            'color': plt.get_cmap('Set2')(3),
-        },
-        {
             'path': 'rocksdb-fd',
             'pattern': 'XXXXXXXXX',
             'color': plt.get_cmap('Set2')(2),
         },
+        {
+            'path': 'SAS-Cache',
+            'pattern': 'XXX',
+            'color': plt.get_cmap('Set2')(3),
+        },
     ]
-    version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB-secondary-cache', 'RocksDB(FD)']
+    version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)', 'SAS-Cache']
 
     workload_version_ops = {}
     for workload in workloads:
