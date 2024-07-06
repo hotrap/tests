@@ -28,7 +28,7 @@ function run-mutant {
 	DIR=../../data/$1/mutant
 	echo Result directory: $DIR
 	./test-mutant-110GB.sh ../config/$1 $DIR
-	../helper/plot-prismdb-mutant.sh $DIR
+	../helper/rocksdb-plot.sh $DIR
 }
 
 for workload in "${workloads[@]}"; do
