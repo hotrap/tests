@@ -36,13 +36,13 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(
 versions = [
     {
         'name': '(a) HotRAP',
-        'path': 'ycsbc_hotspot0.01_110GB/promote-stably-hot',
+        'path': 'ycsbc_hotspot0.01_110GB_220GB/promote-stably-hot',
         'ymax': 4e4,
         'yticks': [0, 1e4, 2e4, 3e4, 4e4],
     },
     {
         'name': '(b) RocksDB-fat',
-        'path': 'ycsbc_hotspot0.01_load_110GB_run_1GB/rocksdb-fat',
+        'path': 'ycsbc_hotspot0.01_110GB_1GB/rocksdb-fat',
         'ymax': 400,
         'yticks': [0, 100, 200, 300, 400],
     }
