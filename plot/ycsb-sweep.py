@@ -116,6 +116,8 @@ for i in range(len(skewnesses)):
             else:
                 workload = 'workload_110GB_' + ratios_prismdb_mutant[ratio] + '_' + skewness
                 data_dir = os.path.join(dir, workload, version['path'])
+                # mutant crashes under workload_110GB_wh_hotspot0.05
+                # So we use the OPS of the last 10%
                 progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
                 last = progress.iloc[-1]
                 progress = progress[progress['operations-executed'] != last['operations-executed']]
