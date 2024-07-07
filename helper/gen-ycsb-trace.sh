@@ -5,17 +5,18 @@ if [ ! $1 ]; then
 fi
 workspace=$(realpath $(dirname $0)/../..)
 workload_file=$(realpath "$1")
+value_length="$(grep valuelength $workload_file | cut -f2 -d=)"
 function ycsb-gen {
 	(cd $workspace/YCSB &&
 		./bin/ycsb $1 basic -P $workload_file -s -p fieldcount=1 -p fieldlength=0 |
 			$workspace/tests/helper/bin/trace-cleaner |
-			awk '{
-				if ($1 == "INSERT" || $1 == "UPDATE" || $1 == "RMW") {
-					print $1, $3, 1000
+			awk "{
+				if (\$1 == \"INSERT\" || \$1 == \"UPDATE\" || \$1 == \"RMW\") {
+					print \$1, \$3, $value_length
 				} else {
-					print $1, $3
+					print \$1, \$3
 				}
-			}'
+			}"
 	)
 }
 workload=$(basename $workload_file)

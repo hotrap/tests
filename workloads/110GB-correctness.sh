@@ -56,6 +56,7 @@ workloads=(
 )
 
 for workload in "${workloads[@]}"; do
+	../helper/gen-ycsb-trace.sh ../config/$workload
 	run-rocksdb-fd $workload
 	run-hotrap $workload promote-stably-hot
 done
