@@ -36,7 +36,7 @@ function run {
 	./checkout-$version $user $IP $version
 	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-$version-110GB.sh ../config/$workload_file ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/plot-prismdb-mutant.sh $output_dir/$workload/$version
+	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
 
 for workload in "${workloads[@]}"; do
