@@ -21,6 +21,7 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
     import common
 
+    import io
     import pandas as pd
     import matplotlib as mpl
     import matplotlib.pyplot as plt
@@ -77,6 +78,26 @@ if __name__ == "__main__":
             data_dir = os.path.join(workload_dir, version['path'])
             version_ops[version['path']] = common.ops_during_interval(data_dir, start_progress, end_progress)
         workload_version_ops[workload] = version_ops
+
+    max_speedup = 0
+    for workload in workloads:
+        version_ops = workload_version_ops[workload]
+        hotrap_ops = version_ops['promote-stably-hot']
+        other_sys_max_ops = 0
+        for version in versions:
+            version = version['path']
+            if version == 'promote-stably-hot' or version == 'rocksdb-fd':
+                continue
+            other_sys_max_ops = max(other_sys_max_ops, version_ops[version])
+        assert other_sys_max_ops > 0
+        max_speedup = max(max_speedup, hotrap_ops / other_sys_max_ops)
+    tex = io.StringIO()
+    print('% Max speedup over second best under twitter production workloads', file=tex)
+    print('\defmacro{MaxSpeedupTwitter}{%.1f}' %max_speedup, file=tex)
+
+    tex = tex.getvalue()
+    print(tex)
+    open(os.path.join(dir, 'twitter.tex'), mode='w').write(tex)
 
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
