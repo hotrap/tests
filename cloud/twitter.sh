@@ -94,7 +94,17 @@ function run-rocksdb-fd {
 	IP=$3
 	upload-trace
 	./checkout-rocksdb $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB-replay.sh $prefix-load $prefix-run ../../data/$workload/$version \"--enable_fast_process\""
+	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
+	../helper/rocksdb-plot.sh $output_dir/$workload/$version
+}
+function run-rocksdb-fat {
+	workload=$1
+	version=$2
+	IP=$3
+	upload-trace
+	./checkout-$version $user $IP
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB-replay.sh $prefix-load $prefix-run ../../data/$workload/$version \"--enable_fast_process\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
@@ -104,17 +114,7 @@ function run-rocksdb {
 	IP=$3
 	upload-trace
 	./checkout-$version $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version 10GB"
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
-}
-function run-secondary-cache {
-	workload=$1
-	version=$2
-	IP=$3
-	upload-trace
-	./checkout-secondary-cache $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-secondary-cache-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-$version-110GB-replay.sh $prefix-load $prefix-run ../../data/$workload/$version \"--enable_fast_process\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
@@ -124,7 +124,7 @@ function run-hotrap {
 	IP=$3
 	upload-trace
 	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-replay-110GB.sh $prefix-load $prefix-run ../../data/$workload/$version"
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-hotrap-110GB-replay.sh $prefix-load $prefix-run ../../data/$workload/$version \"--enable_fast_process\""
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
@@ -136,12 +136,14 @@ running=0
 while [ $i -lt $num ]; do
 	workload="${workloads[$i]}"
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-fat
-	cloud-run run-secondary-cache $workload secondary-cache
+	cloud-run run-rocksdb-fat $workload rocksdb-fat
+	cloud-run run-rocksdb $workload SAS-Cache
+	cloud-run run-rocksdb $workload mutant
 	cloud-run run-hotrap $workload promote-stably-hot
 	i=$(($i + 1))
 	running=$(($running + 1))
 	if [ $running -eq $max_concurrent ]; then
+		wait -n
 		wait -n
 		wait -n
 		wait -n
