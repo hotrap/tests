@@ -15,23 +15,20 @@ workloads=(
 	"workload_110GB_ycsbc_zipfian"
 )
 
-function run-prismdb {
-	../helper/checkout-prismdb
-	DIR=../../data/$1/prismdb
+function run {
+	if [ -f ../config/$1_$2 ]; then
+		workload_file=$1_$2
+	else
+		workload_file=$1
+	fi
+	../helper/checkout-$2
+	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-prismdb-110GB.sh ../config/$1 $DIR
-	../helper/rocksdb-plot.sh $DIR
-}
-
-function run-mutant {
-	../helper/checkout-mutant
-	DIR=../../data/$1/mutant
-	echo Result directory: $DIR
-	./test-mutant-110GB.sh ../config/$1 $DIR
+	./test-$2-110GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
 
 for workload in "${workloads[@]}"; do
-	run-prismdb $workload
-	run-mutant $workload
+	run $workload
+	run $workload
 done

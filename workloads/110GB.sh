@@ -18,25 +18,18 @@ function run-rocksdb-fd {
 	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR "$2"
 	../helper/rocksdb-plot.sh $DIR
 }
-function run-secondary-cache {
-	../helper/checkout-secondary-cache
-	DIR=../../data/$1/secondary-cache
+function run-rocksdb-fat {
+	../helper/checkout-rocksdb-fat
+	DIR=../../data/$1/rocksdb-fat
 	echo Result directory: $DIR
-	./test-secondary-cache-110GB.sh ../config/$1 $DIR
-	../helper/rocksdb-plot.sh $DIR
-}
-function run-sas-cache {
-	../helper/checkout-SAS-Cache
-	DIR=../../data/$1/SAS-Cache
-	echo Result directory: $DIR
-	./test-SAS-Cache-110GB.sh ../config/$1 $DIR
+	./test-rocksdb-110GB.sh ../config/$1 $DIR 10GB
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-rocksdb-110GB.sh ../config/$1 $DIR 10GB
+	./test-$2-110GB.sh ../config/$1 $DIR
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -56,15 +49,14 @@ echo Result directory: $DIR
 
 workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 run-rocksdb-fd $workload
-run-secondary-cache $workload
-run-rocksdb $workload rocksdb-fat
+run-rocksdb-fat $workload
+run-rocksdb $workload SAS-Cache
 run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
-	run-secondary-cache $workload
-	run-sas-cache $workload
-	run-rocksdb $workload rocksdb-fat
+	run-rocksdb-fat $workload
+	run-rocksdb $workload SAS-Cache
 	run-hotrap $workload promote-stably-hot
 done
 
@@ -92,5 +84,5 @@ for workload in "${hotspot_workloads[@]}"; do
 done
 for workload in "${uniform_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
-	run-rocksdb $workload rocksdb-fat
+	run-rocksdb-fat $workload
 done
