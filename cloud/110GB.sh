@@ -18,7 +18,7 @@ function run-rocksdb-fd {
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
-function run-rocksdb {
+function run-rocksdb-fat {
 	workload=$1
 	version=$2
 	IP=$3
@@ -27,21 +27,12 @@ function run-rocksdb {
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
-function run-secondary-cache {
+function run-rocksdb {
 	workload=$1
 	version=$2
 	IP=$3
-	./checkout-secondary-cache $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-secondary-cache-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
-}
-function run-sas-cache {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-SAS-Cache $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-SAS-Cache-110GB.sh ../config/$workload ../../data/$workload/$version"
+	./checkout-$version $user $IP
+	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-$version-110GB.sh ../config/$workload ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
@@ -55,7 +46,7 @@ function run-hotrap {
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
 function run-u135542 {
-	workload="u135542"
+	workload=$1
 	version=$2
 	IP=$3
 	./checkout-hotrap $user $IP $version
@@ -83,15 +74,15 @@ cloud-run run-u135542 "u135542" promote-stably-hot
 
 workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 cloud-run run-rocksdb-fd $workload rocksdb-fd
-cloud-run run-rocksdb $workload rocksdb-fat
-cloud-run run-secondary-cache $workload secondary-cache
+cloud-run run-rocksdb-fat $workload rocksdb-fat
+cloud-run run-rocksdb $workload secondary-cache
 cloud-run run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
 
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-fat
-	cloud-run run-secondary-cache $workload secondary-cache
-	cloud-run run-sas-cache $workload SAS-Cache
+	cloud-run run-rocksdb-fat $workload rocksdb-fat
+	cloud-run run-rocksdb $workload secondary-cache
+	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-hotrap $workload promote-stably-hot
 done
 cloud-run run-hotrap "ycsbc_hotspot0.01_110GB_220GB" promote-stably-hot
@@ -120,6 +111,6 @@ for workload in "${hotspot_workloads[@]}"; do
 done
 for workload in "${uniform_workloads[@]}"; do
 	cloud-run run-hotrap $workload promote-stably-hot
-	cloud-run run-rocksdb $workload rocksdb-fat
+	cloud-run run-rocksdb-fat $workload rocksdb-fat
 done
 wait
