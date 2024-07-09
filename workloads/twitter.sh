@@ -46,25 +46,9 @@ function run-rocksdb-fd {
 	./test-rocksdb-fd-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
-function run-secondary-cache {
-	../helper/checkout-secondary-cache
-	DIR=../../data/$1/secondary-cache
-	echo Result directory: $DIR
-	prefix=../../twitter/processed/$1
-	./test-secondary-cache-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
-	../helper/rocksdb-plot.sh $DIR
-}
-function run-SAS-Cache {
-	../helper/checkout-SAS-Cache
-	DIR=../../data/$1/SAS-Cache
-	echo Result directory: $DIR
-	prefix=../../twitter/processed/$1
-	./test-SAS-Cache-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
-	../helper/rocksdb-plot.sh $DIR
-}
-function run-rocksdb {
-	../helper/checkout-$2
-	DIR=../../data/$1/$2
+function run-rocksdb-fat {
+	../helper/checkout-rocksdb-fat
+	DIR=../../data/$1/rocksdb-fat
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
 	./test-rocksdb-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
@@ -78,11 +62,19 @@ function run-hotrap {
 	./test-hotrap-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
 	../helper/hotrap-plot.sh $DIR
 }
+function run-rocksdb {
+	../helper/checkout-$2
+	DIR=../../data/$1/$2
+	echo Result directory: $DIR
+	prefix=../../twitter/processed/$1
+	./test-$2-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
+	../helper/rocksdb-plot.sh $DIR
+}
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
-	run-secondary-cache $workload
-	run-SAS-Cache $workload
-	run-rocksdb $workload rocksdb-fat
+	run-rocksdb-fat $workload
 	run-hotrap $workload promote-stably-hot
+	run-rocksdb $workload SAS-Cache
+	run-rocksdb $workload mutant
 done
