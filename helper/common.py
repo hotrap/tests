@@ -169,3 +169,55 @@ def read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd):
     rand_read_bytes = pd.concat(rand_read_bytes, axis=1).T
     rand_read_bytes.columns = ['Timestamp(ns)', 'fd', 'sd']
     return rand_read_bytes
+
+class VersionData:
+    data_dir: str
+    _info = None
+    _ts_progress_ = None
+    def __init__(self, data_dir):
+        self.data_dir = data_dir
+    def info(self):
+        if self._info is None:
+            self._info = json5.load(open(os.path.join(self.data_dir, 'info.json')))
+        return self._info
+    def _run_phase(self, data):
+        return data[(data['Timestamp(ns)'] >= self.info()['run-start-timestamp(ns)']) & (data['Timestamp(ns)'] < self.info()['run-end-timestamp(ns)'])]
+    def ts_progress(self):
+        if self._ts_progress_ is None:
+            self._ts_progress_ = pd.read_table(self.data_dir + '/progress', sep='\s+')
+            self._ts_progress_ = self._run_phase(self._ts_progress_)
+            self._ts_progress_['operations-executed'] -= self._ts_progress_.iloc[0]['operations-executed']
+        return self._ts_progress_
+
+class Estimater:
+    _it = None
+    _x0 = None
+    _x1 = None
+    _field: str
+    def __init__(self, df, field):
+        self._it = df.iterrows()
+        self._x0 = next(self._it)[1]
+        self._x1 = next(self._it)[1]
+        self._field = field
+    # Raise StopIteration if none
+    def __estimate(self, timestamp):
+        return self._x0[self._field] + (self._x1[self._field] - self._x0[self._field]) / (self._x1['Timestamp(ns)'] - self._x0['Timestamp(ns)']) * (timestamp - self._x0['Timestamp(ns)'])
+    def estimate(self, timestamp):
+        while self._x1['Timestamp(ns)'] <= timestamp:
+            self._x0 = self._x1
+            self._x1 = next(self._it)[1]
+        return self.__estimate(timestamp)
+
+def estimate(version_data: VersionData, data, field: str):
+    estimater = Estimater(data, field)
+    operations_executed = []
+    estimated = []
+    for _, row in version_data.ts_progress().iterrows():
+        timestamp = row['Timestamp(ns)']
+        try:
+            estimated.append(estimater.estimate(timestamp))
+        except StopIteration:
+            break
+        operations_executed.append(row['operations-executed'])
+    assert len(estimated) == len(operations_executed)
+    return (operations_executed, estimated)
