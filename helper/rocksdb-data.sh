@@ -6,4 +6,4 @@ fi
 mydir=$(dirname "$0")
 db_dir="$mydir/../../testdb/db"
 "$mydir"/save-common-data.sh "$db_dir" "$1"
-mv $db_dir/{rocksdb-stats*.txt,first-level-in-sd,compaction-stats,rand-read-bytes} "$1"
+mv $db_dir/{rocksdb-stats*.txt,first-level-in-sd,compaction-stats,rand-read-bytes,other-stats-load-finish.txt} "$1"
