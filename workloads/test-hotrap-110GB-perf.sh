@@ -1,31 +1,14 @@
 #!/usr/bin/env bash
-if [[ $# < 5 || $# > 6 ]]; then
-	echo Usage: $0 workload-file output-dir fd-size max-hot-size max-viscnts-size [extra-kvexe-args]
+if [[ $# < 2 || $# > 3 ]]; then
+	echo Usage: $0 workload-file output-dir [extra-kvexe-args]
 	exit 1
 fi
 workload_file=$(realpath -s "$1")
 mkdir -p $2
 DIR=$(realpath "$2")
-if [ "$(ls -A $DIR)" ]; then
-	echo "$2" is not empty!
-	exit 1
-fi
-fd_size=$(humanfriendly --parse-size=$3)
-max_hot_set_size=$(humanfriendly --parse-size=$4)
-max_viscnts_size=$(humanfriendly --parse-size=$5)
-extra_kvexe_args="$6"
-cd "$(dirname $0)"
 workspace=$(realpath ../..)
-kvexe_dir=$workspace/kvexe/build/
-
-memtable_size=$((64 * 1024 * 1024))
-L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
-
-ulimit -n 100000
-# Dump core when crash
-ulimit -c unlimited
-cd $DIR
-$kvexe_dir/rocksdb-kvexe --load --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --max_viscnts_size=$max_viscnts_size --switches=0x1 --num_threads=8 --max_background_jobs=8 --block_size=16384 --max_bytes_for_level_base=$L1_size --enable_fast_generator --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths="{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,100000000000}}" --viscnts_path=$workspace/testdb/viscnts $extra_kvexe_args 2>> log.txt
-$workspace/tests/helper/exe-while.sh . bash -c "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4 perf record --call-graph=fp -o perf.data $kvexe_dir/rocksdb-kvexe --run --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --max_viscnts_size=$max_viscnts_size --switches=0x1 --num_threads=16 --max_background_jobs=8 --block_size=16384 --max_bytes_for_level_base=$L1_size --enable_fast_generator --workload_file=$workload_file --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts $extra_kvexe_args 2>> log.txt"
-bash $workspace/tests/helper/hotrap-data.sh .
-perf script -i perf.data | inferno-collapse-perf > perf.folded
+./test-hotrap-110GB-generic.sh "$2" "" "--load --enable_fast_generator --workload_file=$workload_file"
+rm -r $DIR
+mkdir $DIR
+./test-hotrap-110GB-generic.sh "$2" "perf record --call-graph=fp -o $DIR/perf.data" "--run --enable_fast_generator --workload_file=$workload_file --switches=0x1"
+perf script -i $DIR/perf.data | inferno-collapse-perf > $DIR/perf.folded
