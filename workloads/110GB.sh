@@ -1,4 +1,5 @@
 workloads=(
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
 	"ycsbc_hotspot0.05_110GB_220GB"
@@ -46,12 +47,6 @@ DIR=../../data/$workload/promote-stably-hot
 echo Result directory: $DIR
 ./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload --switches=0x1"
 ../helper/hotrap-plot.sh $DIR
-
-workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
-run-rocksdb-fd $workload
-run-rocksdb-fat $workload
-run-rocksdb $workload SAS-Cache
-run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload

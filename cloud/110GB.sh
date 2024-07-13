@@ -56,6 +56,7 @@ function run-u135542 {
 }
 
 workloads=(
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
 	"ycsbc_hotspot0.05_110GB_220GB"
@@ -70,14 +71,6 @@ workloads=(
 )
 check-workload-files "${workloads[@]}"
 
-cloud-run run-u135542 "u135542" promote-stably-hot
-
-workload="read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
-cloud-run run-rocksdb-fd $workload rocksdb-fd
-cloud-run run-rocksdb-fat $workload rocksdb-fat
-cloud-run run-rocksdb $workload secondary-cache
-cloud-run run-hotrap $workload promote-stably-hot "--load_phase_rate_limit=800000000"
-
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
 	cloud-run run-rocksdb-fat $workload rocksdb-fat
@@ -85,6 +78,7 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-hotrap $workload promote-stably-hot
 done
+cloud-run run-u135542 "u135542" promote-stably-hot
 cloud-run run-hotrap "ycsbc_hotspot0.01_110GB_220GB" promote-stably-hot
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
