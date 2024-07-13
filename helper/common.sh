@@ -33,7 +33,7 @@ function build_ralt {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build/librocksdb.so
+	cmake .. -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build/librocksdb.so $1
 	make viscnts
 	cd ..
 }
