@@ -1,5 +1,5 @@
 recordcount=110000000
-operationcount=110000000
+operationcount=200000000
 workload=site.ycsb.workloads.CoreWorkload
 
 readallfields=true
@@ -11,7 +11,7 @@ insertproportion=0.5
 
 requestdistribution=hotspot
 
-hotspotdatafraction=0.05
-hotspotopnfraction=0.95
+hotspotdatafraction=0.01
+hotspotopnfraction=0.99
 
 loadsleep=600

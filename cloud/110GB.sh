@@ -94,6 +94,24 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload mutant
 done
 
+workloads=(
+	"workload_110GB_wr_hotspot0.01"
+	"workload_110GB_wr_hotspot0.05"
+	"workload_110GB_wr_uniform"
+	"workload_110GB_wh_hotspot0.01"
+	"workload_110GB_wh_hotspot0.05"
+	"workload_110GB_wh_uniform"
+	"workload_110GB_ycsba_hotspot0.01"
+	"workload_110GB_ycsba_hotspot0.05"
+	"workload_110GB_ycsba_uniform"
+	"workload_110GB_ycsbc_hotspot0.01"
+	"workload_110GB_ycsbc_hotspot0.05"
+	"workload_110GB_ycsbc_uniform"
+)
+for workload in "${workloads[@]}"; do
+	cloud-run run-rocksdb $workload prismdb
+done
+
 hotspot_workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB_200B"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB_200B"
