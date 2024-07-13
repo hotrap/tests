@@ -84,6 +84,16 @@ cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
 
+workloads=(
+	"read_0.5_insert_0.5_hotspot0.01_110GB"
+	"read_0.75_insert_0.25_hotspot0.01_110GB"
+	"ycsba_hotspot0.01_110GB"
+	"ycsbc_hotspot0.01_110GB"
+)
+for workload in "${workloads[@]}"; do
+	cloud-run run-rocksdb $workload mutant
+done
+
 hotspot_workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB_200B"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB_200B"
