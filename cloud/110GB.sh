@@ -56,14 +56,14 @@ function run-u135542 {
 }
 
 workloads=(
+	"read_0.5_insert_0.5_hotspot0.01_110GB_220GB"
+	"read_0.75_insert_0.25_hotspot0.01_110GB_220GB"
+	"ycsba_hotspot0.01_110GB_220GB"
+	"ycsbc_hotspot0.01_110GB_220GB"
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
 	"ycsbc_hotspot0.05_110GB_220GB"
-	"read_0.5_insert_0.5_zipfian_110GB_220GB"
-	"read_0.75_insert_0.25_zipfian_110GB_220GB"
-	"ycsba_zipfian_110GB_220GB"
-	"ycsbc_zipfian_110GB_220GB"
 	"read_0.5_insert_0.5_uniform_110GB_220GB"
 	"read_0.75_insert_0.25_uniform_110GB_220GB"
 	"ycsba_uniform_110GB_220GB"
