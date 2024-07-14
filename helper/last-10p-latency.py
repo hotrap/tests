@@ -22,7 +22,7 @@ while True:
     latency = latency.iloc[len(latency) - len(latency) // 10:]
     latency = latency.groupby('type')['latency(ns)'].apply(list)['READ']
     latencies.append(latency)
-print(str(i) + ' latency files processsed')
+print(str(i) + ' latency files processed')
 latency = np.array([ elem for latency in latencies for elem in latency])
 percentiles = [50, 99, 99.9]
 values = np.percentile(latency, percentiles)
