@@ -66,6 +66,7 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-fat
 	cloud-run run-rocksdb $workload SAS-Cache
+	cloud-run run-rocksdb $workload prismdb
 	cloud-run run-hotrap $workload promote-stably-hot
 done
 cloud-run run-u135542 "u135542" promote-stably-hot
@@ -82,24 +83,6 @@ workloads=(
 )
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload mutant
-done
-
-workloads=(
-	"workload_110GB_wr_hotspot0.01"
-	"workload_110GB_wr_hotspot0.05"
-	"workload_110GB_wr_uniform"
-	"workload_110GB_wh_hotspot0.01"
-	"workload_110GB_wh_hotspot0.05"
-	"workload_110GB_wh_uniform"
-	"workload_110GB_ycsba_hotspot0.01"
-	"workload_110GB_ycsba_hotspot0.05"
-	"workload_110GB_ycsba_uniform"
-	"workload_110GB_ycsbc_hotspot0.01"
-	"workload_110GB_ycsbc_hotspot0.05"
-	"workload_110GB_ycsbc_uniform"
-)
-for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload prismdb
 done
 
 hotspot_workloads=(
