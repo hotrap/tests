@@ -8,6 +8,10 @@ if len(sys.argv) != 2:
 dir = sys.argv[1]
 
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
+import common
+
+import json5
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -29,15 +33,15 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_t
 
 versions = [
     {
-        'path': 'exp',
+        'path': 'EXP',
         'marker': 'o',
     },
     {
-        'path': 'lru',
+        'path': 'LRU',
         'marker': '^',
     },
     {
-        'path': 'clock',
+        'path': 'CLOCK',
         'marker': 's',
     }
 ]
@@ -45,8 +49,14 @@ version_names = ['Exponential smoothing', 'LRU', 'CLOCK']
 
 ax = plt.gca()
 for version in versions:
-    data = pd.read_table(os.path.join(dir, version['path']), names=['progress', 'hit-rate'], sep='\s+')
-    plt.plot(data['progress'], data['hit-rate'], linewidth=0.5, marker=version['marker'], markersize=3, markevery=int(len(data['progress']) / 5))
+    data_dir = os.path.join(dir, version['path'])
+    version_data = common.VersionData(data_dir)
+
+    hit_rates = common.read_hit_rates(data_dir)
+    (x, hit_rates) = common.estimate(version_data, hit_rates, 'hit-rate')
+
+    plt.plot(x, hit_rates, linewidth=0.5, marker=version['marker'], markersize=3, markevery=int(len(x) / 5))
+
 plt.xlabel('Completed operation count', fontsize=8, loc='left')
 ax.xaxis.set_label_coords(0.1, -0.19)
 plt.xticks(fontsize=8)

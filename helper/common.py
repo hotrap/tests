@@ -173,7 +173,7 @@ def read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd):
 class VersionData:
     data_dir: str
     _info = None
-    _ts_progress_ = None
+    _ts_progress = None
     def __init__(self, data_dir):
         self.data_dir = data_dir
     def info(self):
@@ -183,11 +183,11 @@ class VersionData:
     def _run_phase(self, data):
         return data[(data['Timestamp(ns)'] >= self.info()['run-start-timestamp(ns)']) & (data['Timestamp(ns)'] < self.info()['run-end-timestamp(ns)'])]
     def ts_progress(self):
-        if self._ts_progress_ is None:
-            self._ts_progress_ = pd.read_table(self.data_dir + '/progress', sep='\s+')
-            self._ts_progress_ = self._run_phase(self._ts_progress_)
-            self._ts_progress_['operations-executed'] -= self._ts_progress_.iloc[0]['operations-executed']
-        return self._ts_progress_
+        if self._ts_progress is None:
+            self._ts_progress = pd.read_table(self.data_dir + '/progress', sep='\s+')
+            self._ts_progress = self._run_phase(self._ts_progress)
+            self._ts_progress['operations-executed'] -= self._ts_progress.iloc[0]['operations-executed']
+        return self._ts_progress
 
 class Estimater:
     _it = None
