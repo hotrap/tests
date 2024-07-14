@@ -18,15 +18,6 @@ function run-rocksdb-fd {
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
-function run-rocksdb-fat {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-$version $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 "source ~/.profile && cd tests/workloads && ./test-rocksdb-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
-}
 function run-rocksdb {
 	workload=$1
 	version=$2
@@ -73,8 +64,7 @@ check-workload-files "${workloads[@]}"
 
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
-	cloud-run run-rocksdb-fat $workload rocksdb-fat
-	cloud-run run-rocksdb $workload secondary-cache
+	cloud-run run-rocksdb $workload rocksdb-fat
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-hotrap $workload promote-stably-hot
 done
@@ -133,6 +123,6 @@ for workload in "${hotspot_workloads[@]}"; do
 done
 for workload in "${uniform_workloads[@]}"; do
 	cloud-run run-hotrap $workload promote-stably-hot
-	cloud-run run-rocksdb-fat $workload rocksdb-fat
+	cloud-run run-rocksdb $workload rocksdb-fat
 done
 wait
