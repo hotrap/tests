@@ -116,9 +116,9 @@ if __name__ == '__main__':
 
     markersize=5
     handles=[
-        mlines.Line2D([], [], color='C0', marker='o', linestyle='None', markersize=markersize, label='read-heavy'),
-        mlines.Line2D([], [], color='C0', marker='^', linestyle='None', markersize=markersize, label='read-write'),
-        mlines.Line2D([], [], color='C0', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
+        mlines.Line2D([], [], color='black', marker='o', linestyle='None', markersize=markersize, label='read-heavy'),
+        mlines.Line2D([], [], color='black', marker='^', linestyle='None', markersize=markersize, label='read-write'),
+        mlines.Line2D([], [], color='black', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
     ]
     plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.45, 1.14))
 
