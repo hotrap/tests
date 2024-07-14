@@ -43,7 +43,7 @@ function run-rocksdb-fd {
 	DIR=../../data/$1/rocksdb-fd
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-rocksdb-fd-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
+	./test-rocksdb-fd-110GB-replay.sh $prefix $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -51,7 +51,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-hotrap-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
+	./test-hotrap-110GB-replay.sh $prefix $DIR "--enable_fast_process"
 	../helper/hotrap-plot.sh $DIR
 }
 function run-rocksdb {
@@ -59,7 +59,7 @@ function run-rocksdb {
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-$2-110GB-replay.sh $prefix-load $prefix-run $DIR "--enable_fast_process"
+	./test-$2-110GB-replay.sh $prefix $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 
@@ -69,4 +69,5 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-fat
 	run-rocksdb $workload SAS-Cache
 	run-rocksdb $workload mutant
+	run-rocksdb $workload prismdb
 done
