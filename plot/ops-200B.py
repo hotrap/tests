@@ -35,32 +35,32 @@ plt.rcParams['axes.unicode_minus'] = False
 figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)))
 
 versions = {
-    'promote-stably-hot': {
-        'pattern': '///',
-        'color': plt.get_cmap('Set2')(0),
+    'rocksdb-fd': {
+        'pattern': 'XXXXXXXXX',
+        'color': plt.get_cmap('Set2')(2),
     },
     'rocksdb-fat': {
         'pattern': '\\\\\\',
         'color': plt.get_cmap('Set2')(1),
     },
-    'rocksdb-fd': {
-        'pattern': 'XXXXXXXXX',
-        'color': plt.get_cmap('Set2')(2),
+    'promote-stably-hot': {
+        'pattern': '///',
+        'color': plt.get_cmap('Set2')(0),
     },
 }
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)']
+version_names = ['RocksDB(FD)', 'RocksDB-fat', 'HotRAP']
 figs = [
     {
         'title': '(a) hotspot-5%',
         'skewness': 'hotspot0.05',
         'ticks': [0, 4e4, 8e4, 12e4],
-        'versions': ['promote-stably-hot', 'rocksdb-fd']
+        'versions': ['rocksdb-fd', 'promote-stably-hot']
     },
     {
         'title': '(b) uniform',
         'skewness': 'uniform',
         'ticks': [0, 1e4, 2e4, 3e4],
-        'versions': ['promote-stably-hot', 'rocksdb-fat']
+        'versions': ['rocksdb-fat', 'promote-stably-hot']
     },
 ]
 
