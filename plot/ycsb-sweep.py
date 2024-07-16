@@ -93,7 +93,12 @@ size='110GB_220GB'
 
 skewness_ratio_version_ops = {
     'hotspot0.05': {
-        'read_0.5_insert_0.5': {
+        'WH': {
+            'mutant': 0,
+        }
+    },
+    'uniform': {
+        'WH': {
             'mutant': 0,
         }
     }
@@ -112,9 +117,8 @@ for i in range(len(skewnesses)):
             # We use the OPS of the last 10%
             workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
             data_dir = os.path.join(dir, workload, version['path'])
-            progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-            last = progress.iloc[-1]
-            progress = progress[progress['operations-executed'] != last['operations-executed']]
+            version_data = common.VersionData(data_dir)
+            progress = version_data.ts_progress()
             last = progress.iloc[-1]
             first = progress.iloc[len(progress) - len(progress) // 10]
             seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
