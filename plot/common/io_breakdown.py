@@ -12,9 +12,8 @@ from matplotlib.patches import Patch
 # Return min and max ralt portion
 def draw_io_breakdown(dir, size, pdf_name):
     # Paper specific settings
-    STANDARD_WIDTH = 17.8
-    SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
-    DOUBLE_COL_WIDTH = STANDARD_WIDTH
+    SINGLE_COL_WIDTH = 8.5
+    DOUBLE_COL_WIDTH = 17.8
     def cm_to_inch(value):
         return value/2.54
 
@@ -25,45 +24,45 @@ def draw_io_breakdown(dir, size, pdf_name):
     })
     plt.rcParams['axes.unicode_minus'] = False
 
-    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4.5)))
+    figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.7)), constrained_layout=True)
+    gs = gridspec.GridSpec(1, 2, figure=figure)
 
     workload='hotspot0.05'
     ycsb_configs=['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
     cluster_labels = ['RO', 'RW', 'WH', 'UH']
-    colors_left = [
+    colors_hotrap = [
         plt.get_cmap('Paired')(1), plt.get_cmap('Paired')(3),
         plt.get_cmap('Paired')(5), plt.get_cmap('Paired')(7),
         plt.get_cmap('Paired')(9),
         'white',
     ]
-    colors_right = [
+    colors_rocksdb = [
         plt.get_cmap('Paired')(0), plt.get_cmap('Paired')(2),
         plt.get_cmap('Paired')(4), plt.get_cmap('Paired')(6),
         'white',
     ]
     promote_stably_hot = {
         'path': 'promote-stably-hot',
-        'colors': colors_left,
-        'legend-colors': colors_left,
+        'colors': colors_hotrap,
+        'legend-colors': colors_hotrap,
     }
     rocksdb_fd = {
         'path': 'rocksdb-fd',
-        'colors': colors_right,
-        'legend-colors': [colors_right[i] for i in [1, 3, 4]],
+        'colors': colors_rocksdb,
+        'legend-colors': [colors_rocksdb[i] for i in [1, 3, 4]],
     }
     rocksdb_fat = {
         'path': 'rocksdb-fat',
-        'colors': colors_right,
-        'legend-colors': colors_right,
+        'colors': colors_rocksdb,
+        'legend-colors': colors_rocksdb,
     }
     patterns = ['///', '\\\\\\', '......', 'XXX', '', '']
 
-    gs = gridspec.GridSpec(1, 3)
-
-    versions=[promote_stably_hot, rocksdb_fd]
+    versions=[rocksdb_fd, promote_stably_hot]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
-    subfig_anchor_y = 1.1
+    subfig_anchor_x = 0.46
+    subfig_anchor_y = 1.11
 
     def start_progress_fn(data_dir):
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
@@ -147,48 +146,35 @@ def draw_io_breakdown(dir, size, pdf_name):
     min_max_portion = [1, 0]
 
     subfig = plt.subplot(gs[0, 0])
-    draw_io(start_progress_fn, common.warmup_finish_progress, min_max_portion)
-    plt.xlabel('(a) Warm-up phase of hotspot-5%', fontsize=8)
+    draw_io(start_progress_fn, end_progress_fn, min_max_portion)
+    plt.xlabel('(a) Run phase of hotspot-5%', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_fd['legend-colors']),
-        ],
-        ['HotRAP', 'RocksDB(FD)'],
-        handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
-    )
-
-    subfig = plt.subplot(gs[0, 1])
-    draw_io(common.warmup_finish_progress, end_progress_fn, min_max_portion)
-    plt.xlabel('(b) Stable phase of hotspot-5%', fontsize=8)
-    subfig.legend(
-        [
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
-            common.MulticolorPatch(colors=rocksdb_fd['legend-colors']),
         ],
-        ['HotRAP', 'RocksDB(FD)'],
+        ['RocksDB(FD)', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
     )
 
     workload='uniform'
-    versions = [promote_stably_hot, rocksdb_fat]
-    subfig = plt.subplot(gs[0, 2])
+    versions = [rocksdb_fat, promote_stably_hot]
+    subfig = plt.subplot(gs[0, 1])
     draw_io(start_progress_fn, end_progress_fn, min_max_portion)
-    plt.xlabel('(c) Run phase of uniform', fontsize=8)
+    plt.xlabel('(b) Run phase of uniform', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
             common.MulticolorPatch(colors=rocksdb_fat['legend-colors']),
+            common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
         ],
-        ['HotRAP', 'RocksDB-fat'],
+        ['RocksDB-fat', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(0.6, subfig_anchor_y), columnspacing=1,
+        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
     )
 
     def get_fig_legend(i):
-        return common.MulticolorPatch(colors=[colors_left[i], colors_right[i]], pattern=patterns[i])
+        return common.MulticolorPatch(colors=[colors_rocksdb[i], colors_hotrap[i]], pattern=patterns[i])
     labels = []
     handles = []
     labels.append(r'Get in SD')
@@ -200,17 +186,16 @@ def draw_io_breakdown(dir, size, pdf_name):
     labels.append('Compaction in FD')
     handles.append(get_fig_legend(3))
     labels.append('RALT')
-    handles.append(common.MulticolorPatch(colors=[colors_left[4]], pattern=patterns[4]))
+    handles.append(common.MulticolorPatch(colors=[colors_hotrap[4]], pattern=patterns[4]))
     labels.append('Others')
-    assert colors_left[-1] == colors_right[-1]
-    handles.append(common.MulticolorPatch(colors=[colors_left[-1]], pattern=patterns[-1]))
-    fig.legend(
+    assert colors_hotrap[-1] == colors_rocksdb[-1]
+    handles.append(common.MulticolorPatch(colors=[colors_hotrap[-1]], pattern=patterns[-1]))
+    figure.legend(
         handles, labels,
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=8, ncol=6, loc='center', bbox_to_anchor=(0.5, 0.96)
+        fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.11)
     )
 
-    plt.tight_layout()
     pdf_path = os.path.join(dir, pdf_name)
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)
