@@ -30,7 +30,7 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
 ticks = [0, 5e4, 10e4, 15e4]
 subfigs = [
@@ -56,32 +56,16 @@ ratios_ycsb = {
     'WH': 'read_0.5_insert_0.5',
     'UH': 'ycsba'
 }
-ratios_prismdb_mutant = {
-    'RO': 'ycsbc',
-    'RW': 'wr',
-    'WH': 'wh',
-    'UH': 'ycsba'
-}
 versions=[
-    {
-        'path': 'promote-stably-hot',
-        'pattern': '///',
-        'color': plt.get_cmap('Set2')(0),
-    },
-    {
-        'path': 'rocksdb-fat',
-        'pattern': '\\\\\\',
-        'color': plt.get_cmap('Set2')(1),
-    },
     {
         'path': 'rocksdb-fd',
         'pattern': 'XXXXXXXXX',
         'color': plt.get_cmap('Set2')(2),
     },
     {
-        'path': 'SAS-Cache',
-        'pattern': 'XXX',
-        'color': plt.get_cmap('Set2')(3),
+        'path': 'rocksdb-fat',
+        'pattern': '\\\\\\',
+        'color': plt.get_cmap('Set2')(1),
     },
     {
         'path': 'mutant',
@@ -92,40 +76,50 @@ versions=[
         'path': 'prismdb',
         'pattern': '---\\\\\\\\\\\\',
         'color': plt.get_cmap('Set2')(5),
-    }
+    },
+    {
+        'path': 'SAS-Cache',
+        'pattern': 'XXX',
+        'color': plt.get_cmap('Set2')(3),
+    },
+    {
+        'path': 'promote-stably-hot',
+        'pattern': '///',
+        'color': plt.get_cmap('Set2')(0),
+    },
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)', 'SAS-Cache', 'Mutant', 'PrismDB']
+version_names = ['RocksDB(FD)', 'RocksDB-fat', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
 size='110GB_220GB'
 
-skewness_ratio_version_ops = {}
+skewness_ratio_version_ops = {
+    'hotspot0.05': {
+        'read_0.5_insert_0.5': {
+            'mutant': 0,
+        }
+    }
+}
 for i in range(len(skewnesses)):
     skewness = skewnesses[i]
-    skewness_ratio_version_ops[skewness] = {}
+    if skewness not in skewness_ratio_version_ops:
+        skewness_ratio_version_ops[skewness] = {}
     for ratio in rw_ratios:
         workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
-        data_dir = os.path.join(dir, workload, 'promote-stably-hot')
-        start_progress = common.warmup_finish_progress(data_dir)
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        end_progress = progress.iloc[-1]['operations-executed']
-        skewness_ratio_version_ops[skewness][ratio] = {}
+        if ratio not in skewness_ratio_version_ops[skewness]:
+            skewness_ratio_version_ops[skewness][ratio] = {}
         for (version_idx, version) in enumerate(versions):
-            if version_idx < 4:
-                workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
-                data_dir = os.path.join(dir, workload, version['path'])
-                skewness_ratio_version_ops[skewness][ratio][version['path']] = common.ops_during_interval(data_dir, start_progress, end_progress)
-            else:
-                workload = 'workload_110GB_' + ratios_prismdb_mutant[ratio] + '_' + skewness
-                data_dir = os.path.join(dir, workload, version['path'])
-                # mutant crashes under workload_110GB_wh_hotspot0.05
-                # So we use the OPS of the last 10%
-                progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-                last = progress.iloc[-1]
-                progress = progress[progress['operations-executed'] != last['operations-executed']]
-                last = progress.iloc[-1]
-                first = progress.iloc[len(progress) - len(progress) // 10]
-                seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
-                ops = (last['operations-executed'] - first['operations-executed']) / seconds
-                skewness_ratio_version_ops[skewness][ratio][version['path']] = ops
+            if version['path'] in skewness_ratio_version_ops[skewness][ratio]:
+                continue
+            # We use the OPS of the last 10%
+            workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
+            data_dir = os.path.join(dir, workload, version['path'])
+            progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
+            last = progress.iloc[-1]
+            progress = progress[progress['operations-executed'] != last['operations-executed']]
+            last = progress.iloc[-1]
+            first = progress.iloc[len(progress) - len(progress) // 10]
+            seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
+            ops = (last['operations-executed'] - first['operations-executed']) / seconds
+            skewness_ratio_version_ops[skewness][ratio][version['path']] = ops
 
 def speedup_ratio_skewness(ratio, skewness):
     version_ops = skewness_ratio_version_ops[skewness][ratio]
@@ -165,7 +159,7 @@ tex = tex.getvalue()
 print(tex)
 open(os.path.join(dir, 'ycsb-sweep.tex'), mode='w').write(tex)
 
-gs = gridspec.GridSpec(1, len(skewnesses))
+gs = gridspec.GridSpec(1, len(skewnesses), figure=figure)
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
@@ -188,8 +182,7 @@ for i in range(len(skewnesses)):
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=8)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=8)
-fig.legend(version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 0.99))
-plt.tight_layout()
+figure.legend(version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 1.05))
 pdf_path = dir + '/ycsb-sweep.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
