@@ -70,7 +70,7 @@ versions=[
     {
         'path': 'mutant',
         'pattern': '---',
-        'color': plt.get_cmap('Set2')(4),
+        'color': plt.get_cmap('Set2')(6),
     },
     {
         'path': 'prismdb',
