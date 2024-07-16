@@ -22,7 +22,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         })
     plt.rcParams['axes.unicode_minus'] = False
 
-    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)))
+    figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)), constrained_layout=True)
+    gs = gridspec.GridSpec(1, 2, figure=figure)
 
     workload='hotspot0.05'
     ycsb_configs=['ycsbc', 'read_0.75_insert_0.25', 'read_0.5_insert_0.5', 'ycsba']
@@ -56,13 +57,11 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     }
     patterns = ['///', '\\\\\\', 'XXX', '......', '', '']
 
-    gs = gridspec.GridSpec(1, 2)
-
     versions=[rocksdb_fd, promote_stably_hot]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
-    subfig_anchor_x = 0.4
-    subfig_anchor_y = 1.35
+    subfig_anchor_x = 0.46
+    subfig_anchor_y = 1.3
 
     def start_progress_fn(data_dir):
         info = json5.load(open(os.path.join(data_dir, 'info.json')))
@@ -183,12 +182,11 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     labels.append('Others')
     assert colors_hotrap[-1] == colors_rocksdb[-1]
     handles.append(MulticolorPatch(colors=[colors_rocksdb[-1]], pattern=patterns[-1]))
-    fig.legend(
+    figure.legend(
         handles, labels,
         handler_map={MulticolorPatch: MulticolorPatchHandler()},
-        fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 0.88), columnspacing=1
+        fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.13), columnspacing=1
     )
-    plt.tight_layout()
     pdf_path = os.path.join(dir, pdf_name)
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)
