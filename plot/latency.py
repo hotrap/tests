@@ -35,64 +35,58 @@ figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_in
 
 xticks = ['RO', 'RW', 'WH']
 workloads = [
-    {
-        'path': 'ycsbc_hotspot0.05_110GB_220GB',
-    },
-    {
-        'path': 'read_0.75_insert_0.25_hotspot0.05_110GB_220GB',
-    },
-    {
-        'path': 'read_0.5_insert_0.5_hotspot0.05_110GB_220GB',
-    },
+    'ycsbc_hotspot0.05_110GB_220GB',
+    'read_0.75_insert_0.25_hotspot0.05_110GB_220GB',
+    'read_0.5_insert_0.5_hotspot0.05_110GB_220GB',
 ]
 versions=[
     {
-        'path': 'promote-stably-hot',
-        'pattern': '///',
-        'color': plt.get_cmap('Set2')(0),
-        'workloads': workloads,
+        'path': 'rocksdb-fd',
+        'pattern': 'XXXXXXXXX',
+        'color': plt.get_cmap('Set2')(2),
     },
     {
         'path': 'rocksdb-fat',
         'pattern': '\\\\\\',
         'color': plt.get_cmap('Set2')(1),
-        'workloads': workloads,
     },
     {
-        'path': 'rocksdb-fd',
-        'pattern': 'XXXXXXXXX',
-        'color': plt.get_cmap('Set2')(2),
-        'workloads': workloads,
+        'path': 'mutant',
+        'pattern': '---',
+        'color': plt.get_cmap('Set2')(6),
+    },
+    {
+        'path': 'prismdb',
+        'pattern': '---\\\\\\\\\\\\',
+        'color': plt.get_cmap('Set2')(5),
     },
     {
         'path': 'SAS-Cache',
         'pattern': 'XXX',
         'color': plt.get_cmap('Set2')(3),
-        'workloads': workloads,
+    },
+    {
+        'path': 'promote-stably-hot',
+        'pattern': '///',
+        'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)', 'SAS-Cache']
+version_names = ['RocksDB(FD)', 'RocksDB-fat', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
 
-gs = gridspec.GridSpec(1, 3, figure=figure)
+gs = gridspec.GridSpec(1, 2, figure=figure)
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
 figs = [
     {
-        'title': '(a) 50%',
+        'title': '(a) 99%',
         'subfig': plt.subplot(gs[0, 0]),
-        'ax': plt.gca(),
-        'percentile': '50%',
-    },
-    {
-        'title': '(b) 99%',
-        'subfig': plt.subplot(gs[0, 1]),
         'ax': plt.gca(),
         'percentile': '99%',
     },
     {
-        'title': '(c) 99.9% (log scale)',
-        'subfig': plt.subplot(gs[0, 2]),
+        'title': '(b) 99.9% (log scale)',
+        'subfig': plt.subplot(gs[0, 1]),
         'ax': plt.gca(),
         'percentile': '99.9%',
         'yscale': 'log',
@@ -101,22 +95,31 @@ figs = [
 
 warmup_finish_progress = {}
 for workload in workloads:
-    workload_dir = os.path.join(dir, workload['path'])
+    workload_dir = os.path.join(dir, workload)
     data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-    warmup_finish_progress[workload['path']] = common.warmup_finish_progress(data_dir)
+    warmup_finish_progress[workload] = common.warmup_finish_progress(data_dir)
 
-for (version_idx, version) in enumerate(versions):
-    for (pivot, workload) in enumerate(version['workloads']):
-        data_dir = os.path.join(dir, workload['path'], version['path'])
-        warmup_finish_ts = common.progress_to_timestamp(data_dir, warmup_finish_progress[workload['path']])
+workload_version_ops = {
+    'read_0.5_insert_0.5_hotspot0.05_110GB_220GB': {
+        'mutant': 0,
+    }
+}
+for (pivot, workload) in enumerate(workloads):
+    if workload not in workload_version_ops:
+        workload_version_ops[workload] = {}
+    for (version_idx, version) in enumerate(versions):
+        if version['path'] in workload_version_ops[workload]:
+            continue
+        data_dir = os.path.join(dir, workload, version['path'])
+        version_data = common.VersionData(data_dir)
+        ts_run_90p = version_data.ts_run_90p()
         for fig in figs:
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
             path = os.path.join(data_dir, 'read-latency')
             latency = pd.read_table(path, sep='\s+')
-            latency = latency[latency['Timestamp(ns)'] >= warmup_finish_ts].iloc[-1]
-            value = latency[fig['percentile']]
+            latency = latency[latency['Timestamp(ns)'] >= ts_run_90p].iloc[-1]
+            value = latency[fig['percentile']] / 1e6 # in milliseconds
             fig['ax'].bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
-            # print(workload['name'], version['path'], fig['percentile'], value)
 
 for (i, fig) in enumerate(figs):
     subfig = fig['subfig']
@@ -138,12 +141,11 @@ for (i, fig) in enumerate(figs):
     if 'yscale' in fig:
         ax.set_yscale(fig['yscale'])
     if i == 0:
-        ax.set_ylabel('Latency (ns)', fontsize=8)
+        ax.set_ylabel('Latency (ms)', fontsize=8)
 handles = []
 for version in versions:
     handles.append(mpl.patches.Patch(facecolor=version['color'], hatch=version['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=2, loc='center', bbox_to_anchor=(0.5, 1.13))
-# gs.tight_layout(figure=figure)
+figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.13))
 pdf_path = os.path.join(dir, 'latency.pdf')
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
