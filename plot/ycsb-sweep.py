@@ -120,10 +120,9 @@ for i in range(len(skewnesses)):
             version_data = common.VersionData(data_dir)
             progress = version_data.ts_progress()
             last = progress.iloc[-1]
-            first = progress.iloc[len(progress) - len(progress) // 10]
-            seconds = (last['Timestamp(ns)'] - first['Timestamp(ns)']) / 1e9
-            ops = (last['operations-executed'] - first['operations-executed']) / seconds
-            skewness_ratio_version_ops[skewness][ratio][version['path']] = ops
+            seconds = (last['Timestamp(ns)'] - version_data.ts_run_90p()) / 1e9
+            executed = last['operations-executed'] - version_data.progress_90p()
+            skewness_ratio_version_ops[skewness][ratio][version['path']] = executed / seconds
 
 def speedup_ratio_skewness(ratio, skewness):
     version_ops = skewness_ratio_version_ops[skewness][ratio]

@@ -174,6 +174,7 @@ class VersionData:
     data_dir: str
     _info = None
     _ts_progress = None
+    _ts_run_90p = None
     def __init__(self, data_dir):
         self.data_dir = data_dir
     def info(self):
@@ -188,6 +189,13 @@ class VersionData:
             self._ts_progress = self._run_phase(self._ts_progress)
             self._ts_progress['operations-executed'] -= self._ts_progress.iloc[0]['operations-executed']
         return self._ts_progress
+    def progress_90p(self):
+        return self.ts_progress().iloc[-1]['operations-executed'] // 10 * 9
+    def ts_run_90p(self):
+        if self._ts_run_90p is None:
+            i = self.ts_progress()['operations-executed'].searchsorted(self.progress_90p(), side='left')
+            self._ts_run_90p = self.ts_progress().iloc[i]['Timestamp(ns)']
+        return self._ts_run_90p
 
 class Estimater:
     _it = None
