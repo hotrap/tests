@@ -32,7 +32,7 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)))
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
 versions = {
     'rocksdb-fd': {
@@ -73,7 +73,7 @@ ratios_ycsb = {
 }
 size='110GB_220GB_200B'
 
-gs = gridspec.GridSpec(1, len(figs))
+gs = gridspec.GridSpec(1, len(figs), figure=figure)
 num_clusters = 2
 bar_width = 1 / (num_clusters + 1)
 cluster_width = bar_width * num_clusters
@@ -133,8 +133,7 @@ for (i, fig) in enumerate(figs):
 handles = []
 for (version, info) in versions.items():
     handles.append(mpl.patches.Patch(facecolor=info['color'], hatch=info['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 0.99))
-plt.tight_layout()
+figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.05))
 pdf_path = dir + '/ops-200B.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
