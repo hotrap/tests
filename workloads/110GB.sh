@@ -1,4 +1,8 @@
 workloads=(
+	"read_0.5_insert_0.5_hotspot0.01_110GB_220GB"
+	"read_0.75_insert_0.25_hotspot0.01_110GB_220GB"
+	"ycsba_hotspot0.01_110GB_220GB"
+	"ycsbc_hotspot0.01_110GB_220GB"
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
@@ -30,7 +34,7 @@ function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-$2-110GB.sh ../config/$1 $DIR
+	./test-$2-110GB.sh ../config/$1 $DIR "$3"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -40,13 +44,14 @@ function run-hotrap {
 	./test-hotrap-110GB.sh ../config/$1 $DIR "$3"
 	../helper/hotrap-plot.sh $DIR
 }
-
-workload="u155243"
-../helper/checkout-promote-stably-hot
-DIR=../../data/$workload/promote-stably-hot
-echo Result directory: $DIR
-./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload --switches=0x1"
-../helper/hotrap-plot.sh $DIR
+function run-workload {
+	workload=$1
+	../helper/checkout-promote-stably-hot
+	DIR=../../data/$workload/promote-stably-hot
+	echo Result directory: $DIR
+	./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload --switches=0x1"
+	../helper/hotrap-plot.sh $DIR
+}
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
@@ -55,27 +60,37 @@ for workload in "${workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
 done
 
-run-hotrap "ycsbc_hotspotshifting0.05_110GB_220GB" promote-stably-hot
+run-workload "u155243"
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
 
 workloads=(
-	"workload_110GB_wr_hotspot0.01"
-	"workload_110GB_wr_hotspot0.05"
-	"workload_110GB_wr_uniform"
-	"workload_110GB_wh_hotspot0.01"
-	"workload_110GB_wh_hotspot0.05"
-	"workload_110GB_wh_uniform"
-	"workload_110GB_ycsba_hotspot0.01"
-	"workload_110GB_ycsba_hotspot0.05"
-	"workload_110GB_ycsba_uniform"
-	"workload_110GB_ycsbc_hotspot0.01"
-	"workload_110GB_ycsbc_hotspot0.05"
-	"workload_110GB_ycsbc_uniform"
+	"read_0.75_insert_0.25_hotspot0.01_110GB_220GB"
+	"ycsba_hotspot0.01_110GB_220GB"
+	"ycsbc_hotspot0.01_110GB_220GB"
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
+	"ycsba_hotspot0.05_110GB_220GB"
+	"ycsbc_hotspot0.05_110GB_220GB"
+	"read_0.75_insert_0.25_zipfian_110GB_220GB"
+	"ycsba_zipfian_110GB_220GB"
+	"ycsbc_zipfian_110GB_220GB"
+	"read_0.5_insert_0.5_uniform_110GB_220GB"
+	"read_0.75_insert_0.25_uniform_110GB_220GB"
+	"ycsba_uniform_110GB_220GB"
+	"ycsbc_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	run-rocksdb $workload prismdb
+	run-rocksdb $workload mutant
+done
+
+workloads=(
+	"read_0.5_insert_0.5_hotspot0.01_110GB_220GB"
+	"read_0.5_insert_0.5_zipfian_110GB_220GB"
+)
+for workload in "${workloads[@]}"; do
+	run-rocksdb $workload mutant "--run_70p_sleep_secs=1000"
 done
 
 hotspot_workloads=(
