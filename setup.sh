@@ -15,7 +15,7 @@ cd ..
 cd ..
 mkdir data
 
-git clone -b v2023.11.20.00-debian12 https://github.com/seekstar/CacheLib.git
+git clone -b v2023.11.20.00-debian12 https://github.com/hotrap/CacheLib.git
 cd CacheLib
 ./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
 cd ..
