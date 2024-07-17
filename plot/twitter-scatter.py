@@ -32,7 +32,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(6)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
 
 workloads = [
 	"cluster01-4168x",
@@ -138,14 +138,13 @@ handles=[
     mlines.Line2D([], [], color='black', marker='^', linestyle='None', markersize=markersize, label='read-write'),
     mlines.Line2D([], [], color='black', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
 ]
-plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.45, 1.14))
+plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.12))
 
 plt.xlim(-0.03, 1.03)
 plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
 plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
 plt.xlabel('Proportion of hot reads', fontsize=8)
 plt.ylabel('Proportion of mature reads', fontsize=8)
-plt.tight_layout()
 pdf_path = dir + '/twitter-scatter.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

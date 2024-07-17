@@ -39,13 +39,13 @@ if __name__ == "__main__":
     })
     plt.rcParams['axes.unicode_minus'] = False
 
-    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4.5)))
+    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
     versions=[
         {
-            'path': 'promote-stably-hot',
-            'pattern': '///',
-            'color': plt.get_cmap('Set2')(0),
+            'path': 'rocksdb-fd',
+            'pattern': 'XXXXXXXXX',
+            'color': plt.get_cmap('Set2')(2),
         },
         {
             'path': 'rocksdb-fat',
@@ -53,31 +53,37 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(1),
         },
         {
-            'path': 'rocksdb-fd',
-            'pattern': 'XXXXXXXXX',
-            'color': plt.get_cmap('Set2')(2),
+            'path': 'prismdb',
+            'pattern': '---\\\\\\\\\\\\',
+            'color': plt.get_cmap('Set2')(5),
         },
         {
             'path': 'SAS-Cache',
             'pattern': 'XXX',
             'color': plt.get_cmap('Set2')(3),
         },
+        {
+            'path': 'promote-stably-hot',
+            'pattern': '///',
+            'color': plt.get_cmap('Set2')(0),
+        },
     ]
-    version_names = ['HotRAP', 'RocksDB-fat', 'RocksDB(FD)', 'SAS-Cache']
+    version_names = ['RocksDB(FD)', 'RocksDB-fat', 'PrismDB', 'SAS-Cache', 'HotRAP']
 
-    workload_version_ops = {}
+    workload_version_ops = {
+        'cluster29': {
+            'prismdb': 0,
+        }
+    }
     for workload in workloads:
         workload_dir = os.path.join(dir, workload)
-        data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-        start_progress = common.warmup_finish_progress(data_dir)
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        end_progress = progress.iloc[-1]['operations-executed']
-
-        version_ops = {}
+        if workload not in workload_version_ops:
+            workload_version_ops[workload] = {}
         for version in versions:
+            if version['path'] in workload_version_ops[workload]:
+                continue
             data_dir = os.path.join(workload_dir, version['path'])
-            version_ops[version['path']] = common.ops_during_interval(data_dir, start_progress, end_progress)
-        workload_version_ops[workload] = version_ops
+            workload_version_ops[workload][version['path']] = common.last_10p_ops(common.VersionData(data_dir))
 
     max_speedup = 0
     for workload in workloads:
@@ -118,8 +124,7 @@ if __name__ == "__main__":
     plt.yticks([0, 5e4, 10e4, 15e4], fontsize=8)
     plt.xlabel('Cluster ID', labelpad=1, fontsize=8)
     plt.ylabel('Operations per second', fontsize=8)
-    fig.legend(version_names, fontsize=8, ncol=2, loc='center', bbox_to_anchor=(0.5, 1.04))
-    plt.tight_layout()
+    fig.legend(version_names, fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.11))
     pdf_path = dir + '/twitter-ops.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)

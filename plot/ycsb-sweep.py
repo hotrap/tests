@@ -118,11 +118,7 @@ for i in range(len(skewnesses)):
             workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
             data_dir = os.path.join(dir, workload, version['path'])
             version_data = common.VersionData(data_dir)
-            progress = version_data.ts_progress()
-            last = progress.iloc[-1]
-            seconds = (last['Timestamp(ns)'] - version_data.ts_run_90p()) / 1e9
-            executed = last['operations-executed'] - version_data.progress_90p()
-            skewness_ratio_version_ops[skewness][ratio][version['path']] = executed / seconds
+            skewness_ratio_version_ops[skewness][ratio][version['path']] = common.last_10p_ops(version_data)
 
 def speedup_ratio_skewness(ratio, skewness):
     version_ops = skewness_ratio_version_ops[skewness][ratio]

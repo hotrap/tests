@@ -197,6 +197,13 @@ class VersionData:
             self._ts_run_90p = self.ts_progress().iloc[i]['Timestamp(ns)']
         return self._ts_run_90p
 
+def last_10p_ops(version_data: VersionData):
+    progress = version_data.ts_progress()
+    last = progress.iloc[-1]
+    seconds = (last['Timestamp(ns)'] - version_data.ts_run_90p()) / 1e9
+    executed = last['operations-executed'] - version_data.progress_90p()
+    return executed / seconds
+
 class Estimater:
     _it = None
     _x0 = None

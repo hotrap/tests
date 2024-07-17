@@ -38,6 +38,7 @@ if __name__ == '__main__':
     import common
     import twitter_ops
 
+    import io
     import math
     import pandas as pd
     import matplotlib as mpl
@@ -58,7 +59,7 @@ if __name__ == '__main__':
         })
     plt.rcParams['axes.unicode_minus'] = False
 
-    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(6)))
+    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
     ax = plt.gca()
     cmap = plt.get_cmap('coolwarm')
 
@@ -87,16 +88,24 @@ if __name__ == '__main__':
 
         workload_dir = os.path.join(dir, workload)
         data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-        start_progress = common.warmup_finish_progress(data_dir)
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        end_progress = progress.iloc[-1]['operations-executed']
+        hotrap = common.last_10p_ops(common.VersionData(data_dir))
 
-        hotrap = common.ops_during_interval(data_dir, start_progress, end_progress)
         data_dir = os.path.join(workload_dir, "rocksdb-fat")
-        rocksdb_fat = common.ops_during_interval(data_dir, start_progress, end_progress)
+        rocksdb_fat = common.last_10p_ops(common.VersionData(data_dir))
+
         speedup = hotrap / rocksdb_fat
         speedups.append(speedup)
-    ceil_max_speedup = math.ceil(max(speedups))
+
+    max_speedup = max(speedups)
+    tex = io.StringIO()
+    print('% Max speedup over RocksDB-fat under twitter production workloads', file=tex)
+    print('\defmacro{MaxSpeedupTwitterRocksDBfat}{%.2f}' %max_speedup, file=tex)
+
+    tex = tex.getvalue()
+    print(tex)
+    open(os.path.join(dir, 'twitter-speedup.tex'), mode='w').write(tex)
+
+    ceil_max_speedup = math.ceil(max_speedup)
     norm = colors.TwoSlopeNorm(1, vmin=0.9, vmax=ceil_max_speedup)
     norm_cmap = cm.ScalarMappable(norm=norm, cmap=cmap)
     for i in range(0, len(xs)):
@@ -120,14 +129,13 @@ if __name__ == '__main__':
         mlines.Line2D([], [], color='black', marker='^', linestyle='None', markersize=markersize, label='read-write'),
         mlines.Line2D([], [], color='black', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
     ]
-    plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.45, 1.14))
+    plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.12))
 
     plt.xlim(-0.03, 1.03)
     plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
     plt.xlabel('Proportion of hot reads', fontsize=8)
     plt.ylabel('Proportion of mature reads', fontsize=8)
-    plt.tight_layout()
     pdf_path = dir + '/twitter-speedup.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)
