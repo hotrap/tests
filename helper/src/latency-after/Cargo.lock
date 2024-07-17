@@ -104,8 +104,9 @@ dependencies = [
 
 [[package]]
 name = "splay-safe-rs"
-version = "0.7.8"
-source = "git+https://github.com/seekstar/splay-safe-rs#42911b1732c5d7486997a767e433a6ada78c47de"
+version = "0.7.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6df01cf45c98f874c6d93b7a04aac8a6e5062250b6595331fee8ddd04dad5640"
 dependencies = [
  "compare",
  "num-traits",
