@@ -32,7 +32,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(7.5), cm_to_inch(5)), constrained_layout=True)
 
 workloads = [
 	"cluster01-4168x",
