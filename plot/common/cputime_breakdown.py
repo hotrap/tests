@@ -133,7 +133,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
 
     subfig = plt.subplot(gs[0, 0])
     draw_cputime(start_progress_fn, end_progress_fn, min_max_portion)
-    plt.xlabel('(a) Run phase of hotspot-5%', fontsize=8)
+    plt.xlabel('(a) hotspot-5%', fontsize=8)
     subfig.legend(
         [
             MulticolorPatch(colors=rocksdb_fd['colors']),
@@ -148,7 +148,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     versions = [rocksdb_fat, promote_stably_hot]
     subfig = plt.subplot(gs[0, 1])
     draw_cputime(start_progress_fn, end_progress_fn, min_max_portion)
-    plt.xlabel('(b) Run phase of uniform', fontsize=8)
+    plt.xlabel('(b) uniform', fontsize=8)
     subfig.legend(
         [
             MulticolorPatch(colors=rocksdb_fat['colors']),
