@@ -7,7 +7,7 @@ if len(sys.argv) != 2:
 	exit()
 
 data_dir = sys.argv[1]
-mean_step = 100
+mean_step = 10
 
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
