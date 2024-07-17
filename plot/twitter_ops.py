@@ -70,18 +70,11 @@ if __name__ == "__main__":
     ]
     version_names = ['RocksDB(FD)', 'RocksDB-fat', 'PrismDB', 'SAS-Cache', 'HotRAP']
 
-    workload_version_ops = {
-        'cluster29': {
-            'prismdb': 0,
-        }
-    }
+    workload_version_ops = {}
     for workload in workloads:
         workload_dir = os.path.join(dir, workload)
-        if workload not in workload_version_ops:
-            workload_version_ops[workload] = {}
+        workload_version_ops[workload] = {}
         for version in versions:
-            if version['path'] in workload_version_ops[workload]:
-                continue
             data_dir = os.path.join(workload_dir, version['path'])
             workload_version_ops[workload][version['path']] = common.last_10p_ops(common.VersionData(data_dir))
 

@@ -118,16 +118,20 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut target_ts = run_end_timestamp_ns - 1000000000;
     while target_ts > run_start_timestamp_ns {
-        for iter in &mut iters {
+        for (i, iter) in iters.iter_mut().enumerate() {
+            let msg =
+                "Invalid latency file: latency-".to_owned() + &i.to_string();
             while let Some(line) = iter.peek() {
-                let line = line.as_deref().unwrap();
+                let line = line.as_deref().expect(msg.as_str());
                 let mut s = line.split(' ');
-                let ts: u64 = s.next().unwrap().parse().unwrap();
+                let ts: u64 =
+                    s.next().expect(msg.as_str()).parse().expect(msg.as_str());
                 if ts < target_ts {
                     break;
                 }
-                let op = s.next().unwrap();
-                let latency: u64 = s.next().unwrap().parse().unwrap();
+                let op = s.next().expect(msg.as_str());
+                let latency: u64 =
+                    s.next().expect(msg.as_str()).parse().expect(msg.as_str());
                 match op {
                     "READ" => read.insert(latency),
                     "INSERT" => insert.insert(latency),

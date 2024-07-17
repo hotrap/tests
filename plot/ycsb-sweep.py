@@ -91,29 +91,14 @@ versions=[
 version_names = ['RocksDB(FD)', 'RocksDB-fat', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
 size='110GB_220GB'
 
-skewness_ratio_version_ops = {
-    'hotspot0.05': {
-        'WH': {
-            'mutant': 0,
-        }
-    },
-    'uniform': {
-        'WH': {
-            'mutant': 0,
-        }
-    }
-}
+skewness_ratio_version_ops = {}
 for i in range(len(skewnesses)):
     skewness = skewnesses[i]
-    if skewness not in skewness_ratio_version_ops:
-        skewness_ratio_version_ops[skewness] = {}
+    skewness_ratio_version_ops[skewness] = {}
     for ratio in rw_ratios:
         workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
-        if ratio not in skewness_ratio_version_ops[skewness]:
-            skewness_ratio_version_ops[skewness][ratio] = {}
+        skewness_ratio_version_ops[skewness][ratio] = {}
         for (version_idx, version) in enumerate(versions):
-            if version['path'] in skewness_ratio_version_ops[skewness][ratio]:
-                continue
             # We use the OPS of the last 10%
             workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
             data_dir = os.path.join(dir, workload, version['path'])

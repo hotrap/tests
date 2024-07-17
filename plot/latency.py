@@ -99,17 +99,10 @@ for workload in workloads:
     data_dir = os.path.join(workload_dir, 'promote-stably-hot')
     warmup_finish_progress[workload] = common.warmup_finish_progress(data_dir)
 
-workload_version_ops = {
-    'read_0.5_insert_0.5_hotspot0.05_110GB_220GB': {
-        'mutant': 0,
-    }
-}
+workload_version_ops = {}
 for (pivot, workload) in enumerate(workloads):
-    if workload not in workload_version_ops:
-        workload_version_ops[workload] = {}
+    workload_version_ops[workload] = {}
     for (version_idx, version) in enumerate(versions):
-        if version['path'] in workload_version_ops[workload]:
-            continue
         data_dir = os.path.join(dir, workload, version['path'])
         version_data = common.VersionData(data_dir)
         ts_run_90p = version_data.ts_run_90p()
