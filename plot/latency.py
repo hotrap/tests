@@ -93,12 +93,6 @@ figs = [
     },
 ]
 
-warmup_finish_progress = {}
-for workload in workloads:
-    workload_dir = os.path.join(dir, workload)
-    data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-    warmup_finish_progress[workload] = common.warmup_finish_progress(data_dir)
-
 workload_version_ops = {}
 for (pivot, workload) in enumerate(workloads):
     workload_version_ops[workload] = {}
