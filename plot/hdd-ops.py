@@ -2,11 +2,11 @@
 
 import sys
 
-if len(sys.argv) != 3:
-    print('Usage: ' + sys.argv[0] + ' dir mean-step')
+if len(sys.argv) != 2:
+    print('Usage: ' + sys.argv[0] + ' dir')
     exit()
 dir = sys.argv[1]
-mean_step = int(sys.argv[2])
+mean_step = 10
 
 import os
 import json5
@@ -18,9 +18,8 @@ from matplotlib.ticker import ScalarFormatter
 import matplotlib.gridspec as gridspec
 
 # Paper specific settings
-STANDARD_WIDTH = 17.8
-SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
-DOUBLE_COL_WIDTH = STANDARD_WIDTH
+SINGLE_COL_WIDTH = 8.5
+DOUBLE_COL_WIDTH = 17.8
 def cm_to_inch(value):
     return value/2.54
 
@@ -31,7 +30,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(4)))
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.3)), constrained_layout=True)
 
 versions = [
     {
@@ -47,7 +46,7 @@ versions = [
         'yticks': [0, 100, 200, 300, 400],
     }
 ]
-gs = gridspec.GridSpec(1, len(versions))
+gs = gridspec.GridSpec(1, len(versions), figure=figure)
 
 for (version_idx, version) in enumerate(versions):
     subfig = plt.subplot(gs[0, version_idx])
@@ -84,10 +83,9 @@ for (version_idx, version) in enumerate(versions):
     plt.yticks(version['yticks'], fontsize=8)
     if version_idx == 0:
         plt.ylabel('Operation per second', fontsize=8)
-    subfig.text(0.5, -0.4, 'Time (Seconds)', fontsize=6, ha='center', va='center', transform=subfig.transAxes)
-    plt.xlabel(version['name'], labelpad=8, fontsize=8)
+    subfig.text(0.5, -0.4, 'Time (Seconds)', fontsize=8, ha='center', va='center', transform=subfig.transAxes)
+    plt.xlabel(version['name'], labelpad=10, fontsize=8)
 
-plt.tight_layout()
 pdf_path = dir + '/hdd-ops.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
