@@ -9,8 +9,10 @@ dir = sys.argv[1]
 mean_step = 10
 
 import os
-import json5
-import pandas as pd
+sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
+import common
+
+import io
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -48,18 +50,17 @@ versions = [
 ]
 gs = gridspec.GridSpec(1, len(versions), figure=figure)
 
+final_ops = []
 for (version_idx, version) in enumerate(versions):
     subfig = plt.subplot(gs[0, version_idx])
     data_dir = os.path.join(dir, version['path'])
+    version_data = common.VersionData(data_dir)
 
-    progress = pd.read_table(data_dir + '/progress', sep='\s+')
-    info = os.path.join(data_dir, 'info.json')
-    info = json5.load(open(info))
-    progress = progress[(progress['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (progress['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
+    final_ops.append(common.last_10p_ops(version_data))
 
-    time = (progress['Timestamp(ns)'] - info['run-start-timestamp(ns)']).values / 1e9
+    time = (version_data.ts_progress()['Timestamp(ns)'] - version_data.info()['run-start-timestamp(ns)']).values / 1e9
     time = time[:-1]
-    progress = progress['operations-executed']
+    progress = version_data.ts_progress()['operations-executed']
     ops = progress[1:len(progress)].values - progress[:len(progress) - 1].values
 
     def mean_every_n(a, n):
@@ -85,6 +86,12 @@ for (version_idx, version) in enumerate(versions):
         plt.ylabel('Operation per second', fontsize=8)
     subfig.text(0.5, -0.4, 'Time (Seconds)', fontsize=8, ha='center', va='center', transform=subfig.transAxes)
     plt.xlabel(version['name'], labelpad=10, fontsize=8)
+
+tex = io.StringIO()
+print('\defmacro{HDDHotrapDivRocksdbfat}{%.0f}' %(final_ops[0] / final_ops[1]), file=tex)
+tex = tex.getvalue()
+print(tex)
+open('hdd-test.tex', mode='w').write(tex)
 
 pdf_path = dir + '/hdd-ops.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
