@@ -12,11 +12,11 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 fontsize=9
-fonten = {'family': 'Times New Roman', 'size': fontsize}
+fonten = {'family': 'Linux Libertine O', 'size': fontsize}
 
 mpl.rcParams.update({
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Times New Roman'],
+    'font.sans-serif': ['Linux Libertine O'],
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 

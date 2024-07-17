@@ -35,7 +35,7 @@ if __name__ == "__main__":
     mpl.rcParams.update({
         'hatch.linewidth': 0.5,
         'font.family': 'sans-serif',
-        'font.sans-serif': ['Times New Roman'],
+        'font.sans-serif': ['Linux Libertine O'],
     })
     plt.rcParams['axes.unicode_minus'] = False
 
@@ -114,10 +114,10 @@ if __name__ == "__main__":
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(8)
     plt.xticks(range(0, len(workloads)), ids, fontsize=8)
-    plt.yticks([0, 5e4, 10e4, 15e4], fontsize=8)
+    plt.yticks([0, 5e4, 10e4, 15e4, 20e4], fontsize=8)
     plt.xlabel('Cluster ID', labelpad=1, fontsize=8)
     plt.ylabel('Operations per second', fontsize=8)
-    fig.legend(version_names, fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.11))
+    fig.legend(version_names, fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.12))
     pdf_path = dir + '/twitter-ops.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)

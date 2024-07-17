@@ -26,7 +26,7 @@ def cm_to_inch(value):
 mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Times New Roman'],
+    'font.sans-serif': ['Linux Libertine O'],
 })
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -166,7 +166,7 @@ for i in range(len(skewnesses)):
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=8)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=8)
-figure.legend(version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 1.05))
+figure.legend(version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 1.06))
 pdf_path = dir + '/ycsb-sweep.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

@@ -20,7 +20,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     mpl.rcParams.update({
         'hatch.linewidth': 0.5,
         'font.family': 'sans-serif',
-        'font.sans-serif': ['Times New Roman'],
+        'font.sans-serif': ['Linux Libertine O'],
     })
     plt.rcParams['axes.unicode_minus'] = False
 

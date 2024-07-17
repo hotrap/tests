@@ -18,7 +18,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     mpl.rcParams.update({
         'hatch.linewidth': 0.5,
         'font.family': 'sans-serif',
-        'font.sans-serif': ['Times New Roman'],
+        'font.sans-serif': ['Linux Libertine O'],
         })
     plt.rcParams['axes.unicode_minus'] = False
 
@@ -61,7 +61,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
     subfig_anchor_x = 0.46
-    subfig_anchor_y = 1.3
+    subfig_anchor_y = 1.28
 
     def draw_cputime(min_max_portion):
         ax = plt.gca()

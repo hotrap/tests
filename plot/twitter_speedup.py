@@ -55,7 +55,7 @@ if __name__ == '__main__':
     mpl.rcParams.update({
         'hatch.linewidth': 0.5,
         'font.family': 'sans-serif',
-        'font.sans-serif': ['Times New Roman'],
+        'font.sans-serif': ['Linux Libertine O'],
         })
     plt.rcParams['axes.unicode_minus'] = False
 
@@ -118,10 +118,10 @@ if __name__ == '__main__':
     cb.ax.tick_params(labelsize=7)
     for i in range(0, len(xs)):
         if workloads[i] in twitter_ops.workloads:
-            plt.text(xs[i] - 0.075, ys[i] - 0.025, '{:02}'.format(ids[i]), fontsize=7, c='black', weight='bold')
+            plt.text(xs[i] - 0.075, ys[i] - 0.027, '{:02}'.format(ids[i]), fontsize=8, c='black', weight='bold')
         else:
-            plt.text(xs[i] - 0.075, ys[i] - 0.025, '{:02}'.format(ids[i]), fontsize=7, c='gray')
-        plt.text(xs[i] + 0.025, ys[i] - 0.025, '{:.2f}x'.format(speedups[i]), fontsize=7)
+            plt.text(xs[i] - 0.075, ys[i] - 0.027, '{:02}'.format(ids[i]), fontsize=8, c='gray')
+        plt.text(xs[i] + 0.025, ys[i] - 0.025, '{:.2f}x'.format(speedups[i]), fontsize=8)
 
     markersize=5
     handles=[

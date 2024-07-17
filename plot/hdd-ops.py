@@ -28,11 +28,11 @@ def cm_to_inch(value):
 mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Times New Roman'],
+    'font.sans-serif': ['Linux Libertine O'],
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.3)), constrained_layout=True)
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
 versions = [
     {

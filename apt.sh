@@ -1,3 +1,7 @@
+sudo apt install -y fonts-linuxlibertine
+# https://stackoverflow.com/a/49884009/13688160
+rm ~/.cache/matplotlib -rf
+
 sudo apt install -y g++ cmake libtcmalloc-minimal4 nocache
 # tests
 sudo apt install -y jq rsync bc

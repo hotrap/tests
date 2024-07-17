@@ -60,7 +60,7 @@ def draw_throughput_breakdown(figure, dir, versions, mean_step, linewidth, num_m
 		})
 		get_throughput = get_throughput.groupby(get_throughput.index // mean_step).mean()
 		ax.plot(get_throughput['Time(s)'], get_throughput['Throughput(B/s)'] / 1e6, color='black', linestyle='dashed', linewidth=linewidth, markersize=markersize, markevery=markevery)
-		subfig.text(0.5, -0.29, 'Time (Seconds)', fontsize=8, ha='center', va='center', transform=subfig.transAxes)
+		subfig.text(0.5, -0.30, 'Time (Seconds)', fontsize=8, ha='center', va='center', transform=subfig.transAxes)
 		plt.xticks(fontsize=8)
 		plt.yticks(fontsize=8)
 		ax.set_ylim(bottom=0)

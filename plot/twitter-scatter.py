@@ -28,7 +28,7 @@ def cm_to_inch(value):
 mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Times New Roman'],
+    'font.sans-serif': ['Linux Libertine O'],
     })
 plt.rcParams['axes.unicode_minus'] = False
 

@@ -25,7 +25,7 @@ def cm_to_inch(value):
 mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Times New Roman'],
+    'font.sans-serif': ['Linux Libertine O'],
 })
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -47,7 +47,7 @@ versions=[
 ]
 throughput_breakdown.draw_throughput_breakdown(fig, dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)
 
-fig.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 1.1))
+fig.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 1.08))
 pdf_path = 'throughput-breakdown.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

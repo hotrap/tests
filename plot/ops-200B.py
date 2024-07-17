@@ -28,7 +28,7 @@ def cm_to_inch(value):
 mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Times New Roman'],
+    'font.sans-serif': ['Linux Libertine O'],
 })
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -123,7 +123,7 @@ for (i, fig) in enumerate(figs):
 handles = []
 for (version, info) in versions.items():
     handles.append(mpl.patches.Patch(facecolor=info['color'], hatch=info['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.05))
+figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.06))
 pdf_path = dir + '/ops-200B.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
