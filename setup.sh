@@ -34,11 +34,7 @@ git clone --recursive git@github.com:hotrap/prismdb.git
 git clone git@github.com:hotrap/mutant.git
 
 git clone --recursive git@github.com:hotrap/kvexe.git
-cp -r kvexe kvexe-rocksdb
-cd kvexe-rocksdb
-rm -r 3rdparty/{rcu-vector,counter-timer-vec}
-git checkout rocksdb
-cd ..
+git clone -b rocksdb --recursive git@github.com:hotrap/kvexe.git kvexe-rocksdb
 git clone -b SAS-Cache --recursive git@github.com:hotrap/kvexe.git kvexe-SAS-Cache
 git clone -b prismdb --recursive git@github.com:hotrap/kvexe.git kvexe-prismdb
 git clone -b mutant --recursive git@github.com:hotrap/kvexe.git kvexe-mutant
