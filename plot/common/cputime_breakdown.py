@@ -1,4 +1,4 @@
-from common import *
+import common
 
 import os
 import json5
@@ -63,15 +63,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     subfig_anchor_x = 0.46
     subfig_anchor_y = 1.3
 
-    def start_progress_fn(data_dir):
-        info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        return timestamp_to_progress(progress, info['run-start-timestamp(ns)'])
-    def end_progress_fn(data_dir):
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        return progress.iloc[-1]['operations-executed']
-
-    def draw_cputime(start_progress_fn, end_progress_fn, min_max_portion):
+    def draw_cputime(min_max_portion):
         ax = plt.gca()
         ax.set_axisbelow(True)
         ax.grid(axis='y')
@@ -81,19 +73,15 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ax.yaxis.get_offset_text().set_fontsize(8)
         for (pivot, ycsb) in enumerate(ycsb_configs):
             workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
-            data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-            start_progress = start_progress_fn(data_dir)
-            end_progress = end_progress_fn(data_dir)
             for (version_idx, version) in enumerate(versions):
                 data_dir = os.path.join(workload_dir, version['path'])
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
+                version_data = common.VersionData(data_dir)
                 cputimes = pd.read_table(os.path.join(data_dir, 'cputimes'), sep='\s+')
-                timestamp_start = progress_to_timestamp(data_dir, start_progress)
-                timestamp_end = progress_to_timestamp(data_dir, end_progress)
-                cputimes = cputimes[(timestamp_start <= cputimes['Timestamp(ns)']) & (cputimes['Timestamp(ns)'] < timestamp_end)]
+                cputimes = version_data.run_phase(cputimes)
                 cputimes = cputimes['cputime(s)'].iloc[-1] - cputimes['cputime(s)'].iloc[0]
                 timers = pd.read_table(os.path.join(data_dir, 'timers'), sep='\s+')
-                timers = timers[(timestamp_start <= timers['Timestamp(ns)']) & (timers['Timestamp(ns)'] < timestamp_end)]
+                timers = version_data.run_phase(timers)
                 timers = timers.iloc[-1] - timers.iloc[0]
                 bottom = 0
 
@@ -111,7 +99,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                 if version_idx == 1:
                     first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
                     checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_sd - 1) + '-cputime'), sep='\s+')
-                    checker = checker[(timestamp_start <= checker['Timestamp(ns)']) & (checker['Timestamp(ns)'] < timestamp_end)]
+                    checker = version_data.run_phase(checker)
                     height = (checker.iloc[-1] - checker.iloc[0])['cputime(ns)'] / 1e9
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                     bottom += height
@@ -132,37 +120,37 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     min_max_portion = [1, 0]
 
     subfig = plt.subplot(gs[0, 0])
-    draw_cputime(start_progress_fn, end_progress_fn, min_max_portion)
+    draw_cputime(min_max_portion)
     plt.xlabel('(a) hotspot-5%', fontsize=8)
     subfig.legend(
         [
-            MulticolorPatch(colors=rocksdb_fd['colors']),
-            MulticolorPatch(colors=promote_stably_hot['colors']),
+            common.MulticolorPatch(colors=rocksdb_fd['colors']),
+            common.MulticolorPatch(colors=promote_stably_hot['colors']),
         ],
         ['RocksDB(FD)', 'HotRAP'],
-        handler_map={MulticolorPatch: MulticolorPatchHandler()},
+        handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
     )
 
     workload='uniform'
     versions = [rocksdb_fat, promote_stably_hot]
     subfig = plt.subplot(gs[0, 1])
-    draw_cputime(start_progress_fn, end_progress_fn, min_max_portion)
+    draw_cputime(min_max_portion)
     plt.xlabel('(b) uniform', fontsize=8)
     subfig.legend(
         [
-            MulticolorPatch(colors=rocksdb_fat['colors']),
-            MulticolorPatch(colors=promote_stably_hot['colors']),
+            common.MulticolorPatch(colors=rocksdb_fat['colors']),
+            common.MulticolorPatch(colors=promote_stably_hot['colors']),
         ],
         ['RocksDB-fat', 'HotRAP'],
-        handler_map={MulticolorPatch: MulticolorPatchHandler()},
+        handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
     )
 
     labels = []
     handles = []
     def all_versions(i):
-        handles.append(MulticolorPatch(
+        handles.append(common.MulticolorPatch(
             colors=[
                 colors_rocksdb[i],
                 colors_hotrap[i],
@@ -176,15 +164,15 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     labels.append('Compaction')
     all_versions(2)
     labels.append('Checker')
-    handles.append(MulticolorPatch(colors=[promote_stably_hot['colors'][3]], pattern=patterns[3]))
+    handles.append(common.MulticolorPatch(colors=[promote_stably_hot['colors'][3]], pattern=patterns[3]))
     labels.append('RALT')
-    handles.append(MulticolorPatch(colors=[promote_stably_hot['colors'][4]], pattern=patterns[4]))
+    handles.append(common.MulticolorPatch(colors=[promote_stably_hot['colors'][4]], pattern=patterns[4]))
     labels.append('Others')
     assert colors_hotrap[-1] == colors_rocksdb[-1]
-    handles.append(MulticolorPatch(colors=[colors_rocksdb[-1]], pattern=patterns[-1]))
+    handles.append(common.MulticolorPatch(colors=[colors_rocksdb[-1]], pattern=patterns[-1]))
     figure.legend(
         handles, labels,
-        handler_map={MulticolorPatch: MulticolorPatchHandler()},
+        handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.13), columnspacing=1
     )
     pdf_path = os.path.join(dir, pdf_name)

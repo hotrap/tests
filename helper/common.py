@@ -54,17 +54,6 @@ def read_hit_rates(data_dir):
     hit_rates.columns = ['Timestamp(ns)', 'hit-rate']
     return hit_rates
 
-def timestamp_to_progress(progress, timestamp):
-    return progress[progress['Timestamp(ns)'] >= timestamp].iloc[0]['operations-executed']
-
-def progress_to_timestamp(data_dir, progress):
-    v = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-    v = v[v['operations-executed'] >= progress]
-    if len(v) == 0:
-        info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        return info['run-end-timestamp(ns)']
-    return v.iloc[0]['Timestamp(ns)']
-
 def read_compaction_bytes(data_dir):
     compaction_bytes = []
     compaction_stats = open(os.path.join(data_dir, 'compaction-stats'))
@@ -162,12 +151,12 @@ class VersionData:
         if self._info is None:
             self._info = json5.load(open(os.path.join(self.data_dir, 'info.json')))
         return self._info
-    def _run_phase(self, data):
+    def run_phase(self, data):
         return data[(data['Timestamp(ns)'] >= self.info()['run-start-timestamp(ns)']) & (data['Timestamp(ns)'] < self.info()['run-end-timestamp(ns)'])]
     def ts_progress(self):
         if self._ts_progress is None:
             self._ts_progress = pd.read_table(self.data_dir + '/progress', sep='\s+')
-            self._ts_progress = self._run_phase(self._ts_progress)
+            self._ts_progress = self.run_phase(self._ts_progress)
             self._ts_progress['operations-executed'] -= self._ts_progress.iloc[0]['operations-executed']
         return self._ts_progress
     def progress_90p(self):

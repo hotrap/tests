@@ -64,39 +64,27 @@ def draw_io_breakdown(dir, size, pdf_name):
     subfig_anchor_x = 0.46
     subfig_anchor_y = 1.11
 
-    def start_progress_fn(data_dir):
-        info = json5.load(open(os.path.join(data_dir, 'info.json')))
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        return common.timestamp_to_progress(progress, info['run-start-timestamp(ns)'])
-    def end_progress_fn(data_dir):
-        progress = pd.read_table(os.path.join(data_dir, 'progress'), sep='\s+')
-        return progress.iloc[-1]['operations-executed']
-
-    def draw_io(start_progress_fn, end_progress_fn, min_max_portion):
+    def draw_io(min_max_portion):
         ax = plt.gca()
         ax.set_axisbelow(True)
         ax.grid(axis='y')
         for (pivot, ycsb) in enumerate(ycsb_configs):
             workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
-            data_dir = os.path.join(workload_dir, 'promote-stably-hot')
-            start_progress = start_progress_fn(data_dir)
-            end_progress = end_progress_fn(data_dir)
             for (version_idx, version) in enumerate(versions):
                 data_dir = os.path.join(workload_dir, version['path'])
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-                timestamp_start = common.progress_to_timestamp(data_dir, start_progress)
-                timestamp_end = common.progress_to_timestamp(data_dir, end_progress)
+                version_data = common.VersionData(data_dir)
                 first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
                 def run_time_io_kB(fname):
                     iostat = pd.read_table(os.path.join(data_dir, fname), sep='\s+')
-                    iostat = iostat[(timestamp_start <= iostat['Timestamp(ns)']) & (iostat['Timestamp(ns)'] < timestamp_end)]
+                    iostat = version_data.run_phase(iostat)
                     return iostat[['rkB/s', 'wkB/s']].sum().sum()
                 device_io = (run_time_io_kB('iostat-fd.txt') + run_time_io_kB('iostat-sd.txt')) / 1e9
 
                 bottom = 0
 
                 rand_read_bytes = common.read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd)
-                rand_read_bytes = rand_read_bytes[(timestamp_start <= rand_read_bytes['Timestamp(ns)']) & (rand_read_bytes['Timestamp(ns)'] < timestamp_end)]
+                rand_read_bytes = version_data.run_phase(rand_read_bytes)
                 rand_read_bytes = rand_read_bytes.iloc[-1] - rand_read_bytes.iloc[0]
 
                 if version['path'] == 'rocksdb-fd':
@@ -111,7 +99,7 @@ def draw_io_breakdown(dir, size, pdf_name):
                 bottom += height
 
                 compaction_bytes = common.read_compaction_bytes_fd_sd(data_dir, first_level_in_sd)
-                compaction_bytes = compaction_bytes[(timestamp_start <= compaction_bytes['Timestamp(ns)']) & (compaction_bytes['Timestamp(ns)'] < timestamp_end)]
+                compaction_bytes = version_data.run_phase(compaction_bytes)
                 compaction_bytes = compaction_bytes.iloc[-1] - compaction_bytes.iloc[0]
 
                 if version['path'] == 'rocksdb-fd':
@@ -128,7 +116,7 @@ def draw_io_breakdown(dir, size, pdf_name):
 
                 if version['path'] == 'promote-stably-hot':
                     viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), sep='\s+')
-                    viscnts_io = viscnts_io[(timestamp_start <= viscnts_io['Timestamp(ns)']) & (viscnts_io['Timestamp(ns)'] < timestamp_end)]
+                    viscnts_io = version_data.run_phase(viscnts_io)
                     viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]
                     height = (viscnts_io['read'] + viscnts_io['write']) / 1e12
                     portion = height / device_io
@@ -146,7 +134,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     min_max_portion = [1, 0]
 
     subfig = plt.subplot(gs[0, 0])
-    draw_io(start_progress_fn, end_progress_fn, min_max_portion)
+    draw_io(min_max_portion)
     plt.xlabel('(a) hotspot-5%', fontsize=8)
     subfig.legend(
         [
@@ -161,7 +149,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     workload='uniform'
     versions = [rocksdb_fat, promote_stably_hot]
     subfig = plt.subplot(gs[0, 1])
-    draw_io(start_progress_fn, end_progress_fn, min_max_portion)
+    draw_io(min_max_portion)
     plt.xlabel('(b) uniform', fontsize=8)
     subfig.legend(
         [
