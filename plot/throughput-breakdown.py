@@ -18,9 +18,7 @@ import matplotlib.pyplot as plt
 import throughput_breakdown
 
 # Paper specific settings
-STANDARD_WIDTH = 17.8
-SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
-DOUBLE_COL_WIDTH = STANDARD_WIDTH
+DOUBLE_COL_WIDTH = 17.8
 def cm_to_inch(value):
     return value/2.54
 
@@ -31,30 +29,25 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(4)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
 versions=[
     {
-        'name': '(a) HotRAP',
-        'path': 'promote-stably-hot',
+        'name': '(a) RocksDB(FD)',
+        'path': 'rocksdb-fd',
     },
     {
         'name': '(b) RocksDB-fat',
         'path': 'rocksdb-fat',
     },
     {
-        'name': '(c) RocksDB(FD)',
-        'path': 'rocksdb-fd',
-    },
-    {
-        'name': '(d) SAS-Cache',
-        'path': 'SAS-Cache',
+        'name': '(c) HotRAP',
+        'path': 'promote-stably-hot',
     },
 ]
-throughput_breakdown.draw_throughput_breakdown(dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)
+throughput_breakdown.draw_throughput_breakdown(fig, dir, versions, mean_step, linewidth=0.5, num_marks=5, markersize=1, markersize_x=2)
 
-fig.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 0.99))
-plt.tight_layout()
+fig.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 1.1))
 pdf_path = 'throughput-breakdown.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

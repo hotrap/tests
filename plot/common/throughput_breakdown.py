@@ -7,8 +7,8 @@ import matplotlib.gridspec as gridspec
 
 import common
 
-def draw_throughput_breakdown(dir, versions, mean_step, linewidth, num_marks, markersize, markersize_x):
-	gs = gridspec.GridSpec(1, len(versions))
+def draw_throughput_breakdown(figure, dir, versions, mean_step, linewidth, num_marks, markersize, markersize_x):
+	gs = gridspec.GridSpec(1, len(versions), figure=figure)
 	for (i, version) in enumerate(versions):
 		subfig = plt.subplot(gs[0, i])
 		ax = plt.gca()
