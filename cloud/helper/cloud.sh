@@ -1,5 +1,4 @@
 sudo apt install -y git
-# cloud/checkout-secondary-cache
 sudo apt install -y patchelf
 
 sudo apt install -y python3-venv
