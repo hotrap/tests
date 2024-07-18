@@ -1,8 +1,4 @@
 workloads=(
-	"read_0.5_insert_0.5_hotspot0.01_110GB_220GB"
-	"read_0.75_insert_0.25_hotspot0.01_110GB_220GB"
-	"ycsba_hotspot0.01_110GB_220GB"
-	"ycsbc_hotspot0.01_110GB_220GB"
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
@@ -59,9 +55,6 @@ run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
 
 workloads=(
-	"read_0.75_insert_0.25_hotspot0.01_110GB_220GB"
-	"ycsba_hotspot0.01_110GB_220GB"
-	"ycsbc_hotspot0.01_110GB_220GB"
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"ycsba_hotspot0.05_110GB_220GB"
@@ -79,7 +72,6 @@ for workload in "${workloads[@]}"; do
 done
 
 workloads=(
-	"read_0.5_insert_0.5_hotspot0.01_110GB_220GB"
 	"read_0.5_insert_0.5_zipfian_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
