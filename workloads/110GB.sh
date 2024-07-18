@@ -23,13 +23,6 @@ function run-rocksdb-fd {
 	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR "$2"
 	../helper/rocksdb-plot.sh $DIR
 }
-function run-rocksdb-fat {
-	../helper/checkout-rocksdb-fat
-	DIR=../../data/$1/rocksdb-fat
-	echo Result directory: $DIR
-	./test-rocksdb-110GB.sh ../config/$1 $DIR 10GB
-	../helper/rocksdb-plot.sh $DIR
-}
 function run-rocksdb {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
@@ -55,7 +48,7 @@ function run-workload {
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
-	run-rocksdb-fat $workload
+	run-rocksdb $workload rocksdb-fat
 	run-rocksdb $workload SAS-Cache
 	run-hotrap $workload promote-stably-hot
 done
@@ -112,5 +105,5 @@ for workload in "${hotspot_workloads[@]}"; do
 done
 for workload in "${uniform_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
-	run-rocksdb-fat $workload
+	run-rocksdb $workload rocksdb-fat
 done
