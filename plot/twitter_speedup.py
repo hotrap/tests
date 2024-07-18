@@ -134,8 +134,8 @@ if __name__ == '__main__':
     plt.xlim(-0.03, 1.03)
     plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-    plt.xlabel('Proportion of hot reads', fontsize=8)
-    plt.ylabel('Proportion of mature reads', fontsize=8)
+    plt.xlabel('Proportion of reads on hot records', fontsize=8)
+    plt.ylabel('Proportion of reads on sunk records', fontsize=8)
     pdf_path = dir + '/twitter-speedup.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)
