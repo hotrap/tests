@@ -5,4 +5,4 @@ if [[ $# < 2 || $# > 3 ]]; then
 fi
 trace_file_load=$(realpath $1-load)
 trace_file_run=$(realpath $1-run)
-$(dirname $0)/test-rocksdb-110GB-generic.sh "$2" "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--load=$trace_file_load --run=$trace_file_run --format=plain-length-only $3"
+$(dirname $0)/test-rocksdb-fat-110GB-generic.sh "$2" "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--load=$trace_file_load --run=$trace_file_run --format=plain-length-only $3"
