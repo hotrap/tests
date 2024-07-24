@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 sudo apt install -y fonts-linuxlibertine
 # https://stackoverflow.com/a/49884009/13688160
 rm ~/.cache/matplotlib -rf
