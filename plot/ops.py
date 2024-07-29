@@ -27,7 +27,7 @@ mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',
     'font.sans-serif': ['Linux Libertine O'],
-    })
+})
 plt.rcParams['axes.unicode_minus'] = False
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH) * 0.33, cm_to_inch(5)))

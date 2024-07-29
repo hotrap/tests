@@ -105,6 +105,16 @@ for i in range(len(skewnesses)):
             version_data = common.VersionData(data_dir)
             skewness_ratio_version_ops[skewness][ratio][version['path']] = common.last_10p_ops(version_data)
 
+json_output = io.StringIO()
+min_ratio = 1
+for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
+    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
+overhead = 1 - min_ratio
+print('{\n\t\"OverheadUniformRocksDBFat1KiB\": %f\n}' %overhead, file=json_output)
+json_output = json_output.getvalue()
+print(json_output)
+open(os.path.join(dir, 'ycsb-sweep.json'), mode='w').write(json_output)
+
 def speedup_ratio_skewness(ratio, skewness):
     version_ops = skewness_ratio_version_ops[skewness][ratio]
     hotrap_ops = version_ops['promote-stably-hot']
@@ -130,15 +140,6 @@ print('\defmacro{SpeedupRW}{%.1f}' %speedup_rw, file=tex)
 max_speedup_ro_rw = max(speedup_ro, speedup_rw)
 print("% Max speedup over second best under RO & RW", file=tex)
 print('\defmacro{MaxSpeedupRORW}{%.1f}' %max_speedup_ro_rw, file=tex)
-
-min_ratio = 1
-ratio_version_ops = skewness_ratio_version_ops['uniform']
-for (ratio, version_ops) in ratio_version_ops.items():
-    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
-overhead = 1 - min_ratio
-print('% Max overhead under uniform workloads compared to RocksDB-fat', file=tex)
-print('\defmacro{OverheadUniformRocksDBFat}{%.1f\\%%}' %(overhead * 100), file=tex)
-
 tex = tex.getvalue()
 print(tex)
 open(os.path.join(dir, 'ycsb-sweep.tex'), mode='w').write(tex)

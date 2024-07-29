@@ -92,8 +92,7 @@ for fig in figs:
 
 json_output = io.StringIO()
 min_ratio = 1
-ratio_version_ops = skewness_ratio_version_ops['uniform']
-for (ratio, version_ops) in ratio_version_ops.items():
+for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
     min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
 overhead = 1 - min_ratio
 print('{\n\t\"OverheadUniformRocksDBFat200B\": %f\n}' %overhead, file=json_output)
