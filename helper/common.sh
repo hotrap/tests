@@ -1,11 +1,11 @@
-function build_rocksdb {
+build_rocksdb() {
 	mkdir -p build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="-Wall -O2 -g" -DCMAKE_CXX_FLAGS="-Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
 	make -j$(nproc) rocksdb-shared
 	cd ..
 }
-function build_sas {
+build_sas() {
 	workspace=$(realpath ..)
 
 	# Additional "FindXXX.cmake" files are here (e.g. FindSodium.cmake)
@@ -26,10 +26,10 @@ function build_sas {
 	cd ..
 }
 
-function build_viscnts_splay_rs {
+build_viscnts_splay_rs() {
 	make ROCKSDB_INCLUDE=~/hotrap/include
 }
-function build_ralt {
+build_ralt() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
@@ -37,7 +37,7 @@ function build_ralt {
 	make viscnts
 	cd ..
 }
-function build_kvexe_viscnts_splay_rs {
+build_kvexe_viscnts_splay_rs() {
 	mkdir -p build
 	cd build
 	workspace=$(realpath ../..)
@@ -45,7 +45,7 @@ function build_kvexe_viscnts_splay_rs {
 	make
 	cd ..
 }
-function build_kvexe_ralt {
+build_kvexe_ralt() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
@@ -53,7 +53,7 @@ function build_kvexe_ralt {
 	make
 	cd ..
 }
-function build_kvexe_rocksdb {
+build_kvexe_rocksdb() {
 	mkdir -p build
 	cd build
 	workspace=$(realpath ../..)
@@ -61,7 +61,7 @@ function build_kvexe_rocksdb {
 	make
 	cd ..
 }
-function build_kvexe_prismdb {
+build_kvexe_prismdb() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
@@ -69,7 +69,7 @@ function build_kvexe_prismdb {
 	make
 	cd ..
 }
-function build_kvexe_mutant {
+build_kvexe_mutant() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
@@ -77,7 +77,7 @@ function build_kvexe_mutant {
 	make
 	cd ..
 }
-function build_kvexe_sas {
+build_kvexe_sas() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build

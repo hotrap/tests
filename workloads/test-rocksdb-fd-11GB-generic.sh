@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-if [[ $# < 1 || $# > 2 ]]; then
+#!/usr/bin/env sh
+if [ $# -lt 1 -o $# -gt 2 ]; then
 	echo Usage: $0 output-dir [extra-kvexe-args]
 	exit 1
 fi

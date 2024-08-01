@@ -36,6 +36,6 @@ cat >> ~/.profile <<EOF
 export RUSTUP_DIST_SERVER="https://rsproxy.cn"
 export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
 EOF
-source ~/.profile
+. ~/.profile
 sh <(curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh) -y
-source "$HOME/.cargo/env"
+. "$HOME/.cargo/env"

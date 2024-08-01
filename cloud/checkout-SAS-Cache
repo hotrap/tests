@@ -19,4 +19,4 @@ export CPLUS_INCLUDE_PATH=\\\$CACHELIB_HOME/include:\\\$CPLUS_INCLUDE_PATH
 export LIBRARY_PATH=\\\$CACHELIB_HOME/lib:\\\$LIBRARY_PATH
 export LD_LIBRARY_PATH=\\\$CACHELIB_HOME/lib:\\\$LD_LIBRARY_PATH
 \" >> .profile"
-ssh $user@$IP "source .profile && ./tests/helper/checkout-SAS-Cache"
+ssh $user@$IP ". .profile && ./tests/helper/checkout-SAS-Cache"

@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-function work {
+work() {
 	cd ../../../testdb/
 	echo Timestamp\(ns\) DB FD SD VisCnts
 	while true; do

@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-if [[ ! $2 ]]; then
+#!/usr/bin/env sh
+if [ ! $2 ]; then
 	echo Usage: $0 trace-prefix output-dir
 	exit 1
 fi

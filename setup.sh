@@ -3,7 +3,7 @@
 pip3 install pandas matplotlib humanfriendly json5
 
 sh <(curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf) -y
-source ~/.cargo/env
+. ~/.cargo/env
 
 cargo install huniq
 

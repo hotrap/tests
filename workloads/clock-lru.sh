@@ -1,8 +1,10 @@
+#!/usr/bin/env sh
+
 workspace=$(realpath ../..)
 
-source ../helper/common.sh
+. ../helper/common.sh
 
-function checkout {
+checkout() {
 	cd $workspace/hotrap
 	git checkout main
 	build_rocksdb
@@ -19,7 +21,7 @@ function checkout {
 
 workload="read_0.5_insert_0.5_hotspot0.05_110GB"
 
-function test-hotrap {
+test_hotrap() {
 	mkdir -p $1
 	DIR=$(realpath "$1")
 	if [ "$(ls -A $DIR)" ]; then
@@ -42,15 +44,15 @@ function test-hotrap {
 	cd - > /dev/null
 }
 
-function run {
-	if [ $1 == "EXP" ]; then
+run() {
+	if [ $1 = "EXP" ]; then
 		checkout
 	else
 		checkout "-DUSE_$1=ON"
 	fi
 	DIR=../../data/$workload/$1
 	echo Result directory: $DIR
-	test-hotrap $DIR
+	test_hotrap $DIR
 	../helper/hotrap-plot.sh $DIR
 }
 

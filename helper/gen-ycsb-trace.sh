@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! $1 ]; then
 	echo Usage: $0 workload-file
 	exit 1
@@ -6,7 +6,7 @@ fi
 workspace=$(realpath $(dirname $0)/../..)
 workload_file=$(realpath "$1")
 value_length="$(grep valuelength $workload_file | cut -f2 -d=)"
-function ycsb-gen {
+ycsb_gen() {
 	(cd $workspace/YCSB &&
 		./bin/ycsb $1 basic -P $workload_file -s -p fieldcount=1 -p fieldlength=0 |
 			$workspace/tests/helper/bin/trace-cleaner |
@@ -22,8 +22,8 @@ function ycsb-gen {
 workload=$(basename $workload_file)
 prefix=$workspace/YCSB-traces/$workload
 if [ ! -f $prefix-load ]; then
-	ycsb-gen load > $prefix-load 
+	ycsb_gen load > $prefix-load 
 fi
 if [ ! -f $prefix-run ]; then
-	ycsb-gen run > $prefix-run
+	ycsb_gen run > $prefix-run
 fi

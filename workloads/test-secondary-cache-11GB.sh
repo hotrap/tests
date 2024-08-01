@@ -1,11 +1,8 @@
-#!/usr/bin/env bash
-if [[ $# < 2 || $# > 3 ]]; then
+#!/usr/bin/env sh
+if [ $# -lt 2 -o $# -gt 3 ]; then
 	echo Usage: $0 workload-file output-dir [switches]
 	exit 1
 fi
-set -e
-set -o pipefail
-# To make set -e take effect if the output dir does not exists
 mkdir -p $2
 res="$(ls -A $2)"
 if [ "$res" ]; then

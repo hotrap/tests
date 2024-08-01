@@ -1,33 +1,19 @@
-#!/usr/bin/env bash
-
-if [ ! $2 ]; then
+#!/usr/bin/env sh
+if [ ! "$2" ]; then
 	echo Usage: $0 output-dir command [[args]] 2>&1
 	exit 1
 fi
 
-if [ ! -d $1 ]; then
+if [ ! -d "$1" ]; then
 	mkdir -p $1
 fi
-
-set -m
-(
-	pgid=$(exec sh -c 'echo "$PPID"')
-	(
-		set -m
-		"$(dirname $0)"/periodic-exe.sh $1 1>&2 &
-		PID=$!
-		function exit_fn {
-			if [ $PID ]; then
-				kill $PID
-			fi
-		}
-		trap exit_fn EXIT
-		wait $PID
-		echo exe-while: periodic-exe exits early, exiting... 1>&2
-		unset PID
-		kill -TERM -$pgid
-	) &
-	bgpid=$!
-	trap "kill -TERM $bgpid" EXIT
-	$2 "${@:3}"
-)
+output_dir="$1"
+shift
+cmd="$1"
+shift
+"$cmd" "$@" &
+"$(dirname $0)"/periodic-exe.sh $output_dir 1>&2 &
+# "wait -n" is not available in POSIX
+trap "exit 1" CHLD INT TERM
+trap "pkill -P $$; exit 1" EXIT
+wait

@@ -1,11 +1,8 @@
-#!/usr/bin/env bash
-if [[ $# < 3 || $# > 4 ]]; then
+#!/usr/bin/env sh
+if [ $# -lt 3 -o $# -gt 4 ]; then
 	echo Usage: $0 workload-file output-dir fd-size [extra-kvexe-args]
 	exit 1
 fi
-set -e
-set -o pipefail
-# To make set -e take effect if the output dir does not exists
 mkdir -p $2
 res="$(ls -A $2)"
 if [ "$res" ]; then

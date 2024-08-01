@@ -1,9 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! $1 ]; then
 	echo Usage: $0 output-dir
 	exit 1
 fi
 mydir=$(dirname "$0")
-db_dir="$mydir/../../testdb/db"
-"$mydir"/save-common-data.sh "$db_dir" "$1"
-mv $db_dir/{rocksdb-stats*.txt,first-level-in-sd,compaction-stats,rand-read-bytes,other-stats-load-finish.txt} "$1"
+mydir=$(realpath "$mydir")
+output_dir=$(realpath "$1")
+cd "$mydir/../../testdb/db"
+"$mydir"/save-common-data.sh . "$output_dir"
+mv rocksdb-stats*.txt first-level-in-sd compaction-stats rand-read-bytes other-stats-load-finish.txt "$output_dir"

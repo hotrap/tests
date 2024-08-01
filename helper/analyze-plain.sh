@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-if [[ $# < 1 || $# > 2 ]]; then
+#!/usr/bin/env sh
+if [ $# -lt 1 -o $# -gt 2 ]; then
 	echo Usage: $0 output-prefix [num-unique-keys]
 	exit 1
 fi
@@ -10,7 +10,7 @@ mydir=$(dirname $0)
 $mydir/analyze-plain $output_prefix --num-unique-keys=$2
 db_size=$(jq -er ".\"db-size\"" < $output_prefix.json)
 
-function ratio-gt {
+ratio_gt() {
 	input=$1
 	output=$2
 	num=$3
@@ -20,6 +20,6 @@ function ratio-gt {
 		echo 0 > $output
 	fi
 }
-ratio-gt $output_prefix-write-size-since-last-write $output_prefix-read-with-more-than-5p-write-size "$db_size * 0.05"
-ratio-gt $output_prefix-num-reads-since-last-read $output_prefix-read-with-more-than-512-reads 512
-ratio-gt $output_prefix-read-size-since-last-read $output_prefix-read-with-more-than-64MiB-read-size "64 * 1024 * 1024"
+ratio_gt $output_prefix-write-size-since-last-write $output_prefix-read-with-more-than-5p-write-size "$db_size * 0.05"
+ratio_gt $output_prefix-num-reads-since-last-read $output_prefix-read-with-more-than-512-reads 512
+ratio_gt $output_prefix-read-size-since-last-read $output_prefix-read-with-more-than-64MiB-read-size "64 * 1024 * 1024"

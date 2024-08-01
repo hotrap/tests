@@ -1,11 +1,8 @@
-#!/usr/bin/env bash
-if [[ $# < 4 || $# > 6 ]]; then
+#!/usr/bin/env sh
+if [ $# -lt 4 -o $# -gt 6 ]; then
 	echo Usage: $0 workload-file output-dir fd-size max-hot-size max-viscnts-size [switches]
 	exit 1
 fi
-set -e
-set -o pipefail
-# To make set -e take effect if the output dir does not exists
 mkdir -p $2
 res="$(ls -A $2)"
 if [ "$res" ]; then

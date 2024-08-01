@@ -1,4 +1,4 @@
-function hotspot-op {
+hotspot_op() {
 	if [ ! -s $1 ]; then
 		echo 0
 	fi

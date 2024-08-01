@@ -1,14 +1,12 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! $1 ]; then
 	echo Usage: $0 output-dir
 	exit 1
 fi
 mydir=$(dirname "$0")
-db_dir="$mydir/../../testdb/db"
-"$mydir"/save-common-data.sh "$db_dir" "$1"
-
 DIR=$(realpath "$1")
-cd $db_dir
+cd "$mydir/../../testdb/db"
+"$mydir"/save-common-data.sh . $DIR
 if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count
 	$mydir/hit . "$DIR"

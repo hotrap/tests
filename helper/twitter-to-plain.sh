@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! $2 ]; then
 	echo Usage: $0 cluster-id output-dir
 	exit 1

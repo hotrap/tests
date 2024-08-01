@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! $1 ]; then
 	echo $0 cluster-id
 	exit 1
