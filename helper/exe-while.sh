@@ -11,9 +11,11 @@ output_dir="$1"
 shift
 cmd="$1"
 shift
-"$cmd" "$@" &
+setsid "$cmd" "$@" &
+exit_command="kill -TERM -$!;"
 "$(dirname $0)"/periodic-exe.sh $output_dir 1>&2 &
+exit_command="${exit_command}kill -TERM $!;"
 # "wait -n" is not available in POSIX
 trap "exit 1" CHLD INT TERM
-trap "pkill -P $$; exit 1" EXIT
+trap "${exit_command}exit 1" EXIT
 wait

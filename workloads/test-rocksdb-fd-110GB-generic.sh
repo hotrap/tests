@@ -19,5 +19,5 @@ ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
 cd $DIR
-$workspace/tests/helper/exe-while.sh . bash -c "$prefix $kvexe_dir/rocksdb-kvexe --num_threads=16 --max_background_jobs=8 --block_size=16384 --cache_size=134217728 --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,1000000000000}}\" $extra_kvexe_args 2>> log.txt"
-bash $workspace/tests/helper/rocksdb-data.sh .
+$workspace/tests/helper/exe-while.sh . sh -c "$prefix $kvexe_dir/rocksdb-kvexe --num_threads=16 --max_background_jobs=8 --block_size=16384 --cache_size=134217728 --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,1000000000000}}\" $extra_kvexe_args 2>> log.txt"
+$workspace/tests/helper/rocksdb-data.sh .
