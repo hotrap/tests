@@ -5,7 +5,7 @@ sudo mkdir /mnt/fd
 sudo mount /dev/nvme0n1 /mnt/fd
 sudo chown $USER:$USER /mnt/fd
 mkdir -p /mnt/fd/{db,fd,viscnts}
-sudo bash -c "echo \"/dev/nvme0n1 /mnt/fd ext4 defaults,nofail 0 0\" >> /etc/fstab"
+sudo sh -c "echo \"/dev/nvme0n1 /mnt/fd ext4 defaults,nofail 0 0\" >> /etc/fstab"
 
 mkdir testdb
 cd testdb

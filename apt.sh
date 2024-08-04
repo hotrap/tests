@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 sudo apt install -y fonts-linuxlibertine
 # https://stackoverflow.com/a/49884009/13688160

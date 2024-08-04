@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 timestamp_100p=$(hjson-cli -j < info.json | jq -er ".\"run-end-timestamp(ns)\"")
 num_total_op=$(tail -n1 progress | cut -sd' ' -f2)

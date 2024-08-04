@@ -6,7 +6,7 @@ fi
 DIR=$(realpath "$1")
 cd $(dirname $0)
 mkdir -p $DIR/plot/
-bash rocksdb-plot-11GB.sh $DIR &
+./rocksdb-plot-11GB.sh $DIR &
 ../plot/promoted-or-retained-bytes.py $DIR &
 ../plot/hit-rate.py $DIR &
 wait

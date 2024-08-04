@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 pip3 install pandas matplotlib humanfriendly json5
 

@@ -33,9 +33,9 @@ function cloud-run-bg {
 		sleep 1
 	done
 	ssh $user@$IP "sudo apt update"
-	ssh $user@$IP "bash -s" -- < ../apt.sh
-	ssh $user@$IP "bash -s" -- < helper/cloud.sh
-	ssh $user@$IP "bash -s" -- < helper/$vendor.sh
+	ssh $user@$IP "sh -s" -- < ../apt.sh
+	ssh $user@$IP "sh -s" -- < helper/cloud.sh
+	ssh $user@$IP "sh -s" -- < helper/$vendor.sh
 	rsync -zrpL --partial -e ssh .. $user@$IP:~/tests --exclude='target'
 
 	ssh $user@$IP -o ServerAliveInterval=60 "rm -rf data/$3/$4"

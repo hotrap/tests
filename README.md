@@ -5,8 +5,8 @@
 Note: `setup.sh` currently doesn't work because we make the repositories private for anonymity.
 
 ```shell
-bash apt.sh
-bash setup.sh
+./apt.sh
+./setup.sh
 ```
 
 ## Manual work

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! $3 ]; then
 	echo Usage: $0 user IP version
 	exit 1
