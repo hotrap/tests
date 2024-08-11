@@ -42,6 +42,9 @@ git clone -b mutant --recursive git@github.com:hotrap/kvexe.git kvexe-mutant
 
 git clone --recursive git@github.com:hotrap/RALT.git
 
+# Correctness checking
+git clone https://github.com/brianfrankcooper/YCSB.git
+
 echo Need to setup manually:
 echo 1. testdb/{db,fd,sd,viscnts}
 echo 2. export fd_dev=the device in \"iostat\" that is used as FD.

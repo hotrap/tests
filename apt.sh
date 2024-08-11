@@ -23,3 +23,6 @@ sudo apt install -y libssl-dev libbz2-dev liblz4-dev libaio-dev
 sudo apt install -y libtbb-dev
 # twitter trace
 sudo apt install -y time
+
+# Correctness checking
+sudo apt install -y maven
