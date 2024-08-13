@@ -25,10 +25,13 @@ num_keys=$(($num_load_op + $num_run_inserts))
 max_kvsize_bytes=$(jq -er ".\"load-avg-value-len\"" < $trace_prefix.json)
 max_kvsize_bytes=$(($max_kvsize_bytes + 34))
 
+num_reads=$(jq -er ".\"num-reads\"" < $trace_prefix.json)
+stop_upsert_trigger=$(($num_reads / 10 * 7))
+
 ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
 cd $DIR
-$workspace/tests/helper/exe-while.sh . sh -c "$kvexe_path --load=$trace_file_load --run=$trace_file_run --format=plain-length-only --num_threads=16 --cache_size=134217728 --db_path=$workspace/testdb/sd --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,$sd_size}}\" --switches=1 --migrations_logging=1 --read_logging=0 --migration_policy=2 --migration_metric=1 --migration_rand_range_num=8 --migration_rand_range_size=1 --num_keys=$num_keys --optane_threshold=0.1 --slab_dir=$workspace/testdb/fd/slab-%d-%lu-%lu --pop_cache_size=22000000 --read_dominated_threshold=0.95 --stop_upsert_trigger=70000000 --max_kvsize_bytes=$max_kvsize_bytes 2>> log.txt"
+$workspace/tests/helper/exe-while.sh . sh -c "$kvexe_path --load=$trace_file_load --run=$trace_file_run --format=plain-length-only --num_threads=16 --cache_size=134217728 --db_path=$workspace/testdb/sd --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,$sd_size}}\" --switches=1 --migrations_logging=1 --read_logging=0 --migration_policy=2 --migration_metric=1 --migration_rand_range_num=8 --migration_rand_range_size=1 --num_keys=$num_keys --optane_threshold=0.1 --slab_dir=$workspace/testdb/fd/slab-%d-%lu-%lu --pop_cache_size=22000000 --read_dominated_threshold=0.95 --stop_upsert_trigger=$stop_upsert_trigger --max_kvsize_bytes=$max_kvsize_bytes 2>> log.txt"
 $workspace/tests/helper/save-common-data.sh $workspace/testdb/sd "$DIR"
 $workspace/tests/helper/last-10p-latency.py .
