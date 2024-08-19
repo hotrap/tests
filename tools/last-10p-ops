@@ -17,8 +17,8 @@ run_start_progress=$(awk "
 		print res
 	}
 " progress)
-num_run_op=$(($num_total_op - $run_start_progress))
-progress_90p=$((run_start_progress + $num_run_op * 9 / 10))
+num_run_op=$((num_total_op - run_start_progress))
+progress_90p=$((run_start_progress + num_run_op * 9 / 10))
 res=$(awk "{
 	if (NR > 1 && \$2 >= $progress_90p) {
 		print \$1, \$2;
@@ -27,5 +27,5 @@ res=$(awk "{
 }" progress)
 timestamp_90p=$(echo $res | cut -sd" " -f1)
 progress_90p=$(echo $res | cut -sd" " -f2)
-num_op=$(($num_total_op - $progress_90p))
+num_op=$((num_total_op - progress_90p))
 echo "$num_op / (($timestamp_100p - $timestamp_90p) / 1000000000)" | bc -l
