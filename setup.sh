@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-pip3 install pandas matplotlib humanfriendly json5
-
 tmp=$(mktemp)
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf > $tmp
 sh $tmp -y
