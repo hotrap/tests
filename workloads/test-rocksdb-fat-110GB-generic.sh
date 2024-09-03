@@ -20,5 +20,5 @@ memtable_size=$((64 * 1024 * 1024))
 L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
 
 ulimit -n 100000
-../helper/exe-while.sh $DIR sh -c "$prefix $kvexe_dir/rocksdb-kvexe --switches=0x1 --num_threads=16 --max_background_jobs=8 --block_size=16384 --cache_size=134217728 --max_bytes_for_level_base=$L1_size --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}}\" $extra_kvexe_args 2>> $DIR/log.txt"
+../helper/exe-while.sh $DIR sh -c "$prefix $kvexe_dir/rocksdb-kvexe --switches=0x1 --num_threads=16 --block_size=16384 --cache_size=134217728 --max_bytes_for_level_base=$L1_size --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}}\" $extra_kvexe_args 2>> $DIR/log.txt"
 ../helper/rocksdb-data.sh "$DIR"
