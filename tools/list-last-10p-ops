@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+for workload in $(ls); do
+	if [ ! -d $workload ]; then
+		continue
+	fi
+	cd $workload
+	for version in $(ls); do
+		if [ ! -d $version ]; then
+			continue
+		fi
+		if [ ! -f $version/info.json ]; then
+			continue
+		fi
+		cd $version
+		echo -n "$workload $version "
+		$(dirname $0)/last-10p-ops
+		cd ..
+	done
+	cd ..
+done
