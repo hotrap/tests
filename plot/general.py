@@ -47,7 +47,7 @@ if xlabel is not None:
     assert ylabel is not None
  
 import os
-if pdf_path is None and 'DISPLAY' not in os.environ:
+if not scatter_tooltip and pdf_path is None and 'DISPLAY' not in os.environ:
     print('Error: No display and no output file.')
     exit(1)
 
