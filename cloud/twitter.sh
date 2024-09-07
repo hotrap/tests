@@ -35,7 +35,7 @@ workloads=(
 	"cluster25-215x"
 	"cluster26-8x"
 	"cluster27-7x"
-	"cluster28-17x"
+	"cluster28-18x"
 	"cluster29"
 	"cluster30-10x"
 	"cluster31-2x"
