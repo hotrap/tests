@@ -68,7 +68,7 @@ check-workload-files "${workloads[@]}"
 
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-fat
+	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-rocksdb $workload mutant
 	cloud-run run-rocksdb $workload prismdb
 	cloud-run run-rocksdb $workload SAS-Cache
@@ -101,6 +101,6 @@ for workload in "${hotspot_workloads[@]}"; do
 done
 for workload in "${uniform_workloads[@]}"; do
 	cloud-run run-hotrap $workload promote-stably-hot
-	cloud-run run-rocksdb $workload rocksdb-fat
+	cloud-run run-rocksdb $workload rocksdb-tiered
 done
 wait

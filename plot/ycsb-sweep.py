@@ -63,7 +63,7 @@ versions=[
         'color': plt.get_cmap('Set2')(2),
     },
     {
-        'path': 'rocksdb-fat',
+        'path': 'rocksdb-tiered',
         'pattern': '\\\\\\',
         'color': plt.get_cmap('Set2')(1),
     },
@@ -88,7 +88,7 @@ versions=[
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB(FD)', 'RocksDB-fat', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
+version_names = ['RocksDB(FD)', 'RocksDB-tiered', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
 size='110GB_220GB'
 
 skewness_ratio_version_ops = {}
@@ -108,9 +108,9 @@ for i in range(len(skewnesses)):
 json_output = io.StringIO()
 min_ratio = 1
 for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
-    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-fat'])
+    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-tiered'])
 overhead = 1 - min_ratio
-print('{\n\t\"OverheadUniformRocksDBFat1KiB\": %f\n}' %overhead, file=json_output)
+print('{\n\t\"OverheadUniformRocksdbTiered1KiB\": %f\n}' %overhead, file=json_output)
 json_output = json_output.getvalue()
 print(json_output)
 open(os.path.join(dir, 'ycsb-sweep.json'), mode='w').write(json_output)

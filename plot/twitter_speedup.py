@@ -90,16 +90,16 @@ if __name__ == '__main__':
         data_dir = os.path.join(workload_dir, 'promote-stably-hot')
         hotrap = common.last_10p_ops(common.VersionData(data_dir))
 
-        data_dir = os.path.join(workload_dir, "rocksdb-fat")
-        rocksdb_fat = common.last_10p_ops(common.VersionData(data_dir))
+        data_dir = os.path.join(workload_dir, "rocksdb-tiered")
+        rocksdb_tiered = common.last_10p_ops(common.VersionData(data_dir))
 
-        speedup = hotrap / rocksdb_fat
+        speedup = hotrap / rocksdb_tiered
         speedups.append(speedup)
 
     max_speedup = max(speedups)
     tex = io.StringIO()
-    print('% Max speedup over RocksDB-fat under twitter production workloads', file=tex)
-    print('\defmacro{MaxSpeedupTwitterRocksDBfat}{%.2f}' %max_speedup, file=tex)
+    print('% Max speedup over RocksDB-tiered under twitter production workloads', file=tex)
+    print('\defmacro{MaxSpeedupTwitterRocksdbTiered}{%.2f}' %max_speedup, file=tex)
 
     tex = tex.getvalue()
     print(tex)

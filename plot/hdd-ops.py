@@ -42,8 +42,8 @@ versions = [
         'yticks': [0, 1e4, 2e4, 3e4, 4e4],
     },
     {
-        'name': '(b) RocksDB-fat',
-        'path': 'ycsbc_hotspot0.01_110GB_1GB/rocksdb-fat',
+        'name': '(b) RocksDB-tiered',
+        'path': 'ycsbc_hotspot0.01_110GB_1GB/rocksdb-tiered',
         'ymax': 400,
         'yticks': [0, 100, 200, 300, 400],
     }
@@ -88,7 +88,7 @@ for (version_idx, version) in enumerate(versions):
     plt.xlabel(version['name'], labelpad=10, fontsize=8)
 
 tex = io.StringIO()
-print('\defmacro{HDDHotrapDivRocksdbfat}{%.0f}' %(final_ops[0] / final_ops[1]), file=tex)
+print('\defmacro{HDDHotrapDivRocksdbTiered}{%.0f}' %(final_ops[0] / final_ops[1]), file=tex)
 tex = tex.getvalue()
 print(tex)
 open('hdd-test.tex', mode='w').write(tex)

@@ -44,7 +44,7 @@ function run-workload {
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
-	run-rocksdb $workload rocksdb-fat
+	run-rocksdb $workload rocksdb-tiered
 	run-rocksdb $workload SAS-Cache
 	run-hotrap $workload promote-stably-hot
 done
@@ -97,5 +97,5 @@ for workload in "${hotspot_workloads[@]}"; do
 done
 for workload in "${uniform_workloads[@]}"; do
 	run-hotrap $workload promote-stably-hot
-	run-rocksdb $workload rocksdb-fat
+	run-rocksdb $workload rocksdb-tiered
 done

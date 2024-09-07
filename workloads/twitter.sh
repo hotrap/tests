@@ -66,7 +66,7 @@ function run-rocksdb {
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-hotrap $workload promote-stably-hot
-	run-rocksdb $workload rocksdb-fat
+	run-rocksdb $workload rocksdb-tiered
 	run-rocksdb $workload SAS-Cache
 	run-rocksdb $workload mutant
 	run-rocksdb $workload prismdb

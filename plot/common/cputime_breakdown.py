@@ -51,8 +51,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         'path': 'rocksdb-fd',
         'colors': colors_rocksdb,
     }
-    rocksdb_fat = {
-        'path': 'rocksdb-fat',
+    rocksdb_tiered = {
+        'path': 'rocksdb-tiered',
         'colors': colors_rocksdb,
     }
     patterns = ['///', '\\\\\\', 'XXX', '......', '', '']
@@ -133,16 +133,16 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     )
 
     workload='uniform'
-    versions = [rocksdb_fat, promote_stably_hot]
+    versions = [rocksdb_tiered, promote_stably_hot]
     subfig = plt.subplot(gs[0, 1])
     draw_cputime(min_max_portion)
     plt.xlabel('(b) uniform', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=rocksdb_fat['colors']),
+            common.MulticolorPatch(colors=rocksdb_tiered['colors']),
             common.MulticolorPatch(colors=promote_stably_hot['colors']),
         ],
-        ['RocksDB-fat', 'HotRAP'],
+        ['RocksDB-tiered', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
     )

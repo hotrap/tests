@@ -37,8 +37,8 @@ versions=[
         'path': 'rocksdb-fd',
     },
     {
-        'name': '(b) RocksDB-fat',
-        'path': 'rocksdb-fat',
+        'name': '(b) RocksDB-tiered',
+        'path': 'rocksdb-tiered',
     },
     {
         'name': '(c) HotRAP',

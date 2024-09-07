@@ -8,4 +8,4 @@ IP=$2
 cd ../..
 rsync -zrpt --partial -e ssh rocksdb $user@$IP:~/ --exclude='build'
 rsync -zrpt --partial -e ssh kvexe-rocksdb $user@$IP:~/ --exclude='build'
-ssh $user@$IP "./tests/helper/checkout-rocksdb-fat"
+ssh $user@$IP "./tests/helper/checkout-rocksdb-tiered"

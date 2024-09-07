@@ -46,7 +46,7 @@ versions=[
         'color': plt.get_cmap('Set2')(2),
     },
     {
-        'path': 'rocksdb-fat',
+        'path': 'rocksdb-tiered',
         'pattern': '\\\\\\',
         'color': plt.get_cmap('Set2')(1),
     },
@@ -71,7 +71,7 @@ versions=[
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB(FD)', 'RocksDB-fat', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
+version_names = ['RocksDB(FD)', 'RocksDB-tiered', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
 
 gs = gridspec.GridSpec(1, 2, figure=figure)
 bar_width = 1 / (len(versions) + 1)

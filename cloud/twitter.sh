@@ -123,7 +123,7 @@ running=0
 while [ $i -lt $num ]; do
 	workload="${workloads[$i]}"
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-fat
+	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-rocksdb $workload mutant
 	cloud-run run-rocksdb $workload prismdb

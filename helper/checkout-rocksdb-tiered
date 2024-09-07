@@ -10,5 +10,5 @@ git checkout rocksdb
 build_rocksdb
 
 cd ../kvexe-rocksdb
-git checkout rocksdb-fat
+git checkout rocksdb-tiered
 build_kvexe_rocksdb

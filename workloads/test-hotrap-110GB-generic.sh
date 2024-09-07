@@ -19,7 +19,7 @@ fd_size=10000000000
 max_hot_set_size=5000000000
 max_viscnts_size=1500000000
 memtable_size=$((64 * 1024 * 1024))
-L1_size=$((($fd_size - $max_viscnts_size) / 12 / $memtable_size * $memtable_size))
+L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
 
 ulimit -n 100000
 # Dump core when crash

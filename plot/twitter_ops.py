@@ -48,7 +48,7 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(2),
         },
         {
-            'path': 'rocksdb-fat',
+            'path': 'rocksdb-tiered',
             'pattern': '\\\\\\',
             'color': plt.get_cmap('Set2')(1),
         },
@@ -68,7 +68,7 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(0),
         },
     ]
-    version_names = ['RocksDB(FD)', 'RocksDB-fat', 'PrismDB', 'SAS-Cache', 'HotRAP']
+    version_names = ['RocksDB(FD)', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'HotRAP']
 
     workload_version_ops = {}
     for workload in workloads:

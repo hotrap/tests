@@ -51,8 +51,8 @@ def draw_io_breakdown(dir, size, pdf_name):
         'colors': colors_rocksdb,
         'legend-colors': [colors_rocksdb[i] for i in [1, 3, 4]],
     }
-    rocksdb_fat = {
-        'path': 'rocksdb-fat',
+    rocksdb_tiered = {
+        'path': 'rocksdb-tiered',
         'colors': colors_rocksdb,
         'legend-colors': colors_rocksdb,
     }
@@ -147,16 +147,16 @@ def draw_io_breakdown(dir, size, pdf_name):
     )
 
     workload='uniform'
-    versions = [rocksdb_fat, promote_stably_hot]
+    versions = [rocksdb_tiered, promote_stably_hot]
     subfig = plt.subplot(gs[0, 1])
     draw_io(min_max_portion)
     plt.xlabel('(b) uniform', fontsize=8)
     subfig.legend(
         [
-            common.MulticolorPatch(colors=rocksdb_fat['legend-colors']),
+            common.MulticolorPatch(colors=rocksdb_tiered['legend-colors']),
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
         ],
-        ['RocksDB-fat', 'HotRAP'],
+        ['RocksDB-tiered', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
     )
