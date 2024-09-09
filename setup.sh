@@ -27,6 +27,7 @@ export CACHELIB_HOME=$(pwd)/opt/cachelib
 export CPLUS_INCLUDE_PATH=\$CACHELIB_HOME/include:\$CPLUS_INCLUDE_PATH
 export LIBRARY_PATH=\$CACHELIB_HOME/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=\$CACHELIB_HOME/lib:\$LD_LIBRARY_PATH
+export CMAKE_PREFIX_PATH=\$CACHELIB_HOME/lib/cmake:\$CMAKE_PREFIX_PATH
 EOF
 
 git clone git@github.com:hotrap/hotrap.git rocksdb

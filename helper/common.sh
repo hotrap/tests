@@ -10,14 +10,7 @@ build_sas() {
 
 	# Additional "FindXXX.cmake" files are here (e.g. FindSodium.cmake)
 	CLCMAKE="$workspace/CacheLib/cachelib/cmake"
-
-	# After ensuring we are in the correct directory, set the installation prefix"
-	PREFIX="$workspace/opt/cachelib/"
-
-	CMAKE_PARAMS="-DCMAKE_INSTALL_PREFIX='$PREFIX' -DCMAKE_MODULE_PATH='$CLCMAKE'"
-
-	CMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH:-}:$PREFIX/lib/cmake:$PREFIX/lib64/cmake"
-	export CMAKE_PREFIX_PATH
+	CMAKE_PARAMS="-DCMAKE_MODULE_PATH='$CLCMAKE'"
 
 	mkdir -p build
 	cd build
