@@ -71,7 +71,6 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-hotrap $workload promote-stably-hot
 done
 cloud-run run-u135542 "u135542" promote-stably-hot
-cloud-run run-hotrap "ycsbc_hotspot0.01_110GB_220GB" promote-stably-hot
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
