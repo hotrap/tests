@@ -126,13 +126,13 @@ if __name__ == '__main__':
     for i in range(1, ceil_max_speedup + 1):
         ticks.append(i)
     cb = plt.colorbar(norm_cmap, ax=ax, ticks=ticks)
-    cb.ax.tick_params(labelsize=7)
+    cb.ax.tick_params(labelsize=8)
     for i in range(0, len(xs)):
         if workloads[i] in twitter_ops.workloads:
-            plt.text(xs[i] - 0.075, ys[i] - 0.027, '{:02}'.format(ids[i]), fontsize=8, c='black', weight='bold')
+            plt.text(xs[i] - 0.08, ys[i] - 0.03, '{:02}'.format(ids[i]), fontsize=9, c='black', weight='bold')
         else:
-            plt.text(xs[i] - 0.075, ys[i] - 0.027, '{:02}'.format(ids[i]), fontsize=8, c='gray')
-        plt.text(xs[i] + 0.025, ys[i] - 0.025, '{:.2f}x'.format(speedups[i]), fontsize=8)
+            plt.text(xs[i] - 0.08, ys[i] - 0.03, '{:02}'.format(ids[i]), fontsize=9, c='gray')
+        plt.text(xs[i] + 0.025, ys[i] - 0.03, '{:.2f}x'.format(speedups[i]), fontsize=9)
 
     markersize=5
     handles=[
@@ -140,13 +140,13 @@ if __name__ == '__main__':
         mlines.Line2D([], [], color='black', marker='^', linestyle='None', markersize=markersize, label='read-write'),
         mlines.Line2D([], [], color='black', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
     ]
-    plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.12))
+    plt.legend(handles=handles, handlelength=0.5, fontsize=9, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.12), handletextpad=0.4, columnspacing=1)
 
     plt.xlim(-0.03, 1.03)
-    plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-    plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-    plt.xlabel('Proportion of reads on hot records', fontsize=8)
-    plt.ylabel('Proportion of reads on sunk records', fontsize=8)
+    plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
+    plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
+    plt.xlabel('Proportion of reads on hot records', fontsize=9)
+    plt.ylabel('Proportion of reads on sunk records', fontsize=9, y=0.44)
     pdf_path = dir + '/twitter-speedup.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)

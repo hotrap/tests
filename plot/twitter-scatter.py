@@ -121,13 +121,13 @@ handles=[
     mlines.Line2D([], [], color='black', marker='^', linestyle='None', markersize=markersize, label='read-write'),
     mlines.Line2D([], [], color='black', marker='s', linestyle='None', markersize=markersize, label='write-heavy'),
 ]
-plt.legend(handles=handles, handlelength=0.5, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.12))
+plt.legend(handles=handles, handlelength=0.5, fontsize=9, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.12), handletextpad=0.4, columnspacing=1)
 
 plt.xlim(-0.03, 1.03)
-plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=8)
-plt.xlabel('Proportion of reads on hot records', fontsize=8)
-plt.ylabel('Proportion of reads on sunk records', fontsize=8)
+plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
+plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
+plt.xlabel('Proportion of reads on hot records', fontsize=9)
+plt.ylabel('Proportion of reads on sunk records', fontsize=9, y=0.44)
 pdf_path = dir + '/twitter-scatter.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
