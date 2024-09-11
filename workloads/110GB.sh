@@ -46,10 +46,11 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-rocksdb $workload rocksdb-tiered
 	run-rocksdb $workload SAS-Cache
+	run-rocksdb $workload kvexe-cachelib
 	run-hotrap $workload promote-stably-hot
 done
 
-run-workload "u155243"
+run-workload "u24685531"
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
