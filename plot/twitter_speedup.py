@@ -15,9 +15,9 @@ workloads=[
     'cluster23',
     'cluster29',
     'cluster37',
-    'cluster44-40x',
     'cluster46',
     'cluster48-5x',
+    'cluster52-3x',
     'cluster53-12x',
 ]
 
