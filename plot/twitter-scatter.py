@@ -10,9 +10,8 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
 import twitter_speedup
-from twitter_speedup import read_heavy, read_write, write_heavy, workload_id
+from twitter_speedup import workload_id, workload_marker
 
-import json5
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -106,23 +105,7 @@ for (index, workload) in enumerate(workloads):
     xs.append(x)
     y = float(open(os.path.join(stat_dir, workload + '-read-with-more-than-5p-write-size')).read())
     ys.append(y)
-    if id in read_heavy:
-        marker = 'o'
-    elif id in read_write:
-        marker = '^'
-    elif id in write_heavy:
-        marker ='s'
-    else:
-        stat = json5.load(open(os.path.join(stat_dir, workload + '.json')))
-        num_reads = stat['num-reads']
-        read_ratio = num_reads / stat['num-run-op']
-        if read_ratio > 0.75:
-            marker = 'o'
-        elif read_ratio > 0.5:
-            marker = '^'
-        else:
-            marker = 's'
-    markers.append(marker)
+    markers.append(workload_marker(workload, stat_dir))
     if workload in twitter_speedup.workloads:
         sampled.append(index)
     else:

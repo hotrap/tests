@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+import os
+import json5
+
 workloads=[
     'cluster02-283x',
-    'cluster05',
     'cluster10',
     'cluster11-25x',
     'cluster16-67x',
@@ -12,18 +14,37 @@ workloads=[
     'cluster22-9x',
     'cluster23',
     'cluster29',
+    'cluster37',
     'cluster44-40x',
     'cluster46',
     'cluster48-5x',
     'cluster53-12x',
 ]
 
-read_heavy = set([2, 11, 16, 17, 18, 24, 29, 30, 44, 52, 53])
-read_write = set([19, 22, 46, 48])
-write_heavy = set([5, 8, 10, 23])
-
 def workload_id(workload):
     return int(workload.split('-')[0][7:])
+
+read_heavy = set([])
+read_write = set([19, 22])
+write_heavy = set([8, 10])
+
+def workload_marker(workload, stat_dir):
+    id = workload_id(workload)
+    if id in read_heavy:
+        return 'o'
+    elif id in read_write:
+        return '^'
+    elif id in write_heavy:
+        return 's'
+    stat = json5.load(open(os.path.join(stat_dir, workload + '.json')))
+    num_reads = stat['num-reads']
+    read_ratio = num_reads / stat['num-run-op']
+    if read_ratio > 0.75:
+        return 'o'
+    elif read_ratio > 0.5:
+        return '^'
+    else:
+        return 's'
 
 if __name__ == '__main__':
     import sys
@@ -33,7 +54,6 @@ if __name__ == '__main__':
     dir = sys.argv[1]
     stat_dir = sys.argv[2]
 
-    import os
     sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
     import common
     import twitter_ops
@@ -75,16 +95,7 @@ if __name__ == '__main__':
         xs.append(x)
         y = float(open(os.path.join(stat_dir, workload + '-read-with-more-than-5p-write-size')).read())
         ys.append(y)
-        if id in read_heavy:
-            marker = 'o'
-        elif id in read_write:
-            marker = '^'
-        elif id in write_heavy:
-            marker ='s'
-        else:
-            print('The type of cluster ' + str(id) + ' is unknown')
-            exit(1)
-        markers.append(marker)
+        markers.append(workload_marker(workload, stat_dir))
 
         workload_dir = os.path.join(dir, workload)
         data_dir = os.path.join(workload_dir, 'promote-stably-hot')
