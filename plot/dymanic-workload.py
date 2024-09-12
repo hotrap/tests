@@ -33,60 +33,65 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(10)))
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(10)), constrained_layout=True)
 
 
 
 version_data = common.VersionData(data_dir)
 
 ax1 = plt.subplot(3, 1, 1)
+ax1.grid(axis='y')
 
 viscnts_sizes = pd.read_table(os.path.join(data_dir, 'viscnts-sizes'), sep='\s+')
 (x, real_hot_size) = common.estimate(version_data, viscnts_sizes, 'real-hot-size')
 real_hot_size = np.array(real_hot_size)
 
-hotspot_sizes = np.array([
-    [0, 0],
-    [22e7, 0],
-    [22e7 + 1, 1.1e9],
-    [44e7, 1.1e9],
-    [44e7 + 1, 3.3e9],
-    [66e7, 3.3e9],
-    [66e7 + 1, 5.5e9],
-    [110e7, 5.5e9],
-    [110e7 + 1, 4.4e9],
-    [132e7, 4.4e9],
-    [132e7 + 1, 2.2e9],
-    [154e7, 2.2e9],
-])
+hotspot_sizes = [[0, 0]]
+def add_phase(hotspot_size):
+    last = hotspot_sizes[-1][0]
+    hotspot_sizes.append([last + 1, hotspot_size])
+    hotspot_sizes.append([last + 22e7, hotspot_size])
+add_phase(0)
+add_phase(2.2e9)
+add_phase(4.4e9)
+add_phase(6.6e9)
+add_phase(8.8e9)
+add_phase(5.5e9)
+add_phase(5.5e9)
+add_phase(3.3e9)
+add_phase(1.1e9)
+hotspot_sizes = np.array(hotspot_sizes)
 
 plt.plot(hotspot_sizes[:,0], hotspot_sizes[:,1] / 1e9, linewidth=0.5, marker='^', markersize=4)
 plt.plot(x, real_hot_size / 1e9, linewidth=0.5, marker='o', markersize=4, markevery=int(len(x) / 5))
-plt.axvline(88e7, linewidth=0.5, linestyle='--', color='black')
-plt.text(0.46, 1.05, 'Hotspot shifts', transform=ax1.transAxes, fontsize=8)
+def draw_hotspot_shifts(ax):
+    plt.axvline(132e7, linewidth=0.5, linestyle='--', color='black')
+    plt.text(0.66, 1.05, 'Hotspot shifts', transform=ax.transAxes, fontsize=9)
+draw_hotspot_shifts(ax1)
 
-plt.ylabel('Size (GB)', fontsize=8)
-plt.yticks(fontsize=8)
-ax1.yaxis.get_offset_text().set_fontsize(8)
-plt.legend(['Hotspot size', 'Hot set size'], frameon=False, fontsize=8, loc='upper left', bbox_to_anchor=(0.05, 1.05))
+plt.ylabel('Size (GB)', fontsize=9)
+plt.yticks(fontsize=9)
+ax1.yaxis.get_offset_text().set_fontsize(9)
+plt.legend(['Hotspot size', 'Hot set size'], frameon=False, fontsize=9, loc='upper left', bbox_to_anchor=(-0.02, 1.07), handletextpad=0.3)
 # Turn off ticks on xaxis
 plt.tick_params('x', labelbottom=False)
 
 
 ax2 = plt.subplot(3, 1, 2, sharex=ax1)
+ax2.grid(axis='y')
 
 hit_rates = common.read_hit_rates(version_data.data_dir)
 (x, hit_rates) = common.estimate(version_data, hit_rates, 'hit-rate')
 plt.plot(x, hit_rates, linewidth=0.5)
-plt.axvline(88e7, linewidth=0.5, linestyle='--', color='black')
-plt.text(0.46, 1.05, 'Hotspot shifts', transform=ax2.transAxes, fontsize=8)
-plt.ylabel('Hit rate', fontsize=8)
-plt.yticks(fontsize=8)
+draw_hotspot_shifts(ax2)
+plt.ylabel('Hit rate', fontsize=9)
+plt.yticks(fontsize=9)
 # Turn off ticks on xaxis
 plt.tick_params('x', labelbottom=False)
 
 
 ax3 = plt.subplot(3, 1, 3, sharex=ax1)
+ax3.grid(axis='y')
 
 def mean_every_n(a, n):
     split = len(a) - len(a) % n
@@ -107,23 +112,21 @@ progress = mean_every_n(progress, mean_step)
 ops = mean_every_n(ops, mean_step)
 
 plt.plot(progress, ops, linewidth=0.5)
-plt.axvline(88e7, linewidth=0.5, linestyle='--', color='black')
-plt.text(0.46, 1.05, 'Hotspot shifts', transform=ax3.transAxes, fontsize=8)
+draw_hotspot_shifts(ax3)
 
 formatter = ScalarFormatter(useMathText=True)
 formatter.set_powerlimits((-3, 4))
 ax3.yaxis.set_major_formatter(formatter)
-ax3.yaxis.get_offset_text().set_fontsize(8)
+ax3.yaxis.get_offset_text().set_fontsize(9)
 ax3.set_ylim(bottom=0)
-plt.xticks(fontsize=8)
+plt.xticks(fontsize=9)
 ax3.ticklabel_format(useMathText=True)
-ax3.xaxis.get_offset_text().set_fontsize(8)
-plt.yticks(fontsize=8)
-plt.xlabel('Completed operation count', fontsize=8)
-plt.ylabel('Operations per second', fontsize=8)
+ax3.xaxis.get_offset_text().set_fontsize(9)
+plt.yticks(fontsize=9)
+plt.xlabel('Completed operation count', fontsize=9)
+plt.ylabel('Operations per second', fontsize=9)
 
 pdf_path = os.path.join(data_dir, 'plot', 'dynamic-workload.pdf')
-plt.tight_layout(pad=0.8)
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
