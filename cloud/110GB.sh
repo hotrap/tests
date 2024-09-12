@@ -68,6 +68,7 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload mutant
 	cloud-run run-rocksdb $workload prismdb
 	cloud-run run-rocksdb $workload SAS-Cache
+	cloud-run run-rocksdb $workload kvexe-cachelib
 	cloud-run run-hotrap $workload promote-stably-hot
 done
 cloud-run run-u135542 "u135542" promote-stably-hot

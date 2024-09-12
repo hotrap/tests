@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+if [ ! $2 ]; then
+	echo Usage: $0 user IP
+	exit 1
+fi
+user=$1
+IP=$2
+cd $(dirname $0)/../../..
+
+ssh $user@$IP "mkdir -p opt/cachelib"
+rsync -zrlpt --partial -e ssh $CACHELIB_HOME/* $user@$IP:~/opt/cachelib/ --exclude='bin' --exclude='tests' --exclude='test_configs'
+ssh $user@$IP "find opt/cachelib -name \"lib*.so*\" | xargs -i patchelf --set-rpath \"\$HOME/opt/cachelib/lib\" {}"
+ssh $user@$IP "echo \"
+export CACHELIB_HOME=\\\$HOME/opt/cachelib
+export CPLUS_INCLUDE_PATH=\\\$CACHELIB_HOME/include:\\\$CPLUS_INCLUDE_PATH
+export LIBRARY_PATH=\\\$CACHELIB_HOME/lib:\\\$LIBRARY_PATH
+export LD_LIBRARY_PATH=\\\$CACHELIB_HOME/lib:\\\$LD_LIBRARY_PATH
+export CMAKE_PREFIX_PATH=\\\$CACHELIB_HOME/lib/cmake:\\\$CMAKE_PREFIX_PATH
+\" >> .profile"
+
+# bin/thrift1 is needed by find_package(cachelib)
+ssh $user@$IP "mkdir -p opt/cachelib/bin"
+rsync -zrlpt --partial -e ssh $CACHELIB_HOME/bin/thrift1 $user@$IP:~/opt/cachelib/bin/

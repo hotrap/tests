@@ -5,16 +5,8 @@ if [ ! $2 ]; then
 fi
 user=$1
 IP=$2
+$(dirname $0)/helper/upload-cachelib $user $IP
 cd ../..
 rsync -zrpt --partial -e ssh rocksdb $user@$IP:~/ --exclude='build'
 rsync -zrpt --partial -e ssh kvexe-secondary-cache $user@$IP:~/ --exclude='build'
-ssh $user@$IP "mkdir -p opt/cachelib"
-rsync -zrlpt --partial -e ssh $CACHELIB_HOME/* $user@$IP:~/opt/cachelib/ --exclude='tests' --exclude='test_configs' --exclude='bin'
-ssh $user@$IP "find opt/cachelib -name \"lib*.so*\" | xargs -i patchelf --set-rpath \"\$HOME/opt/cachelib/lib\" {}"
-ssh $user@$IP "echo \"
-export CACHELIB_HOME=\\\$HOME/opt/cachelib
-export CPLUS_INCLUDE_PATH=\\\$CACHELIB_HOME/include:\\\$CPLUS_INCLUDE_PATH
-export LIBRARY_PATH=\\\$CACHELIB_HOME/lib:\\\$LIBRARY_PATH
-export LD_LIBRARY_PATH=\\\$CACHELIB_HOME/lib:\\\$LD_LIBRARY_PATH
-\" >> .profile"
 ssh $user@$IP ". .profile && ./tests/helper/checkout-secondary-cache"

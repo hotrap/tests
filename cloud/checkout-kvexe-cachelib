@@ -8,6 +8,6 @@ IP=$2
 $(dirname $0)/helper/upload-cachelib $user $IP
 cd ../..
 rsync -zrpt --partial -e ssh CacheLib $user@$IP:~/ --exclude='build-*'
-rsync -zrpt --partial -e ssh SAS-Cache $user@$IP:~/ --exclude='build'
-rsync -zrpt --partial -e ssh kvexe-SAS-Cache $user@$IP:~/ --exclude='build'
-ssh $user@$IP ". .profile && ./tests/helper/checkout-SAS-Cache"
+rsync -zrpt --partial -e ssh rocksdb $user@$IP:~/ --exclude='build'
+rsync -zrpt --partial -e ssh kvexe-cachelib $user@$IP:~/ --exclude='build'
+ssh $user@$IP ". .profile && ./tests/helper/checkout-kvexe-cachelib"
