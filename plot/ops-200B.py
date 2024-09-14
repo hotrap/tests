@@ -112,17 +112,17 @@ for (i, fig) in enumerate(figs):
             value = skewness_ratio_version_ops[skewness][ratio][version]
             ax.bar(x, value, width=bar_width, hatch=versions[version]['pattern'], color=versions[version]['color'], edgecolor='black', linewidth=0.5)
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
-    ax.yaxis.get_offset_text().set_fontsize(8)
-    plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=8)
-    plt.yticks(fig['ticks'], fontsize=8)
+    ax.yaxis.get_offset_text().set_fontsize(9)
+    plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=9)
+    plt.yticks(fig['ticks'], fontsize=9)
     plt.ylim((0, max(fig['ticks']) + 1e4))
-    plt.xlabel(fig['title'], labelpad=1, fontsize=8)
+    plt.xlabel(fig['title'], labelpad=1, fontsize=9)
     if i == 0:
-        plt.ylabel('Operations per second', fontsize=8)
+        plt.ylabel('Operations per second', fontsize=9, y=0.4)
 handles = []
 for (version, info) in versions.items():
     handles.append(mpl.patches.Patch(facecolor=info['color'], hatch=info['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.06))
+figure.legend(handles=handles, labels=version_names, fontsize=9, ncol=len(handles), loc='center', bbox_to_anchor=(0.5, 1.07), handletextpad=0.5, columnspacing=1)
 pdf_path = dir + '/ops-200B.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

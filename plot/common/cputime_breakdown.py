@@ -60,8 +60,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     versions=[rocksdb_fd, promote_stably_hot]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
-    subfig_anchor_x = 0.46
-    subfig_anchor_y = 1.28
+    subfig_anchor_x = 0.41
+    subfig_anchor_y = 1.29
 
     def draw_cputime(min_max_portion):
         ax = plt.gca()
@@ -70,7 +70,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         formatter = ScalarFormatter(useMathText=True)
         formatter.set_powerlimits((-3, 3))
         ax.yaxis.set_major_formatter(formatter)
-        ax.yaxis.get_offset_text().set_fontsize(8)
+        ax.yaxis.get_offset_text().set_fontsize(9)
         for (pivot, ycsb) in enumerate(ycsb_configs):
             workload_dir = os.path.join(dir, ycsb + '_' + workload + '_' + size)
             for (version_idx, version) in enumerate(versions):
@@ -112,16 +112,16 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                     bottom += height
                 height = cputimes - bottom
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[-1], color=version['colors'][-1], edgecolor='black', linewidth=0.5)
-        plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=8)
-        plt.yticks(fontsize=8)
+        plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=9)
+        plt.yticks(fontsize=9)
         plt.locator_params(axis='y', nbins=4)
-        plt.ylabel('CPU time (seconds)', fontsize=8)
+        plt.ylabel('CPU time (seconds)', labelpad=0.5, fontsize=9)
 
     min_max_portion = [1, 0]
 
     subfig = plt.subplot(gs[0, 0])
     draw_cputime(min_max_portion)
-    plt.xlabel('(a) hotspot-5%', fontsize=8)
+    plt.xlabel('(a) hotspot-5%', labelpad=0.5, fontsize=9)
     subfig.legend(
         [
             common.MulticolorPatch(colors=rocksdb_fd['colors']),
@@ -129,14 +129,14 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['RocksDB(FD)', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
+        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
     )
 
     workload='uniform'
     versions = [rocksdb_tiered, promote_stably_hot]
     subfig = plt.subplot(gs[0, 1])
     draw_cputime(min_max_portion)
-    plt.xlabel('(b) uniform', fontsize=8)
+    plt.xlabel('(b) uniform', labelpad=0.5, fontsize=9)
     subfig.legend(
         [
             common.MulticolorPatch(colors=rocksdb_tiered['colors']),
@@ -144,7 +144,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['RocksDB-tiered', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=6, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), columnspacing=1,
+        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
     )
 
     labels = []
@@ -173,7 +173,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     figure.legend(
         handles, labels,
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.13), columnspacing=1
+        fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.5, columnspacing=1
     )
     pdf_path = os.path.join(dir, pdf_name)
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
