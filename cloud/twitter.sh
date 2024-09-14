@@ -124,7 +124,6 @@ while [ $i -lt $num ]; do
 	workload="${workloads[$i]}"
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-tiered
-	cloud-run run-rocksdb $workload kvexe-cachelib
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-rocksdb $workload mutant
 	cloud-run run-rocksdb $workload prismdb
@@ -132,7 +131,6 @@ while [ $i -lt $num ]; do
 	i=$(($i + 1))
 	running=$(($running + 1))
 	if [ $running -eq $max_concurrent ]; then
-		wait -n
 		wait -n
 		wait -n
 		wait -n

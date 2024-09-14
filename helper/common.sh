@@ -2,7 +2,10 @@ build_rocksdb() {
 	mkdir -p build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
+	#cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on -DPORTABLE=ON
+	#cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
 	make -j$(nproc) rocksdb-shared
+	#make -j$(nproc) rocksdb
 	cd ..
 }
 build_sas() {
@@ -75,19 +78,6 @@ build_kvexe_sas() {
 	mkdir -p build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/SAS-Cache/include -DROCKSDB_LIB=$workspace/SAS-Cache/build
-	make
-	cd ..
-}
-build_kvexe_cachelib() {
-	workspace=$(realpath ..)
-
-	# Additional "FindXXX.cmake" files are here (e.g. FindSodium.cmake)
-	CLCMAKE="$workspace/CacheLib/cachelib/cmake"
-	CMAKE_PARAMS="-DCMAKE_MODULE_PATH='$CLCMAKE'"
-
-	mkdir -p build
-	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo $CMAKE_PARAMS -DROCKSDB_INCLUDE=$workspace/rocksdb/include -DROCKSDB_LIB=$workspace/rocksdb/build
 	make
 	cd ..
 }

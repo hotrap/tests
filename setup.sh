@@ -39,7 +39,6 @@ git clone git@github.com:hotrap/mutant.git
 git clone --recursive git@github.com:hotrap/kvexe.git
 git clone -b rocksdb --recursive git@github.com:hotrap/kvexe.git kvexe-rocksdb
 git clone -b SAS-Cache --recursive git@github.com:hotrap/kvexe.git kvexe-SAS-Cache
-git clone -b cachelib --recursive git@github.com:hotrap/kvexe.git kvexe-cachelib
 git clone -b prismdb --recursive git@github.com:hotrap/kvexe.git kvexe-prismdb
 git clone -b mutant --recursive git@github.com:hotrap/kvexe.git kvexe-mutant
 
