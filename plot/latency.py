@@ -117,22 +117,22 @@ for (i, fig) in enumerate(figs):
     formatter = ScalarFormatter(useMathText=True)
     formatter.set_powerlimits((-3, 4))
     ax.yaxis.set_major_formatter(formatter)
-    ax.yaxis.get_offset_text().set_fontsize(8)
-    ax.tick_params(axis='y', which='major', labelsize=8)
+    ax.yaxis.get_offset_text().set_fontsize(9)
+    ax.tick_params(axis='y', which='major', labelsize=9)
 
-    ax.set_xticks(list(range(0, len(xticks))), xticks, fontsize=8)
+    ax.set_xticks(list(range(0, len(xticks))), xticks, fontsize=9)
     if i == 2:
-        ax.set_xlabel(fig['title'], labelpad=2, fontsize=8, loc='right')
+        ax.set_xlabel(fig['title'], labelpad=2, fontsize=9, loc='right')
     else:
-        ax.set_xlabel(fig['title'], labelpad=2, fontsize=8)
+        ax.set_xlabel(fig['title'], labelpad=2, fontsize=9)
     if 'yscale' in fig:
         ax.set_yscale(fig['yscale'])
     if i == 0:
-        ax.set_ylabel('Latency (ms)', fontsize=8)
+        ax.set_ylabel('Latency (ms)', fontsize=9)
 handles = []
 for version in versions:
     handles.append(mpl.patches.Patch(facecolor=version['color'], hatch=version['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14))
+figure.legend(handles=handles, labels=version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.15), handletextpad=0.5, columnspacing=1)
 pdf_path = os.path.join(dir, 'latency.pdf')
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

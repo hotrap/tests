@@ -160,14 +160,14 @@ for i in range(len(skewnesses)):
             value = skewness_ratio_version_ops[skewness][ratio][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
-    ax.yaxis.get_offset_text().set_fontsize(8)
-    plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=8)
-    plt.yticks(subfigs[i]['ticks'], fontsize=8)
+    ax.yaxis.get_offset_text().set_fontsize(9)
+    plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=9)
+    plt.yticks(subfigs[i]['ticks'], fontsize=9)
     plt.ylim((0, max(subfigs[i]['ticks']) + 1e4))
-    plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=8)
+    plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=9)
     if i == 0:
-        plt.ylabel('Operations per second', fontsize=8)
-figure.legend(version_names, fontsize=8, ncol=len(version_names), loc='center', bbox_to_anchor=(0.5, 1.06))
+        plt.ylabel('Operations per second', fontsize=9)
+figure.legend(version_names, fontsize=9, ncol=len(version_names), loc='center', bbox_to_anchor=(0.51, 1.07))
 pdf_path = dir + '/ycsb-sweep.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
