@@ -65,7 +65,6 @@ check-workload-files "${workloads[@]}"
 for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-tiered
-	cloud-run run-rocksdb $workload mutant
 	cloud-run run-rocksdb $workload prismdb
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-hotrap $workload promote-stably-hot
@@ -74,6 +73,30 @@ cloud-run run-u135542 "u135542" promote-stably-hot
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
+
+workloads=(
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
+	"ycsba_hotspot0.05_110GB_220GB"
+	"ycsbc_hotspot0.05_110GB_220GB"
+	"read_0.75_insert_0.25_zipfian_110GB_220GB"
+	"ycsba_zipfian_110GB_220GB"
+	"ycsbc_zipfian_110GB_220GB"
+	"read_0.75_insert_0.25_uniform_110GB_220GB"
+	"ycsbc_uniform_110GB_220GB"
+)
+for workload in "${workloads[@]}"; do
+	cloud-run run-rocksdb $workload mutant
+done
+
+workloads=(
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+	"read_0.5_insert_0.5_zipfian_110GB_220GB"
+	"read_0.5_insert_0.5_uniform_110GB_220GB"
+	"ycsba_uniform_110GB_220GB"
+)
+for workload in "${workloads[@]}"; do
+	cloud-run run-rocksdb $workload mutant "--run_90p_ops=10000"
+done
 
 workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
