@@ -105,15 +105,15 @@ for (i, version) in enumerate(versions):
     })
     get_throughput = get_throughput.groupby(get_throughput.index // mean_step).mean()
     ax.plot(get_throughput['Time(s)'], get_throughput['Throughput(B/s)'] / 1e6, color='black', linestyle='dashed', linewidth=linewidth, markersize=markersize, markevery=markevery)
-    subfig.text(0.5, -0.30, 'Time (Seconds)', fontsize=8, ha='center', va='center', transform=subfig.transAxes)
-    plt.xticks(fontsize=8)
-    plt.yticks(fontsize=8)
+    subfig.text(0.5, -0.35, 'Time (Seconds)', fontsize=9, ha='center', va='center', transform=subfig.transAxes)
+    plt.xticks(fontsize=9)
+    plt.yticks(fontsize=9)
     ax.set_ylim(bottom=0)
-    plt.xlabel(version['name'], labelpad=10, fontsize=8)
+    plt.xlabel(version['name'], labelpad=10, fontsize=9)
     if i == 0:
-        plt.ylabel('Throughput (MB/s)', fontsize=8)
+        plt.ylabel('Throughput (MB/s)', fontsize=9)
 
-figure.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=8, ncol=5, loc='center', bbox_to_anchor=(0.5, 1.08))
+figure.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=9, ncol=5, loc='center', bbox_to_anchor=(0.5, 1.08))
 pdf_path = 'throughput-breakdown.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
