@@ -112,12 +112,12 @@ if __name__ == "__main__":
             value = workload_version_ops[workload][version['path']]
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
-    ax.yaxis.get_offset_text().set_fontsize(8)
-    plt.xticks(range(0, len(workloads)), ids, fontsize=8)
-    plt.yticks([0, 5e4, 10e4, 15e4, 20e4], fontsize=8)
-    plt.xlabel('Cluster ID', labelpad=1, fontsize=8)
-    plt.ylabel('Operations per second', fontsize=8)
-    fig.legend(version_names, fontsize=8, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.12))
+    ax.yaxis.get_offset_text().set_fontsize(9)
+    plt.xticks(range(0, len(workloads)), ids, fontsize=9)
+    plt.yticks([0, 5e4, 10e4, 15e4, 20e4], fontsize=9)
+    plt.xlabel('Cluster ID', labelpad=1, fontsize=9)
+    plt.ylabel('Operations per second', fontsize=9, y=0.45)
+    fig.legend(version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.5, columnspacing=1)
     pdf_path = dir + '/twitter-ops.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)
