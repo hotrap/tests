@@ -35,7 +35,7 @@ figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_in
 
 versions=[
     {
-        'name': '(a) RocksDB(FD)',
+        'name': '(a) RocksDB-FD',
         'path': 'rocksdb-fd',
     },
     {

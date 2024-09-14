@@ -141,7 +141,7 @@ def draw_io_breakdown(dir, size, pdf_name):
             common.MulticolorPatch(colors=rocksdb_fd['legend-colors']),
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
         ],
-        ['RocksDB(FD)', 'HotRAP'],
+        ['RocksDB-FD', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=7, ncol=2, loc='center',
         bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y),
