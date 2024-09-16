@@ -36,7 +36,7 @@ function run-hotrap {
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/hotrap-plot.sh $output_dir/$workload/$version
 }
-function run-u135542 {
+function run-workload {
 	workload=$1
 	version=$2
 	IP=$3
@@ -69,7 +69,8 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-hotrap $workload promote-stably-hot
 done
-cloud-run run-u135542 "u135542" promote-stably-hot
+cloud-run run-workload "u24685531" promote-stably-hot
+cloud-run run-workload "2-4-6-8" promote-stably-hot
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
