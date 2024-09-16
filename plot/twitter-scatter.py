@@ -31,7 +31,7 @@ mpl.rcParams.update({
     })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(7.5), cm_to_inch(5)), constrained_layout=True)
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(7.5), cm_to_inch(5.2)), constrained_layout=True)
 
 workloads = [
 	"cluster01-4168x",
@@ -126,8 +126,8 @@ plt.legend(handles=handles, handlelength=0.5, fontsize=9, ncol=len(handles), loc
 plt.xlim(-0.03, 1.03)
 plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
 plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
-plt.xlabel('Proportion of reads on hot records', fontsize=9)
-plt.ylabel('Proportion of reads on sunk records', fontsize=9, y=0.44)
+plt.xlabel('# of reads on hot records / # of reads', fontsize=9)
+plt.ylabel('# of reads on sunk records / # of reads', fontsize=9, y=0.45)
 pdf_path = dir + '/twitter-scatter.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
