@@ -61,7 +61,6 @@ def draw_io_breakdown(dir, size, pdf_name):
     versions=[rocksdb_fd, promote_stably_hot]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
-    subfig_anchor_x = 0.39
     subfig_anchor_y = 1.13
 
     def draw_io(min_max_portion):
@@ -144,7 +143,7 @@ def draw_io_breakdown(dir, size, pdf_name):
         ['RocksDB-FD', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=7, ncol=2, loc='center',
-        bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y),
+        bbox_to_anchor=(0.43, subfig_anchor_y),
         handletextpad=0.2, columnspacing=0.6,
     )
 
@@ -161,7 +160,7 @@ def draw_io_breakdown(dir, size, pdf_name):
         ['RocksDB-tiered', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
         fontsize=7, ncol=2, loc='center',
-        bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y),
+        bbox_to_anchor=(0.39, subfig_anchor_y),
         handletextpad=0.2, columnspacing=0.6,
     )
 

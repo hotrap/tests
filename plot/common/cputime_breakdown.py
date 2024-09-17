@@ -60,7 +60,6 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     versions=[rocksdb_fd, promote_stably_hot]
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
-    subfig_anchor_x = 0.41
     subfig_anchor_y = 1.29
 
     def draw_cputime(min_max_portion):
@@ -129,7 +128,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['RocksDB-FD', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
+        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(0.45, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
     )
 
     workload='uniform'
@@ -144,7 +143,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['RocksDB-tiered', 'HotRAP'],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(subfig_anchor_x, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
+        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(0.41, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
     )
 
     labels = []
