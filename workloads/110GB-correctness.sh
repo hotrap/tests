@@ -27,7 +27,7 @@ function run-hotrap {
 	prefix=../../YCSB-traces/$1
 	./test-hotrap-110GB-replay.sh $prefix $DIR "--export_ans_xxh64 $3"
 	../helper/hotrap-plot.sh $DIR
-	../helper/check-ans.sh ../../data/$1/rocksdb-fd-correctness/ $DIR/
+	../tools/check-ans.sh ../../data/$1/rocksdb-fd-correctness/ $DIR/
 }
 
 for workload in "${workloads[@]}"; do

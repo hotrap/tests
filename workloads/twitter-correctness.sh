@@ -43,7 +43,7 @@ function run-hotrap {
 	prefix=../../twitter/processed/$1
 	./test-hotrap-110GB-replay.sh $prefix-load $prefix-run $DIR "--export_ans_xxh64"
 	../helper/hotrap-plot.sh $DIR
-	../helper/check-ans.sh ../../data/$1/rocksdb-fd-correctness/ $DIR/
+	../tools/check-ans.sh ../../data/$1/rocksdb-fd-correctness/ $DIR/
 }
 
 for workload in "${workloads[@]}"; do
