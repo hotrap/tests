@@ -23,7 +23,8 @@ build_sas() {
 }
 
 build_viscnts_splay_rs() {
-	make ROCKSDB_INCLUDE=~/hotrap/include
+	workspace=$(realpath ..)
+	make ROCKSDB_INCLUDE=$workspace/hotrap/include
 }
 build_ralt() {
 	workspace=$(realpath ..)
