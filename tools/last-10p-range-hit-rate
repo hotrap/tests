@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+set -e
+res=$(tail -n1 num-scans)
+scan_100p=$(echo "$res" | cut -sd' ' -f2)
+hit_100p=$(echo "$res" | cut -sd' ' -f3)
+run_start_timestamp=$(hjson-cli -j < info.json | jq -er ".\"run-start-timestamp(ns)\"")
+run_start_progress=$(awk "
+	BEGIN {
+		res = 0
+	}
+	{
+		if (NR > 1 && \$1 >= $run_start_timestamp) {
+			res = \$2;
+			exit 0
+		}
+	}
+	END {
+		print res
+	}
+" progress)
+num_total_op=$(tail -n1 progress | cut -sd' ' -f2)
+num_run_op=$((num_total_op - run_start_progress))
+progress_90p=$((run_start_progress + num_run_op * 9 / 10))
+timestamp_90p=$(awk "{
+	if (NR > 1 && \$2 >= $progress_90p) {
+		print \$1;
+		exit 0
+	}
+}" progress)
+res=$(awk "{
+	if (NR > 1 && \$1 >= $timestamp_90p) {
+		print \$2, \$3;
+		exit 0
+	}
+}" num-scans)
+scan_100p=$(echo "$res" | cut -sd' ' -f1)
+hit_100p=$(echo "$res" | cut -sd' ' -f2)
+scan=$((scan_100p - scan_90p))
+hit=$((hit_100p - hit_90p))
+echo "$hit / $scan" | bc -l
