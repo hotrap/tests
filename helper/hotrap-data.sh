@@ -20,6 +20,7 @@ find . \
 	\! -regex "\./MANIFEST-[0-9]*" \
 	\! -regex "\./OPTIONS-[0-9]*\.dbtmp" \
 	\! -regex "\./ans_[0-9]*" \
+	\! -regex "\./latency-[0-9]*" \
 	-exec mv {} "$DIR" \;
 cd ..
 find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
