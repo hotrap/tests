@@ -24,15 +24,15 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 info = os.path.join(data_dir, 'info.json')
 info = json5.load(open(info))
-vcsize = pd.read_table(os.path.join(data_dir, 'vc_param'), sep='\s+', header=None)
-vcsize = vcsize[(vcsize[0] >= info['run-start-timestamp(ns)']) & (vcsize[0] < info['run-end-timestamp(ns)'])]
-time = (vcsize[0] - vcsize[0].iloc[0]) / 1e9
+vcsize = pd.read_table(os.path.join(data_dir, 'vc_param'), sep='\s+')
+vcsize = vcsize[(vcsize['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (vcsize['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
+time = (vcsize['Timestamp(ns)'] - vcsize['Timestamp(ns)'].iloc[0]) / 1e9
 
 plot_dir = os.path.join(data_dir, 'plot')
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = os.path.join(plot_dir, 'vc_param.pdf')
-plt.plot(time, vcsize[1])
+plt.plot(time, vcsize['hot-set-size-limit'])
 plt.legend([1], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Size (Bytes)', fontdict=fonten)
