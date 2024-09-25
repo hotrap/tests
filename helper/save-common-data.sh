@@ -7,7 +7,10 @@ mydir=$(dirname "$0")
 mydir=$(realpath "$mydir")
 DIR=$(realpath "$2")
 cd "$1"
-mv LOG latency-* period_stats progress cpu cputimes mem info.json timers worker-cpu-nanos "$DIR"/
+mv LOG latency-* period_stats progress cpu cputimes mem info.json timers "$DIR"/
+if [ -f worker-cpu-nanos ]; then
+	mv worker-cpu-nanos "$DIR"/
+fi
 if [ -f ans-0.xxh64 ]; then
 	mv ans-*.xxh64 "$DIR"/
 fi
