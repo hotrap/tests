@@ -1,11 +1,22 @@
-build_rocksdb() {
+cmake_rocksdb() {
 	mkdir -p build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
 	#cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on -DPORTABLE=ON
 	#cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
+	cd ..
+}
+build_rocksdb() {
+	cmake_rocksdb
+	cd build
 	make -j$(nproc) rocksdb-shared
 	#make -j$(nproc) rocksdb
+	cd ..
+}
+build_db_bench() {
+	cmake_rocksdb
+	cd build
+	make -j$(nproc) db_bench
 	cd ..
 }
 build_sas() {
