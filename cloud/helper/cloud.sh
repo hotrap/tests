@@ -8,6 +8,7 @@ python3 -m venv ~/.venvs/base
 echo ". ~/.venvs/base/bin/activate" >> ~/.profile
 . ~/.venvs/base/bin/activate
 
+cd $(dirname $0)/../../..
 ./tests/pip.sh
 
 sudo chown $USER:$USER /mnt/fd
