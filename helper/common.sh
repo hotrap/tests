@@ -49,7 +49,7 @@ build_kvexe_viscnts_splay_rs() {
 	mkdir -p build
 	cd build
 	workspace=$(realpath ../..)
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build -DVISCNTS_INCLUDE=$workspace/viscnts-splay-rs/include -DVISCNTS_LIB=$workspace/viscnts-splay-rs/target/release
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/hotrap/include -DROCKSDB_LIB_DIR=$workspace/hotrap/build -DRALT_INCLUDE_DIR=$workspace/viscnts-splay-rs/include -DRALT_LIB_DIR=$workspace/viscnts-splay-rs/target/release
 	make
 	cd ..
 }
@@ -57,7 +57,7 @@ build_kvexe_ralt() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build -DVISCNTS_INCLUDE=$workspace/RALT/include -DVISCNTS_LIB=$workspace/RALT/build
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/hotrap/include -DROCKSDB_LIB_DIR=$workspace/hotrap/build -DRALT_INCLUDE_DIR=$workspace/RALT/include -DRALT_LIB_DIR=$workspace/RALT/build
 	make
 	cd ..
 }
@@ -65,7 +65,7 @@ build_kvexe_rocksdb() {
 	mkdir -p build
 	cd build
 	workspace=$(realpath ../..)
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE=$workspace/rocksdb/include -DROCKSDB_LIB=$workspace/rocksdb/build
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/rocksdb/include -DROCKSDB_LIB_DIR=$workspace/rocksdb/build
 	make
 	cd ..
 }
@@ -73,7 +73,7 @@ build_kvexe_prismdb() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE=$workspace/prismdb/include -DROCKSDB_LIB=$workspace/prismdb/build
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/prismdb/include -DROCKSDB_LIB_DIR=$workspace/prismdb/build
 	make
 	cd ..
 }
@@ -81,7 +81,7 @@ build_kvexe_mutant() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/mutant/include -DROCKSDB_LIB=$workspace/mutant
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE_DIR=$workspace/mutant/include -DROCKSDB_LIB_DIR=$workspace/mutant
 	make
 	cd ..
 }
@@ -89,7 +89,7 @@ build_kvexe_sas() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE=$workspace/SAS-Cache/include -DROCKSDB_LIB=$workspace/SAS-Cache/build
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DROCKSDB_INCLUDE_DIR=$workspace/SAS-Cache/include -DROCKSDB_LIB_DIR=$workspace/SAS-Cache/build
 	make
 	cd ..
 }
