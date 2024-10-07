@@ -6,8 +6,8 @@ fi
 mkdir -p "$1"
 DIR=$(realpath "$1")
 if [ "$(ls -A $DIR)" ]; then
-    echo "$1" is not empty!
-    exit 1
+	echo "$1" is not empty!
+	exit 1
 fi
 cd "$(dirname $0)"
 workspace=$(realpath ../..)
@@ -74,7 +74,7 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--perf_level=2 \
 	--key_size=48 \
 	--db="$workspace/testdb/db" \
-	--db_paths="[{$workspace/testdb/fd,10000000000},{$workspace/testdb/sd,1000000000000}]" \
+	--db_paths="[{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}]" \
 	--num=$num \
 	--threads=16 \
 	--max_background_jobs=6 \
