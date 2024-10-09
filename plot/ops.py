@@ -3,8 +3,8 @@
 import sys
 
 if len(sys.argv) != 3:
-	print('Usage: ' + sys.argv[0] + ' data-dir mean-step')
-	exit()
+    print('Usage: ' + sys.argv[0] + ' data-dir mean-step')
+    exit()
 data_dir = sys.argv[1]
 mean_step = int(sys.argv[2])
 
@@ -43,11 +43,11 @@ progress = progress['operations-executed']
 ops = progress[1:len(progress)].values - progress[:len(progress) - 1].values
 
 def mean_every_n(a, n):
-	split = len(a) - len(a) % n
-	res = a[0:split].reshape(-1, n).mean(axis=1)
-	if split != len(a):
-		res = np.append(res, a[split:].mean())
-	return res
+    split = len(a) - len(a) % n
+    res = a[0:split].reshape(-1, n).mean(axis=1)
+    if split != len(a):
+        res = np.append(res, a[split:].mean())
+    return res
 
 time = mean_every_n(time, mean_step)
 ops = mean_every_n(ops, mean_step)
@@ -67,9 +67,9 @@ plt.tight_layout()
 
 plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):
-	os.system('mkdir -p ' + plot_dir)
+    os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/ops.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
-	plt.show()
+    plt.show()
