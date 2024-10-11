@@ -28,16 +28,16 @@ plt.rcParams['axes.unicode_minus'] = False
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
 
-ops = pd.read_table(os.path.join(data_dir, 'report.csv'), sep=',')
+report = pd.read_table(os.path.join(data_dir, 'report.csv'), sep=',')
 # It seems that the ops of the first several seconds is not limited.
-ops = ops.iloc[10:]
+report = report.iloc[10:]
 
 ax = plt.gca()
 formatter = ScalarFormatter(useMathText=True)
 formatter.set_powerlimits((-3, 4))
 ax.yaxis.set_major_formatter(formatter)
 ax.yaxis.get_offset_text().set_fontsize(8)
-plt.plot(ops['secs_elapsed'], ops['interval_qps'], linewidth=0.5)
+plt.plot(report['secs_elapsed'], report['interval_qps'], linewidth=0.5)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
 ax.set_ylim(bottom=0)
@@ -48,6 +48,20 @@ plot_dir = data_dir + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/ops.pdf'
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+print('Plot saved to ' + pdf_path)
+if 'DISPLAY' in os.environ:
+	plt.show(block=False)
+
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
+hit_rate = report['get_hit_t0'] / (report['get_hit_t0'] + report['get_hit_t1'])
+plt.plot(report['secs_elapsed'], hit_rate, linewidth=0.5)
+plt.xticks(fontsize=8)
+plt.yticks(fontsize=8)
+plt.ylim(0, 1)
+plt.xlabel('Time (Seconds)', fontsize=8)
+plt.ylabel('Hit rate', fontsize=8)
+pdf_path = plot_dir + '/hit-rate.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:

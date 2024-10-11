@@ -80,7 +80,7 @@ print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show(block=False)
 
-plt.figure()
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
 ax = plt.gca()
 plt.plot(read['secs'], read['avg-lat-ns'], linewidth=0.5)
 plt.ylim(0, 1e6)
