@@ -12,7 +12,7 @@ fi
 cd "$(dirname $0)"
 workspace=$(realpath ../..)
 fd_size=10000000000
-db_bench=$workspace/rocksdb/build/db_bench
+db_bench=$workspace/hotrap/build/db_bench
 # We need about 1.2e9 keys to make the DB size 110GB.
 # But there may be overwrites, so the key space should be larger than the number of keys.
 num=2000000000
@@ -25,7 +25,7 @@ cd "$DIR"
 ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
-rm $workspace/testdb/db/* $workspace/testdb/fd/* $workspace/testdb/sd/*
+rm -r $workspace/testdb/db/* $workspace/testdb/fd/* $workspace/testdb/sd/* $workspace/testdb/viscnts/*
 time $db_bench \
 	--benchmarks=fillrandom \
 	--compression_type=none \
@@ -54,6 +54,8 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--compression_ratio=1 \
 	--use_direct_io_for_flush_and_compaction=true \
 	--use_direct_reads=true \
+	--key_dist_a=0.002312 \
+	--key_dist_b=0.3467 \
 	--keyrange_dist_a=14.18 \
 	--keyrange_dist_b=-2.917 \
 	--keyrange_dist_c=0.0164 \
@@ -63,9 +65,9 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--value_sigma=25.45 \
 	--iter_k=2.517 \
 	--iter_sigma=14.236 \
-	--mix_get_ratio=0.85 \
+	--mix_get_ratio=0.83 \
 	--mix_put_ratio=0.14 \
-	--mix_seek_ratio=0.01 \
+	--mix_seek_ratio=0.03 \
 	--sine_mix_rate_interval_milliseconds=5000 \
 	--sine_mix_rate=true \
 	--sine_a=1000 \
@@ -82,7 +84,13 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--cache_size=134217728 \
 	--max_bytes_for_level_base=$L1_size \
 	--reads=$(($num_op / 16)) \
+	--compaction_pri=5 \
+	--max_hot_set_size=5000000000 \
+	--max_ralt_size=1500000000 \
+	--ralt_path="$workspace/testdb/viscnts" \
+	--statistics=true \
 	--report_file="$DIR/report.csv" \
 	--report_interval_seconds=1 \
 	--histogram=true \
 	--report_operation_count_time=true >> log.txt
+$workspace/tests/helper/dbbench-hotrap-data.sh .
