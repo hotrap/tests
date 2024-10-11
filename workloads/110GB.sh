@@ -45,6 +45,7 @@ function run-workload {
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-rocksdb $workload rocksdb-tiered
+	run-rocksdb $workload prismdb
 	run-rocksdb $workload SAS-Cache
 	run-hotrap $workload promote-stably-hot
 done
