@@ -1,21 +1,32 @@
-cmake_rocksdb() {
+build_rocksdb() {
 	mkdir -p build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
 	#cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on -DPORTABLE=ON
 	#cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
-	cd ..
-}
-build_rocksdb() {
-	cmake_rocksdb
-	cd build
 	make -j$(nproc) rocksdb-shared
 	#make -j$(nproc) rocksdb
 	cd ..
 }
-build_db_bench() {
-	cmake_rocksdb
+build_db_bench_rocksdb() {
+	build_rocksdb
 	cd build
+	make -j$(nproc) db_bench
+	cd ..
+}
+build_db_bench_ralt() {
+	workspace=$(realpath ..)
+	mkdir -p build
+	cd build
+	cmake .. -DRALT_LIB_DIR=$workspace/RALT/build -DRALT_INCLUDE_DIR=$workspace/RALT/include
+	make -j$(nproc) db_bench
+	cd ..
+}
+build_db_bench_viscnts_splay_rs() {
+	workspace=$(realpath ..)
+	mkdir -p build
+	cd build
+	cmake .. -DRALT_LIB_DIR=$workspace/viscnts-splay-rs/target/release -DRALT_INCLUDE_DIR=$workspace/viscnts-splay-rs/include
 	make -j$(nproc) db_bench
 	cd ..
 }
