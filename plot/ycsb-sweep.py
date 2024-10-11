@@ -83,7 +83,7 @@ versions=[
         'color': plt.get_cmap('Set2')(3),
     },
     {
-        'path': 'promote-stably-hot',
+        'path': 'hotrap',
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },
@@ -108,7 +108,7 @@ for i in range(len(skewnesses)):
 json_output = io.StringIO()
 min_ratio = 1
 for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
-    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-tiered'])
+    min_ratio = min(min_ratio, version_ops['hotrap'] / version_ops['rocksdb-tiered'])
 overhead = 1 - min_ratio
 print('{\n\t\"OverheadUniformRocksdbTiered1KiB\": %f\n}' %overhead, file=json_output)
 json_output = json_output.getvalue()
@@ -117,10 +117,10 @@ open(os.path.join(dir, 'ycsb-sweep.json'), mode='w').write(json_output)
 
 def speedup_ratio_skewness(ratio, skewness):
     version_ops = skewness_ratio_version_ops[skewness][ratio]
-    hotrap_ops = version_ops['promote-stably-hot']
+    hotrap_ops = version_ops['hotrap']
     other_sys_max_ops = 0
     for (version, ops) in version_ops.items():
-        if version == 'promote-stably-hot' or version == 'rocksdb-fd':
+        if version == 'hotrap' or version == 'rocksdb-fd':
             continue
         other_sys_max_ops = max(other_sys_max_ops, ops)
     return hotrap_ops / other_sys_max_ops

@@ -43,7 +43,7 @@ versions = {
         'pattern': '\\\\\\',
         'color': plt.get_cmap('Set2')(1),
     },
-    'promote-stably-hot': {
+    'hotrap': {
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },
@@ -54,13 +54,13 @@ figs = [
         'title': '(a) hotspot-5%',
         'skewness': 'hotspot0.05',
         'ticks': [0, 4e4, 8e4, 12e4],
-        'versions': ['rocksdb-fd', 'promote-stably-hot']
+        'versions': ['rocksdb-fd', 'hotrap']
     },
     {
         'title': '(b) uniform',
         'skewness': 'uniform',
         'ticks': [0, 1e4, 2e4, 3e4],
-        'versions': ['rocksdb-tiered', 'promote-stably-hot']
+        'versions': ['rocksdb-tiered', 'hotrap']
     },
 ]
 
@@ -93,7 +93,7 @@ for fig in figs:
 json_output = io.StringIO()
 min_ratio = 1
 for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
-    min_ratio = min(min_ratio, version_ops['promote-stably-hot'] / version_ops['rocksdb-tiered'])
+    min_ratio = min(min_ratio, version_ops['hotrap'] / version_ops['rocksdb-tiered'])
 overhead = 1 - min_ratio
 print('{\n\t\"OverheadUniformRocksdbTiered200B\": %f\n}' %overhead, file=json_output)
 json_output = json_output.getvalue()

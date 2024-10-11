@@ -33,7 +33,7 @@ def calc(data_dir):
     compaction_io = compaction_bytes.iloc[-1]['read'] + compaction_bytes.iloc[-1]['write']
 
     return (promoted_by_compaction, promoted_by_flush, compaction_io)
-(hotrap_promoted_by_compaction, hotrap_promoted_by_flush, hotrap_compaction_io) = calc(os.path.join(dir, 'promote-stably-hot'))
+(hotrap_promoted_by_compaction, hotrap_promoted_by_flush, hotrap_compaction_io) = calc(os.path.join(dir, 'hotrap'))
 (nbc_promoted_by_compaction, nbc_promoted_by_flush, nbc_compaction_io) = calc(os.path.join(dir, 'no-promote-by-compaction'))
 
 tex = io.StringIO()

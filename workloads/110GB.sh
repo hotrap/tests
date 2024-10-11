@@ -35,8 +35,8 @@ function run-hotrap {
 }
 function run-workload {
 	workload=$1
-	../helper/checkout-promote-stably-hot
-	DIR=../../data/$workload/promote-stably-hot
+	../helper/checkout-hotrap
+	DIR=../../data/$workload/hotrap
 	echo Result directory: $DIR
 	./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload --switches=0x1"
 	../helper/hotrap-plot.sh $DIR
@@ -47,7 +47,7 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-tiered
 	run-rocksdb $workload prismdb
 	run-rocksdb $workload SAS-Cache
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 done
 
 run-workload "u24685531"
@@ -96,10 +96,10 @@ uniform_workloads=(
 )
 
 for workload in "${hotspot_workloads[@]}"; do
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 	run-rocksdb-fd $workload
 done
 for workload in "${uniform_workloads[@]}"; do
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 	run-rocksdb $workload rocksdb-tiered
 done

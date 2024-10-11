@@ -48,5 +48,5 @@ function run-hotrap {
 
 for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 done

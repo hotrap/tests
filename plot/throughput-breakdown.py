@@ -44,7 +44,7 @@ versions=[
     },
     {
         'name': '(c) HotRAP',
-        'path': 'promote-stably-hot',
+        'path': 'hotrap',
     },
 ]
 

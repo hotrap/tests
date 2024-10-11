@@ -42,9 +42,9 @@ for workload in "${workloads[@]}"; do
 	run-rocksdb-fd $workload
 	run-secondary-cache $workload secondary-cache
 	run-rocksdb $workload rocksdb-fat
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 done
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" promote-stably-hot
+run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" hotrap
 run-hotrap "ycsbc_uniform_11GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-promote-by-compaction

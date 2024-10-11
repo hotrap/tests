@@ -44,7 +44,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
     ]
 
     promote_stably_hot = {
-        'path': 'promote-stably-hot',
+        'path': 'hotrap',
         'colors': colors_hotrap,
     }
     rocksdb_fd = {

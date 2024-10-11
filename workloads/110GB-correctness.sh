@@ -33,7 +33,7 @@ function run-hotrap {
 for workload in "${workloads[@]}"; do
 	../helper/gen-ycsb-trace.sh ../config/$workload
 	run-rocksdb-fd $workload
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 done
 
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
@@ -54,5 +54,5 @@ workloads=(
 for workload in "${workloads[@]}"; do
 	../helper/gen-ycsb-trace.sh ../config/$workload
 	run-rocksdb-fd $workload
-	run-hotrap $workload promote-stably-hot
+	run-hotrap $workload hotrap
 done

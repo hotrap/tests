@@ -42,7 +42,7 @@ def draw_io_breakdown(dir, size, pdf_name):
         'white',
     ]
     promote_stably_hot = {
-        'path': 'promote-stably-hot',
+        'path': 'hotrap',
         'colors': colors_hotrap,
         'legend-colors': colors_hotrap,
     }
@@ -113,7 +113,7 @@ def draw_io_breakdown(dir, size, pdf_name):
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                 bottom += height
 
-                if version['path'] == 'promote-stably-hot':
+                if version['path'] == 'hotrap':
                     viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), sep='\s+')
                     viscnts_io = version_data.run_phase(viscnts_io)
                     viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]

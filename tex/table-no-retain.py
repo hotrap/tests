@@ -36,7 +36,7 @@ def calc(data_dir):
 
     return (promoted, retained, compaction_io, final_hit_rate)
 
-(hotrap_promoted, hotrap_retained, hotrap_compaction_io, hotrap_hit_rate) = calc(os.path.join(dir, 'promote-stably-hot'))
+(hotrap_promoted, hotrap_retained, hotrap_compaction_io, hotrap_hit_rate) = calc(os.path.join(dir, 'hotrap'))
 (promoted, retained, compaction_io, hit_rate) = calc(os.path.join(dir, 'no-retain'))
 
 tex = io.StringIO()

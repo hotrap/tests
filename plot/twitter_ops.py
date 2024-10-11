@@ -63,7 +63,7 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(3),
         },
         {
-            'path': 'promote-stably-hot',
+            'path': 'hotrap',
             'pattern': '///',
             'color': plt.get_cmap('Set2')(0),
         },
@@ -81,11 +81,11 @@ if __name__ == "__main__":
     max_speedup = 0
     for workload in workloads:
         version_ops = workload_version_ops[workload]
-        hotrap_ops = version_ops['promote-stably-hot']
+        hotrap_ops = version_ops['hotrap']
         other_sys_max_ops = 0
         for version in versions:
             version = version['path']
-            if version == 'promote-stably-hot' or version == 'rocksdb-fd':
+            if version == 'hotrap' or version == 'rocksdb-fd':
                 continue
             other_sys_max_ops = max(other_sys_max_ops, version_ops[version])
         assert other_sys_max_ops > 0

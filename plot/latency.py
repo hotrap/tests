@@ -66,7 +66,7 @@ versions=[
         'color': plt.get_cmap('Set2')(3),
     },
     {
-        'path': 'promote-stably-hot',
+        'path': 'hotrap',
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },

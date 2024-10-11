@@ -98,7 +98,7 @@ if __name__ == '__main__':
         markers.append(workload_marker(workload, stat_dir))
 
         workload_dir = os.path.join(dir, workload)
-        data_dir = os.path.join(workload_dir, 'promote-stably-hot')
+        data_dir = os.path.join(workload_dir, 'hotrap')
         hotrap = common.last_10p_ops(common.VersionData(data_dir))
 
         data_dir = os.path.join(workload_dir, "rocksdb-tiered")

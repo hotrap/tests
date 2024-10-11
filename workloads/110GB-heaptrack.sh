@@ -6,8 +6,8 @@ echo Result directory: $DIR
 ./test-rocksdb-fd-110GB-generic.sh ../config/$workload "$DIR" heaptrack
 heaptrack_print "$DIR"/heaptrack.rocksdb-kvexe.*.zst -p -n0 | grep "peak heap memory consumption" | cut -d" " -f5 > "$DIR"/peak-heap-memory-consumption
 
-../helper/checkout-promote-stably-hot
-DIR=../../data/$workload/promote-stably-hot-heaptrack
+../helper/checkout-hotrap
+DIR=../../data/$workload/hotrap-heaptrack
 echo Result directory: $DIR
 ./test-hotrap-110GB-generic.sh ../config/$workload "$DIR" heaptrack
 heaptrack_print "$DIR"/heaptrack.rocksdb-kvexe.*.zst -p -n0 | grep "peak heap memory consumption" | cut -d" " -f5 > "$DIR"/peak-heap-memory-consumption

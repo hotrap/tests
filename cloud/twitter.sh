@@ -127,7 +127,7 @@ while [ $i -lt $num ]; do
 	cloud-run run-rocksdb $workload SAS-Cache
 	cloud-run run-rocksdb $workload mutant
 	cloud-run run-rocksdb $workload prismdb
-	cloud-run run-hotrap $workload promote-stably-hot
+	cloud-run run-hotrap $workload hotrap
 	i=$(($i + 1))
 	running=$(($running + 1))
 	if [ $running -eq $max_concurrent ]; then

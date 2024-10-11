@@ -67,10 +67,10 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-rocksdb $workload prismdb
 	cloud-run run-rocksdb $workload SAS-Cache
-	cloud-run run-hotrap $workload promote-stably-hot
+	cloud-run run-hotrap $workload hotrap
 done
-cloud-run run-workload "u24685531" promote-stably-hot
-cloud-run run-workload "2-4-6-8" promote-stably-hot
+cloud-run run-workload "u24685531" hotrap
+cloud-run run-workload "2-4-6-8" hotrap
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
@@ -115,11 +115,11 @@ check-workload-files "${hotspot_workloads[@]}"
 check-workload-files "${uniform_workloads[@]}"
 
 for workload in "${hotspot_workloads[@]}"; do
-	cloud-run run-hotrap $workload promote-stably-hot
+	cloud-run run-hotrap $workload hotrap
 	cloud-run run-rocksdb-fd $workload rocksdb-fd
 done
 for workload in "${uniform_workloads[@]}"; do
-	cloud-run run-hotrap $workload promote-stably-hot
+	cloud-run run-hotrap $workload hotrap
 	cloud-run run-rocksdb $workload rocksdb-tiered
 done
 wait
