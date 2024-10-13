@@ -11,6 +11,8 @@ sudo apt install -y jq rsync bc hjson-go
 sudo apt install -y sysstat
 # RocksDB
 sudo apt install -y libgflags-dev
+# RALT
+sudo apt install -y libfmt-dev
 # kvexe
 sudo apt install -y liburcu-dev libboost-program-options-dev libxxhash-dev
 # iostat.sh
