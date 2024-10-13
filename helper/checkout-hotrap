@@ -10,7 +10,11 @@ git checkout main
 build_rocksdb
 
 cd ../RALT
+git checkout main
 build_ralt
+
+cd ../hotrap
+build_db_bench_ralt
 
 cd ../kvexe
 git checkout main

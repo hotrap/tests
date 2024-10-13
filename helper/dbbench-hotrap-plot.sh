@@ -5,7 +5,5 @@ if [ ! $1 ]; then
 fi
 DIR=$(realpath "$1")
 cd $(dirname $0)
-mkdir -p "$DIR"/plot/
-../plot/dbbench-report.py "$DIR" &
-../plot/dbbench-latency.py "$DIR" 10 &
+./dbbench-rocksdb-plot.sh "$DIR" &
 wait
