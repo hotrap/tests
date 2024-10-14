@@ -7,7 +7,7 @@ cd ..
 
 cd ../rocksdb
 git checkout rocksdb
-build_rocksdb
+build_db_bench_rocksdb
 
 cd ../kvexe-rocksdb
 git checkout rocksdb-tiered
