@@ -33,8 +33,8 @@ res=$(awk "{
 		exit 0
 	}
 }" num-scans)
-scan_100p=$(echo "$res" | cut -sd' ' -f1)
-hit_100p=$(echo "$res" | cut -sd' ' -f2)
+scan_90p=$(echo "$res" | cut -sd' ' -f1)
+hit_90p=$(echo "$res" | cut -sd' ' -f2)
 scan=$((scan_100p - scan_90p))
 hit=$((hit_100p - hit_90p))
 echo "$hit / $scan" | bc -l
