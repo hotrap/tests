@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -e
+
+cd $(dirname $0)
+. ./common.sh
+cd ..
+
+cd ../hotrap
+git checkout ranges-in-sst
+build_rocksdb
+
+cd ../viscnts-splay-rs
+git checkout range-scan
+build_viscnts_splay_rs
+
+cd ../kvexe
+git checkout range-scan
+build_kvexe_viscnts_splay_rs
