@@ -1,0 +1,16 @@
+recordcount=110000000
+operationcount=10000000
+workload=site.ycsb.workloads.CoreWorkload
+
+readallfields=true
+
+readproportion=0
+updateproportion=0
+scanproportion=0.95
+insertproportion=0.05
+
+requestdistribution=zipfian
+
+maxscanlength=10
+
+scanlengthdistribution=uniform
