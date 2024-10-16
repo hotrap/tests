@@ -30,6 +30,7 @@ time $db_bench \
 	--benchmarks=fillrandom \
 	--compression_type=none \
 	--compression_ratio=1 \
+	--bloom_bits=10 \
 	--use_direct_io_for_flush_and_compaction=true \
 	--use_direct_reads=true \
 	--key_size=48 \
@@ -52,6 +53,7 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--benchmarks="mixgraph" \
 	--compression_type=none \
 	--compression_ratio=1 \
+	--bloom_bits=10 \
 	--use_direct_io_for_flush_and_compaction=true \
 	--use_direct_reads=true \
 	--keyrange_dist_a=14.18 \
