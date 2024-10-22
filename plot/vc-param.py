@@ -36,7 +36,7 @@ plt.plot(time, vcsize['hot-set-size-limit'])
 plt.legend([1], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Size (Bytes)', fontdict=fonten)
-plt.title('Hot set size of viscnts')
+plt.title('Hot set size of ralt')
 plt.savefig(pdf_path)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:

@@ -12,13 +12,13 @@ cd $(dirname $0)/../../..
 ./tests/pip.sh
 
 sudo chown $USER:$USER /mnt/fd
-mkdir -p /mnt/fd/db /mnt/fd/fd /mnt/fd/viscnts
+mkdir -p /mnt/fd/db /mnt/fd/fd /mnt/fd/ralt
 
 mkdir -p testdb
 cd testdb
 ln -s /mnt/fd/db .
 ln -s /mnt/fd/fd .
-ln -s /mnt/fd/viscnts .
+ln -s /mnt/fd/ralt .
 mkdir -p sd
 cd ..
 

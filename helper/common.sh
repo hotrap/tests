@@ -53,7 +53,7 @@ build_ralt() {
 	mkdir -p build
 	cd build
 	cmake .. -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build/ $1
-	make viscnts
+	make ralt
 	cd ..
 }
 build_kvexe_viscnts_splay_rs() {

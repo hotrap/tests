@@ -23,4 +23,4 @@ find . \
 	\! -regex "\./latency-[0-9]*" \
 	-exec mv {} "$DIR" \;
 cd ..
-find viscnts/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/
+find ralt/ -mindepth 1 -maxdepth 1 -print0 | xargs -0 -r mv -t "$DIR"/

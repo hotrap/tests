@@ -17,7 +17,7 @@ kvexe_dir=$workspace/kvexe/build/
 
 fd_size=10000000000
 max_hot_set_size=5000000000
-max_viscnts_size=1500000000
+max_ralt_size=1500000000
 memtable_size=$((64 * 1024 * 1024))
 L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
 
@@ -25,5 +25,5 @@ ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
 cd $DIR
-$workspace/tests/helper/exe-while.sh . sh -c "$prefix $kvexe_dir/rocksdb-kvexe --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --max_viscnts_size=$max_viscnts_size --num_threads=16 --cache_size=134217728 --max_bytes_for_level_base=$L1_size --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts --enable_auto_tuning $extra_kvexe_args 2>> log.txt"
+$workspace/tests/helper/exe-while.sh . sh -c "$prefix $kvexe_dir/rocksdb-kvexe --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --max_ralt_size=$max_ralt_size --num_threads=16 --cache_size=134217728 --max_bytes_for_level_base=$L1_size --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,100000000000}}\" --ralt_path=$workspace/testdb/ralt --enable_auto_tuning $extra_kvexe_args 2>> log.txt"
 $workspace/tests/helper/hotrap-data.sh .

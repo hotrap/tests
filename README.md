@@ -19,7 +19,7 @@ These directories should be created in the parent directory of this repository:
 
 - `testdb/sd`: Store LSM-tree files on the slow disk. Expected to be a symbolic link to a directory on the slow disk.
 
-- `testdb/viscnts`: Store the files of RALT. Expected to be a symbolic link to a directory on the fast disk.
+- `testdb/ralt`: Store the files of RALT. Expected to be a symbolic link to a directory on the fast disk.
 
 Export environment variable `fd_dev` to be the device in iostat that is used as FD.
 

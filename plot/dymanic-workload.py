@@ -42,8 +42,8 @@ version_data = common.VersionData(data_dir)
 ax1 = plt.subplot(3, 1, 1)
 ax1.grid(axis='y')
 
-viscnts_sizes = pd.read_table(os.path.join(data_dir, 'viscnts-sizes'), sep='\s+')
-(x, real_hot_size) = common.estimate(version_data, viscnts_sizes, 'real-hot-size')
+ralt_sizes = pd.read_table(os.path.join(data_dir, 'ralt-sizes'), sep='\s+')
+(x, real_hot_size) = common.estimate(version_data, ralt_sizes, 'real-hot-size')
 real_hot_size = np.array(real_hot_size)
 
 hotspot_sizes = [[0, 0]]

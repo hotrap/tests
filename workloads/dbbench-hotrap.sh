@@ -25,7 +25,7 @@ cd "$DIR"
 ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
-rm -r $workspace/testdb/db/* $workspace/testdb/fd/* $workspace/testdb/sd/* $workspace/testdb/viscnts/*
+rm -r $workspace/testdb/db/* $workspace/testdb/fd/* $workspace/testdb/sd/* $workspace/testdb/ralt/*
 time $db_bench \
 	--benchmarks=fillrandom \
 	--compression_type=none \
@@ -89,7 +89,7 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--compaction_pri=5 \
 	--max_hot_set_size=5000000000 \
 	--max_ralt_size=1500000000 \
-	--ralt_path="$workspace/testdb/viscnts" \
+	--ralt_path="$workspace/testdb/ralt" \
 	--statistics=true \
 	--report_file="$DIR/report.csv" \
 	--report_interval_seconds=1 \

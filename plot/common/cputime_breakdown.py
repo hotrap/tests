@@ -103,7 +103,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                     bottom += height
 
-                    height = (timers['viscnts.compaction.thread.cpu.nanos'] + timers['viscnts.flush.thread.cpu.nanos'] + timers['viscnts.decay.thread.cpu.nanos']) / 1e9
+                    height = (timers['ralt.compaction.thread.cpu.nanos'] + timers['ralt.flush.thread.cpu.nanos'] + timers['ralt.decay.thread.cpu.nanos']) / 1e9
                     portion = height / cputimes
                     min_max_portion[0] = min(min_max_portion[0], portion)
                     min_max_portion[1] = max(min_max_portion[1], portion)

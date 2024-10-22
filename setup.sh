@@ -48,7 +48,7 @@ git clone --recursive git@github.com:hotrap/RALT.git
 git clone https://github.com/brianfrankcooper/YCSB.git
 
 echo Need to setup manually:
-echo 1. testdb/{db,fd,sd,viscnts}
+echo 1. testdb/{db,fd,sd,ralt}
 echo 2. export fd_dev=the device in \"iostat\" that is used as FD.
 echo 3. export sd_dev=the device in \"iostat\" that is used as SD.
 echo 4. Restart your shell to make changes take effect

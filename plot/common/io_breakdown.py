@@ -114,10 +114,10 @@ def draw_io_breakdown(dir, size, pdf_name):
                 bottom += height
 
                 if version['path'] == 'hotrap':
-                    viscnts_io = pd.read_table(os.path.join(data_dir, 'viscnts-io'), sep='\s+')
-                    viscnts_io = version_data.run_phase(viscnts_io)
-                    viscnts_io = viscnts_io.iloc[-1] - viscnts_io.iloc[0]
-                    height = (viscnts_io['read'] + viscnts_io['write']) / 1e12
+                    ralt_io = pd.read_table(os.path.join(data_dir, 'ralt-io'), sep='\s+')
+                    ralt_io = version_data.run_phase(ralt)
+                    ralt_io = ralt_io.iloc[-1] - ralt_io.iloc[0]
+                    height = (ralt_io['read'] + ralt_io['write']) / 1e12
                     portion = height / device_io
                     min_max_portion[0] = min(min_max_portion[0], portion)
                     min_max_portion[1] = max(min_max_portion[1], portion)

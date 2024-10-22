@@ -33,13 +33,13 @@ test_hotrap() {
 
 	fd_size=10000000000
 	max_hot_set_size=5500000000
-	max_viscnts_size=500000000
+	max_ralt_size=500000000
 	memtable_size=$((64 * 1024 * 1024))
-	L1_size=$((($fd_size - $max_viscnts_size) / 12 / $memtable_size * $memtable_size))
+	L1_size=$((($fd_size - $max_ralt_size) / 12 / $memtable_size * $memtable_size))
 
 	ulimit -n 100000
 	cd $DIR
-	$workspace/tests/helper/exe-while.sh . sh -c "$kvexe_dir/rocksdb-kvexe --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --max_viscnts_size=$max_viscnts_size --num_threads=16 --block_size=16384 --cache_size=134217728 --max_bytes_for_level_base=$L1_size --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,100000000000}}\" --viscnts_path=$workspace/testdb/viscnts --enable_fast_generator --workload_file=$workload_file --switches=0x1 2>> log.txt"
+	$workspace/tests/helper/exe-while.sh . sh -c "$kvexe_dir/rocksdb-kvexe --compaction_pri=5 --max_hot_set_size=$max_hot_set_size --max_ralt_size=$max_ralt_size --num_threads=16 --block_size=16384 --cache_size=134217728 --max_bytes_for_level_base=$L1_size --db_path=$workspace/testdb/db/ --db_paths=\"{{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,100000000000}}\" --ralt_path=$workspace/testdb/ralt --enable_fast_generator --workload_file=$workload_file --switches=0x1 2>> log.txt"
 	$workspace/tests/helper/hotrap-data.sh .
 	cd - > /dev/null
 }
