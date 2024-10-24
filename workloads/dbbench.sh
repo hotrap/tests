@@ -5,10 +5,12 @@ function run-rocksdb {
 	../helper/dbbench-rocksdb-plot.sh "$DIR"
 }
 function run-hotrap {
-	../helper/checkout-hotrap
-	DIR=../../data/mixgraph/hotrap
+	../helper/checkout-$1
+	DIR=../../data/mixgraph/$1
 	./dbbench-hotrap.sh "$DIR"
 	../helper/dbbench-hotrap-plot.sh "$DIR"
 }
 run-rocksdb
-run-hotrap
+run-hotrap hotrap
+run-hotrap range-scan
+run-hotrap range-scan-splay
