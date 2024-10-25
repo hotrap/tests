@@ -27,8 +27,6 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
-
 read = pd.read_table(os.path.join(data_dir, 'read-count-time'), sep='\s+')
 write = pd.read_table(os.path.join(data_dir, 'write-count-time'), sep='\s+')
 seek = pd.read_table(os.path.join(data_dir, 'seek-count-time'), sep='\s+')
@@ -56,6 +54,31 @@ read = mean_every_n(read, mean_step)
 write = mean_every_n(write, mean_step)
 seek = mean_every_n(seek, mean_step)
 
+plot_dir = data_dir + '/plot'
+if not os.path.exists(plot_dir):
+    os.system('mkdir -p ' + plot_dir)
+
+def op_latency(data, name):
+    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
+    ax = plt.gca()
+    plt.plot(data['secs'], data['avg-lat-ns'], linewidth=0.5)
+    data = data['avg-lat-ns']
+    plt.ylim(0, data[0:len(data) // 100].mean() * 2)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
+    plt.xlabel('Time (Seconds)', fontsize=8)
+    plt.ylabel('Average latency (ns)', fontsize=8)
+
+    pdf_path = plot_dir + '/latency-' + name + '.pdf'
+    plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+    print('Plot saved to ' + pdf_path)
+    if 'DISPLAY' in os.environ:
+        plt.show(block=False)
+
+op_latency(read, 'read')
+op_latency(seek, 'seek')
+
+fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
 ax = plt.gca()
 formatter = ScalarFormatter(useMathText=True)
 formatter.set_powerlimits((-3, 4))
@@ -71,26 +94,8 @@ plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Average latency (ns)', fontsize=8)
 plt.legend(['read', 'write', 'seek'], fontsize=8)
 
-plot_dir = data_dir + '/plot'
-if not os.path.exists(plot_dir):
-    os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/latency.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show(block=False)
-
-fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
-ax = plt.gca()
-plt.plot(read['secs'], read['avg-lat-ns'], linewidth=0.5)
-plt.ylim(0, 1e6)
-plt.xticks(fontsize=8)
-plt.yticks(fontsize=8)
-plt.xlabel('Time (Seconds)', fontsize=8)
-plt.ylabel('Average latency (ns)', fontsize=8)
-
-pdf_path = plot_dir + '/latency-read.pdf'
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
-print('Plot saved to ' + pdf_path)
-if 'DISPLAY' in os.environ:
-    plt.show()
