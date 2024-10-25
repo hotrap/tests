@@ -6,6 +6,8 @@ fi
 DIR=$(realpath "$1")
 cd $(dirname $0)
 mkdir -p "$DIR"/plot/
+../plot/tps.py $DIR 10 &
+../plot/throughput.py $DIR 50 &
 ../plot/dbbench-report.py "$DIR" &
 ../plot/dbbench-latency.py "$DIR" 10 &
 wait
