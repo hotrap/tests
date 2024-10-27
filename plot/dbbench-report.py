@@ -54,7 +54,7 @@ if 'DISPLAY' in os.environ:
 	plt.show(block=False)
 
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
-hit_rate = report['get_hit_t0'] / (report['get_hit_t0'] + report['get_hit_t1'])
+hit_rate = report['rocksdb.t0.hit'] / (report['rocksdb.t0.hit'] + report['rocksdb.t1.hit'])
 plt.plot(report['secs_elapsed'], hit_rate, linewidth=0.5)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
