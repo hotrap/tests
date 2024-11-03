@@ -13,6 +13,9 @@ cd ../viscnts-splay-rs
 git checkout main
 build_viscnts_splay_rs
 
+cd ../hotrap
+build_db_bench_viscnts_splay_rs
+
 cd ../kvexe
 git checkout main
 build_kvexe_viscnts_splay_rs
