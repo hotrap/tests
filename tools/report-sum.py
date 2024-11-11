@@ -3,6 +3,7 @@
 import pandas as pd
 
 fields = [
+    'interval_qps',
     'rocksdb.t0.hit',
     'rocksdb.t1.hit',
     'hotrap.promoted.flush.bytes',
@@ -11,8 +12,8 @@ fields = [
     'hotrap.retained.bytes',
     'hotrap.accessed.cold.bytes',
     'hotrap.has_newer_version.bytes',
-    'hotrap.scan.hit.l0',
-    'hotrap.scan.hit.l1',
+    'hotrap.scan.hit.t0',
+    'hotrap.scan.hit.t1',
 ]
 report = pd.read_table('report.csv', sep=',')
 for field in fields:
