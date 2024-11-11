@@ -30,7 +30,7 @@ fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(
 
 report = pd.read_table(os.path.join(data_dir, 'report.csv'), sep=',')
 # It seems that the ops of the first several seconds is not limited.
-report = report.iloc[10:]
+report = report.iloc[20:]
 
 ax = plt.gca()
 formatter = ScalarFormatter(useMathText=True)
@@ -50,9 +50,9 @@ if not os.path.exists(plot_dir):
 pdf_path = plot_dir + '/ops.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
+
 if 'DISPLAY' in os.environ:
 	plt.show(block=False)
-
 fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
 hit_rate = report['rocksdb.t0.hit'] / (report['rocksdb.t0.hit'] + report['rocksdb.t1.hit'])
 plt.plot(report['secs_elapsed'], hit_rate, linewidth=0.5)
@@ -64,5 +64,21 @@ plt.ylabel('Hit rate', fontsize=8)
 pdf_path = plot_dir + '/hit-rate.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
+
+if 'hotrap.scan.hit.t0' in report:
+    if 'DISPLAY' in os.environ:
+        plt.show(block=False)
+    fig = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(5)), constrained_layout=True)
+    hit_rate = report['hotrap.scan.hit.t0'] / (report['hotrap.scan.hit.t0'] + report['hotrap.scan.hit.t1'])
+    plt.plot(report['secs_elapsed'], hit_rate, linewidth=0.5)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
+    plt.ylim(0, 1)
+    plt.xlabel('Time (Seconds)', fontsize=8)
+    plt.ylabel('Range tit rate', fontsize=8)
+    pdf_path = plot_dir + '/range-hit-rate.pdf'
+    plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+    print('Plot saved to ' + pdf_path)
+
 if 'DISPLAY' in os.environ:
 	plt.show()
