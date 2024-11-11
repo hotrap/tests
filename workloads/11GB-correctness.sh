@@ -17,7 +17,7 @@ function run-rocksdb-fd {
 	DIR=../../data/$1/rocksdb-fd-correctness
 	echo Result directory: $DIR
 	prefix=../../YCSB-traces/$1
-	./test-rocksdb-fd-11GB-replay.sh $prefix $DIR "--export_ans_xxh64 $2"
+	./test-rocksdb-fd-replay.sh 11GB $prefix $DIR "--export_ans_xxh64 $2"
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
 function run-hotrap {
