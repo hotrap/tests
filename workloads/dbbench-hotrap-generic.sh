@@ -54,6 +54,7 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--compression_type=none \
 	--compression_ratio=1 \
 	--bloom_bits=10 \
+	--ttl_seconds=0 \
 	--use_direct_io_for_flush_and_compaction=true \
 	--use_direct_reads=true \
 	--key_dist_a=0.002312 \
