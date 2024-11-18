@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-if [ $# -lt 1 -o $# -gt 1 ]; then
-	echo Usage: $0 output-dir
+if [ $# -lt 2 -o $# -gt 3 ]; then
+	echo Usage: $0 output-dir num-op [prefix]
 	exit 1
 fi
 mkdir -p "$1"
@@ -9,6 +9,8 @@ if [ "$(ls -A $DIR)" ]; then
 	echo "$1" is not empty!
 	exit 1
 fi
+num_op="$2"
+prefix="$3"
 cd "$(dirname $0)"
 workspace=$(realpath ../..)
 fd_size=10000000000
@@ -16,7 +18,6 @@ db_bench=$workspace/rocksdb/build/db_bench
 # We need about 1.2e9 keys to make the DB size 110GB.
 # But there may be overwrites, so the key space should be larger than the number of keys.
 num=2000000000
-num_op=420000000
 
 memtable_size=$((64 * 1024 * 1024))
 L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
@@ -48,9 +49,9 @@ $db_bench \
 	--compression_type=none \
 	--db="$workspace/testdb/db" \
 	--db_paths="[{$workspace/testdb/fd,10000000000},{$workspace/testdb/sd,1000000000000}]" > levelstats-load-finish 2>&1
-$workspace/tests/helper/exe-while.sh . $db_bench \
+$workspace/tests/helper/exe-while.sh . sh -c "$prefix $db_bench \
 	--use_existing_db=true \
-	--benchmarks="mixgraph" \
+	--benchmarks=\"mixgraph\" \
 	--compression_type=none \
 	--compression_ratio=1 \
 	--bloom_bits=10 \
@@ -73,8 +74,8 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--sine_d=10000000 \
 	--perf_level=2 \
 	--key_size=48 \
-	--db="$workspace/testdb/db" \
-	--db_paths="[{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}]" \
+	--db=\"$workspace/testdb/db\" \
+	--db_paths=\"[{$workspace/testdb/fd,$fd_size},{$workspace/testdb/sd,1000000000000}]\" \
 	--num=$num \
 	--threads=16 \
 	--max_background_jobs=6 \
@@ -83,8 +84,8 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--max_bytes_for_level_base=$L1_size \
 	--reads=$(($num_op / 16)) \
 	--statistics=true \
-	--report_file="$DIR/report.csv" \
+	--report_file=\"$DIR/report.csv\" \
 	--report_interval_seconds=1 \
 	--histogram=true \
-	--report_operation_count_time=true >> log.txt
+	--report_operation_count_time=true >> log.txt"
 $workspace/tests/helper/dbbench-rocksdb-data.sh .
