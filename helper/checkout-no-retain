@@ -10,6 +10,7 @@ git checkout no-retain
 build_rocksdb
 
 cd ../RALT
+git checkout main
 build_ralt
 
 cd ../kvexe

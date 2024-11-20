@@ -10,6 +10,7 @@ git checkout no-promote-by-compaction
 build_rocksdb
 
 cd ../RALT
+git checkout main
 build_ralt
 
 cd ../kvexe
