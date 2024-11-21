@@ -5,7 +5,12 @@ if [ ! $1 ]; then
 fi
 mydir=$(dirname "$0")
 DIR=$(realpath "$1")
-cd "$mydir/../../testdb/db"
+db_dir="$mydir/../../testdb/db"
+if [ ! -d "$db_dir" ]; then
+	echo "$db_dir doesn't exist"
+	exit 1
+fi
+cd "$db_dir"
 "$mydir"/save-common-data.sh . $DIR
 if [ -f occurrences ]; then
 	sort -nk2 -r occurrences > occurrences_sorted_by_count
