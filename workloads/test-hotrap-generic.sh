@@ -6,7 +6,7 @@ fi
 max_hot_set_size=$(humanfriendly --parse-size="$1")
 max_ralt_size=$(humanfriendly --parse-size="$2")
 workspace=$(realpath "$(dirname $0)"/../..)
-$(dirname $0)/kvexe.sh "$7 $workspace/kvexe/build/rocksdb-kvexe" "$3" "$4" "$5" "$6" \
+$(dirname $0)/kvexe-tiered-generic.sh "$7 $workspace/kvexe/build/rocksdb-kvexe" "$3" "$4" "$5" "$6" \
 	"--compaction_pri=5 \
 --max_hot_set_size=$max_hot_set_size \
 --max_ralt_size=$max_ralt_size \
