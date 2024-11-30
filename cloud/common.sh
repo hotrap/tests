@@ -69,9 +69,21 @@ function run-with-instance {
 }
 
 function cloud-run {
+	if [ ! "$max_running_instances" ]; then
+		echo "max_running_instances not set!"
+		return 1
+	fi
 	if [[ $# < 3 ]]; then
 		echo Usage: $0 command-to-run workload version other-arguments. workload, version, instance-ip, and other arguments will be passed to \"command-to-run\" as arguments.
 		return 1
+	fi
+
+	if [ ! "$num_running_instances" ]; then
+		num_running_instances=1
+	elif [ "$num_running_instances" -lt "$max_running_instances" ]; then
+		num_running_instances=$(("$num_running_instances" + 1))
+	else
+		wait -n
 	fi
 
 	# Don't Create instance inside subprocess, otherwise the instance names are likely to collide

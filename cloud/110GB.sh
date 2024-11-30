@@ -1,9 +1,10 @@
-if [[ $# != 2 ]]; then
-	echo Usage: $0 config-file output-dir
+if [[ $# != 3 ]]; then
+	echo Usage: $0 config-file output-dir max-running-instances
 	exit 1
 fi
 config_file=$(realpath $1)
 output_dir=$(realpath $2)
+max_running_instances=$3
 user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
