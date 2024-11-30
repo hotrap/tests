@@ -15,38 +15,44 @@ fi
 function cloud-run-bg {
 	instance_id=$1
 	echo ${@:2} with instance $instance_id
-	if [ "$vendor" == "aliyun" ]; then
-		./aliyun/start.py $config_file $instance_id
-	else
-		./aws/start.py $instance_id
-	fi
-	if [ "$vendor" == "aliyun" ]; then
-		IP=$(./aliyun/ip.py $config_file $instance_id)
-	else
-		IP=$(./aws/ip.py $instance_id)
-	fi
-
-	# https://unix.stackexchange.com/questions/33271/how-to-avoid-ssh-asking-permission
-	while ! ssh $user@$IP -o StrictHostKeyChecking=accept-new "true"; do
-		# https://stackoverflow.com/questions/21383806/how-can-i-force-ssh-to-accept-a-new-host-fingerprint-from-the-command-line
-		ssh-keygen -R $IP
-		sleep 1
-	done
-	ssh $user@$IP "sudo apt update"
-	ssh $user@$IP "sh -s" -- < ../apt.sh
-	rsync -zrpL --partial -e ssh .. $user@$IP:~/tests --exclude='target'
-	ssh $user@$IP "./tests/cloud/helper/$vendor.sh"
-	ssh $user@$IP "./tests/cloud/helper/cloud.sh"
-
-	ssh $user@$IP -o ServerAliveInterval=60 "rm -rf data/$3/$4"
-
-	$2 $3 $4 $IP ${@:5}
 
 	if [ "$vendor" == "aliyun" ]; then
-		./aliyun/delete.py $config_file $instance_id
+		command="./aliyun/delete.py $config_file $instance_id"
 	else
-		./aws/delete.py $instance_id
+		command="./aws/delete.py $instance_id"
 	fi
+	(
+		trap "pkill -P $BASHPID; echo $command; $command" EXIT
+		(
+			if [ "$vendor" == "aliyun" ]; then
+				./aliyun/start.py $config_file $instance_id
+			else
+				./aws/start.py $instance_id
+			fi
+			if [ "$vendor" == "aliyun" ]; then
+				IP=$(./aliyun/ip.py $config_file $instance_id)
+			else
+				IP=$(./aws/ip.py $instance_id)
+			fi
+
+			# https://unix.stackexchange.com/questions/33271/how-to-avoid-ssh-asking-permission
+			while ! ssh $user@$IP -o StrictHostKeyChecking=accept-new "true"; do
+				# https://stackoverflow.com/questions/21383806/how-can-i-force-ssh-to-accept-a-new-host-fingerprint-from-the-command-line
+				ssh-keygen -R $IP
+				sleep 1
+			done
+			ssh $user@$IP "sudo apt update"
+			ssh $user@$IP "sh -s" -- < ../apt.sh
+			rsync -zrpL --partial -e ssh .. $user@$IP:~/tests --exclude='target'
+			ssh $user@$IP "./tests/cloud/helper/$vendor.sh"
+			ssh $user@$IP "./tests/cloud/helper/cloud.sh"
+
+			ssh $user@$IP -o ServerAliveInterval=60 "rm -rf data/$3/$4"
+
+			$2 $3 $4 $IP ${@:5}
+	 	) &
+		wait
+	)
 }
 
 function run-with-instance {
