@@ -26,7 +26,7 @@ build_db_bench_viscnts_splay_rs() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DRALT_LIB_DIR=$workspace/viscnts-splay-rs/target/release -DRALT_INCLUDE_DIR=$workspace/viscnts-splay-rs/include
+	cmake .. -DRALT_LIB_DIR=$workspace/viscnts-splay-rs/target/release-with-debug -DRALT_INCLUDE_DIR=$workspace/viscnts-splay-rs/include
 	make -j$(nproc) db_bench
 	cd ..
 }
@@ -46,7 +46,7 @@ build_sas() {
 
 build_viscnts_splay_rs() {
 	workspace=$(realpath ..)
-	make ROCKSDB_INCLUDE=$workspace/hotrap/include
+	make shared_lib_relwithdeb ROCKSDB_INCLUDE=$workspace/hotrap/include
 }
 build_ralt() {
 	workspace=$(realpath ..)
@@ -60,7 +60,7 @@ build_kvexe_viscnts_splay_rs() {
 	mkdir -p build
 	cd build
 	workspace=$(realpath ../..)
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/hotrap/include -DROCKSDB_LIB_DIR=$workspace/hotrap/build -DRALT_INCLUDE_DIR=$workspace/viscnts-splay-rs/include -DRALT_LIB_DIR=$workspace/viscnts-splay-rs/target/release
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/hotrap/include -DROCKSDB_LIB_DIR=$workspace/hotrap/build -DRALT_INCLUDE_DIR=$workspace/viscnts-splay-rs/include -DRALT_LIB_DIR=$workspace/viscnts-splay-rs/target/release-with-debug
 	make
 	cd ..
 }
