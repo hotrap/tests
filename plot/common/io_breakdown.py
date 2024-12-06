@@ -115,7 +115,7 @@ def draw_io_breakdown(dir, size, pdf_name):
 
                 if version['path'] == 'hotrap':
                     ralt_io = pd.read_table(os.path.join(data_dir, 'ralt-io'), sep='\s+')
-                    ralt_io = version_data.run_phase(ralt)
+                    ralt_io = version_data.run_phase(ralt_io)
                     ralt_io = ralt_io.iloc[-1] - ralt_io.iloc[0]
                     height = (ralt_io['read'] + ralt_io['write']) / 1e12
                     portion = height / device_io
