@@ -22,33 +22,12 @@ num=2000000000
 memtable_size=$((64 * 1024 * 1024))
 L1_size=$(($fd_size / 12 / $memtable_size * $memtable_size))
 
+time ./dbbench-load.sh $db_bench "$DIR"
+
 cd "$DIR"
 ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
-rm $workspace/testdb/db/* $workspace/testdb/fd/* $workspace/testdb/sd/*
-time $db_bench \
-	--benchmarks=fillrandom \
-	--compression_type=none \
-	--compression_ratio=1 \
-	--bloom_bits=10 \
-	--use_direct_io_for_flush_and_compaction=true \
-	--use_direct_reads=true \
-	--key_size=48 \
-	--value_size=43 \
-	--db="$workspace/testdb/db" \
-	--db_paths="[{$workspace/testdb/fd,10000000000},{$workspace/testdb/sd,1000000000000}]" \
-	--max_background_jobs=6 \
-	--block_size=16384 \
-	--cache_size=134217728 \
-	--max_bytes_for_level_base=$L1_size \
-	--num=$num
-$db_bench \
-	--use_existing_db=true \
-	--benchmarks=levelstats \
-	--compression_type=none \
-	--db="$workspace/testdb/db" \
-	--db_paths="[{$workspace/testdb/fd,10000000000},{$workspace/testdb/sd,1000000000000}]" > levelstats-load-finish 2>&1
 $workspace/tests/helper/exe-while.sh . sh -c "$prefix $db_bench \
 	--use_existing_db=true \
 	--benchmarks=\"mixgraph\" \
