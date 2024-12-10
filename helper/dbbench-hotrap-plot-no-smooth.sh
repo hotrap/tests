@@ -5,5 +5,5 @@ if [ ! $1 ]; then
 fi
 DIR=$(realpath "$1")
 cd $(dirname $0)
-./dbbench-1e7-rocksdb-plot.sh "$DIR" &
+./dbbench-rocksdb-plot-no-smooth.sh "$DIR" &
 wait
