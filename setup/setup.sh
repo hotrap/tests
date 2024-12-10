@@ -1,14 +1,7 @@
 #!/usr/bin/env sh
+cd "$(dirname $0)"
 
-tmp=$(mktemp)
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf > $tmp
-sh $tmp -y
-rm $tmp
-. ~/.cargo/env
-
-cargo install huniq
-
-cd helper
+cd ../helper
 make
 cd ..
 cd simulations

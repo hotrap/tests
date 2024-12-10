@@ -21,9 +21,3 @@ ln -s /mnt/fd/fd .
 ln -s /mnt/fd/ralt .
 mkdir -p sd
 cd ..
-
-tmp=$(mktemp)
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf > $tmp
-sh $tmp -y
-rm $tmp
-. ~/.cargo/env

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+$(dirname $0)/../../setup/rustup.sh
+
 sudo mkfs.ext4 /dev/nvme1n1    
 sudo mkdir /mnt/fd    
 sudo mount /dev/nvme1n1 /mnt/fd
