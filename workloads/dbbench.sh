@@ -12,5 +12,6 @@ function run-hotrap {
 }
 run-rocksdb
 run-hotrap hotrap
+run-hotrap viscnts-splay-rs
 run-hotrap range-scan
 run-hotrap range-scan-splay
