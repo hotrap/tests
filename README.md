@@ -43,14 +43,14 @@ echo "source ~/.venvs/base/bin/activate" >> ~/.profile
 
 Then `pip.sh` should work fine.
 
-### rust
+### Rust
 
 ```shell
 ./rustup.sh
 . ~/.cargo/env
 ```
 
-Chinese users may prefer installing rust with `rsproxy.cn`:
+Chinese users may prefer installing Rust with `rsproxy.cn`:
 
 ```shell
 ./rustup-cn.sh
