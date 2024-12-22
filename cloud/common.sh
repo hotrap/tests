@@ -42,7 +42,7 @@ function cloud-run-bg {
 				sleep 1
 			done
 			ssh $user@$IP "sudo apt update"
-			ssh $user@$IP "sh -s" -- < ../apt.sh
+			ssh $user@$IP "sh -s" -- < ../setup/apt.sh
 			rsync -zrpL --partial -e ssh .. $user@$IP:~/tests --exclude='target'
 			ssh $user@$IP "./tests/cloud/helper/$vendor.sh"
 			ssh $user@$IP "./tests/cloud/helper/cloud.sh"

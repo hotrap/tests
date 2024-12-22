@@ -9,7 +9,7 @@ echo ". ~/.venvs/base/bin/activate" >> ~/.profile
 . ~/.venvs/base/bin/activate
 
 cd $(dirname $0)/../../..
-./tests/pip.sh
+./tests/setup/pip.sh
 
 sudo chown $USER:$USER /mnt/fd
 mkdir -p /mnt/fd/db /mnt/fd/fd /mnt/fd/ralt
