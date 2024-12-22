@@ -9,10 +9,10 @@ function run-hotrap {
 workloads=(
 	"read_0.75_insert_0.25_hotspot0.05_1.1TB_2.2TB"
 	"ycsbc_hotspot0.05_1.1TB_2.2TB"
-	"read_0.75_insert_0.25_zipfian_1.1TB"
-	"ycsbc_zipfian_1.1TB"
-	"read_0.75_insert_0.25_uniform_1.1TB"
-	"ycsbc_uniform_1.1TB"
+	"read_0.75_insert_0.25_zipfian_1.1TB_2.2TB"
+	"ycsbc_zipfian_1.1TB_2.2TB"
+	"read_0.75_insert_0.25_uniform_1.1TB_2.2TB"
+	"ycsbc_uniform_1.1TB_2.2TB"
 )
 
 for workload in "${workloads[@]}"; do
