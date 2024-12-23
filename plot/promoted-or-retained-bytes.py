@@ -38,17 +38,18 @@ num_bytes = pd.read_table(data_dir + '/promoted-or-retained-bytes', sep='\s+')
 num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
 time = (num_bytes['Timestamp(ns)'] - info['run-start-timestamp(ns)']) / 1e9
 
-assert num_bytes['2sdfront'].max() == 0
 ax = plt.gca()
 markevery = int(len(time) / num_marks)
-plt.plot(time, num_bytes['2fdlast'], linewidth=0.5, marker='^', markersize=markersize, markevery=markevery)
 plt.plot(time, num_bytes['by-flush'], linewidth=0.5, marker='o', markersize=markersize, markevery=markevery)
-plt.plot(time, num_bytes['retained'], linewidth=0.5, marker='s', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['2fdlast'], linewidth=0.5, marker='^', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['2sdfront'], linewidth=0.5, marker='^', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['retained.fd'], linewidth=0.5, marker='s', markersize=markersize, markevery=markevery)
+plt.plot(time, num_bytes['retained.sd'], linewidth=0.5, marker='s', markersize=markersize, markevery=markevery)
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
 ax.ticklabel_format(useMathText=True)
 ax.yaxis.get_offset_text().set_fontsize(8)
-plt.legend(['By compaction', 'By flush', 'Retained'], frameon=False, fontsize=8, loc=(0, 0.55))
+plt.legend(['By flush', '2fdlast', '2sdfront', 'retained.fd', 'retained.sd'], frameon=False, fontsize=8, loc=(0, 0.55))
 plt.xlabel('Time (Seconds)', fontsize=8)
 plt.ylabel('Promoted/retained bytes', fontsize=8)
 plt.tight_layout()
