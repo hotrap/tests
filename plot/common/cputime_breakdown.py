@@ -96,7 +96,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[2], color=version['colors'][2], edgecolor='black', linewidth=0.5)
                 bottom += height
                 if version_idx == 1:
-                    first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
+                    first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-last-tier')).read())
                     checker = pd.read_table(os.path.join(data_dir, 'checker-' + str(first_level_in_sd - 1) + '-cputime'), sep='\s+')
                     checker = version_data.run_phase(checker)
                     height = (checker.iloc[-1] - checker.iloc[0])['cputime(ns)'] / 1e9

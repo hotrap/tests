@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let data_dir = std::path::PathBuf::from(args.next().unwrap());
 
     let mut first_level_in_sd =
-        File::open(data_dir.join("first-level-in-sd")).unwrap();
+        File::open(data_dir.join("first-level-in-last-tier")).unwrap();
     let mut buf = String::new();
     first_level_in_sd.read_to_string(&mut buf).unwrap();
     let first_level_in_sd: usize = buf.trim().parse().unwrap();

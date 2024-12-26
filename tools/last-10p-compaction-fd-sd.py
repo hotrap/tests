@@ -7,7 +7,7 @@ import common
 
 import json5
 
-first_level_in_sd = int(open(os.path.join('first-level-in-sd')).read())
+first_level_in_sd = int(open(os.path.join('first-level-in-last-tier')).read())
 d = common.VersionData('.')
 compaction_bytes = common.read_compaction_bytes_fd_sd('.', first_level_in_sd)
 compaction_bytes = compaction_bytes[compaction_bytes['Timestamp(ns)'] > d.ts_run_90p()]

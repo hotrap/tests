@@ -73,7 +73,7 @@ def draw_io_breakdown(dir, size, pdf_name):
                 data_dir = os.path.join(workload_dir, version['path'])
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
                 version_data = common.VersionData(data_dir)
-                first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
+                first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-last-tier')).read())
                 def run_time_io_kB(fname):
                     iostat = pd.read_table(os.path.join(data_dir, fname), sep='\s+')
                     iostat = version_data.run_phase(iostat)

@@ -31,7 +31,7 @@ class MulticolorPatchHandler(object):
         return ret
 
 def read_hit_rates(data_dir):
-    first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-sd')).read())
+    first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-last-tier')).read())
     last_tier0 = 0
     last_total = 0
     hit_rates = []

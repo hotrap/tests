@@ -27,7 +27,7 @@ mpl.rcParams.update({
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
-first_level_in_sd = int(open(data_dir + '/first-level-in-sd').read())
+first_level_in_sd = int(open(data_dir + '/first-level-in-last-tier').read())
 info = os.path.join(data_dir, 'info.json')
 info = json5.load(open(info))
 
