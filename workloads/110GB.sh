@@ -28,9 +28,14 @@ function run-rocksdb {
 }
 function run-hotrap {
 	../helper/checkout-$2
-	DIR=../../data/$1/$2
+	if [ "$3" ]; then
+		version=$3
+	else
+		version=$2
+	fi
+	DIR="../../data/$1/$version"
 	echo Result directory: $DIR
-	./test-hotrap-110GB.sh ../config/$1 $DIR "$3"
+	./test-hotrap-110GB.sh ../config/$1 $DIR "$4"
 	../helper/hotrap-plot.sh $DIR
 }
 function run-workload {
