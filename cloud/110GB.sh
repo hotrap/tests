@@ -10,16 +10,16 @@ cd $(dirname $0)
 
 . ./common.sh
 
-function run-rocksdb-fd {
+function run-rocksdb {
 	workload=$1
 	version=$2
 	IP=$3
 	./checkout-rocksdb $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-rocksdb-fd-110GB.sh ../config/$workload ../../data/$workload/$version"
+	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-110GB.sh ../config/$workload ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
 }
-function run-rocksdb {
+function run-version {
 	workload=$1
 	version=$2
 	IP=$3
@@ -64,10 +64,10 @@ workloads=(
 check-workload-files "${workloads[@]}"
 
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb-fd $workload rocksdb-fd
+	cloud-run run-rocksdb $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-tiered
-	cloud-run run-rocksdb $workload prismdb
-	cloud-run run-rocksdb $workload SAS-Cache
+	cloud-run run-version $workload prismdb
+	cloud-run run-version $workload SAS-Cache
 	cloud-run run-hotrap $workload hotrap
 done
 cloud-run run-workload "u24685531" hotrap
@@ -87,7 +87,7 @@ workloads=(
 	"ycsbc_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload mutant
+	cloud-run run-version $workload mutant
 done
 
 workloads=(
@@ -97,7 +97,7 @@ workloads=(
 	"ycsba_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload mutant "--run_90p_ops=10000"
+	cloud-run run-version $workload mutant "--run_90p_ops=10000"
 done
 
 hotspot_workloads=(
@@ -117,7 +117,7 @@ check-workload-files "${uniform_workloads[@]}"
 
 for workload in "${hotspot_workloads[@]}"; do
 	cloud-run run-hotrap $workload hotrap
-	cloud-run run-rocksdb-fd $workload rocksdb-fd
+	cloud-run run-rocksdb $workload rocksdb-fd
 done
 for workload in "${uniform_workloads[@]}"; do
 	cloud-run run-hotrap $workload hotrap

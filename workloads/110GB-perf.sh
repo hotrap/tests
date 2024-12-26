@@ -1,8 +1,8 @@
-function run-rocksdb-fd {
+function run-rocksdb {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd-perf
+	DIR=../../data/$1/$2-perf
 	echo Result directory: $DIR
-	./test-rocksdb-fd-110GB-perf.sh ../config/$1 $DIR "$2"
+	./test-$2-110GB-perf.sh ../config/$1 $DIR "$3"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -18,6 +18,6 @@ hotspot_workloads=(
 )
 
 for workload in "${hotspot_workloads[@]}"; do
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 done

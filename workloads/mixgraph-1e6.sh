@@ -1,5 +1,5 @@
 function run-rocksdb {
-	../helper/checkout-rocksdb-tiered
+	../helper/checkout-rocksdb
 	DIR=../../data/mixgraph-1e6/rocksdb-tiered
 	./mixgraph-rocksdb-tiered-generic.sh "$DIR" 1000000
 	../helper/dbbench-rocksdb-plot-no-smooth.sh "$DIR"

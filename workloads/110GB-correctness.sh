@@ -12,12 +12,12 @@ workloads=(
 	"ycsba_uniform_110GB_220GB"
 	"ycsbc_uniform_110GB_220GB"
 )
-function run-rocksdb-fd {
+function run-rocksdb {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd-correctness
+	DIR=../../data/$1/$2-correctness
 	echo Result directory: $DIR
 	prefix=../../YCSB-traces/$1
-	./test-rocksdb-fd-110GB-replay.sh $prefix $DIR "--export_ans_xxh64 $2"
+	./test-$2-110GB-replay.sh $prefix $DIR "--export_ans_xxh64 $3"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -32,7 +32,7 @@ function run-hotrap {
 
 for workload in "${workloads[@]}"; do
 	../helper/gen-ycsb-trace.sh ../config/$workload
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 done
 
@@ -53,6 +53,6 @@ workloads=(
 
 for workload in "${workloads[@]}"; do
 	../helper/gen-ycsb-trace.sh ../config/$workload
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 done

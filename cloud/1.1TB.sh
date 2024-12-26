@@ -10,20 +10,11 @@ cd $(dirname $0)
 
 . ./common.sh
 
-function run-rocksdb-fd {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-rocksdb $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-1.1TB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
-}
 function run-rocksdb {
 	workload=$1
 	version=$2
 	IP=$3
-	./checkout-$version $user $IP
+	./checkout-rocksdb $user $IP
 	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-1.1TB.sh ../config/$workload ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 	../helper/rocksdb-plot.sh $output_dir/$workload/$version
@@ -48,7 +39,7 @@ workloads=(
 check-workload-files "${workloads[@]}"
 
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb-fd $workload rocksdb-fd
+	cloud-run run-rocksdb $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-hotrap $workload hotrap
 done

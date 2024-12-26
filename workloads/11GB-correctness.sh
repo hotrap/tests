@@ -12,12 +12,12 @@ workloads=(
 	"ycsba_zipfian_11GB"
 	"ycsbc_zipfian_11GB"
 )
-function run-rocksdb-fd {
+function run-rocksdb {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd-correctness
+	DIR=../../data/$1/$2-correctness
 	echo Result directory: $DIR
 	prefix=../../YCSB-traces/$1
-	./test-rocksdb-fd-replay.sh 11GB $prefix $DIR "--export_ans_xxh64 $2"
+	./test-$2-replay.sh 11GB $prefix $DIR "--export_ans_xxh64 $3"
 	../helper/rocksdb-plot-11GB.sh $DIR
 }
 function run-hotrap {
@@ -31,7 +31,7 @@ function run-hotrap {
 }
 for workload in "${workloads[@]}"; do
 	../helper/gen-ycsb-trace.sh ../config/$workload
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 done
 run-hotrap "ycsbc_uniform_11GB" promote-accessed

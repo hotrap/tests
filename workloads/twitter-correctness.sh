@@ -28,12 +28,12 @@ workloads=(
 	"cluster52-3x"
 	"cluster53-12x"
 )
-function run-rocksdb-fd {
+function run-rocksdb {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd-correctness
+	DIR=../../data/$1/$2-correctness
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-rocksdb-fd-110GB-replay.sh $prefix-load $prefix-run $DIR "--export_ans_xxh64"
+	./test-$2-110GB-replay.sh $prefix-load $prefix-run $DIR "--export_ans_xxh64"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -47,6 +47,6 @@ function run-hotrap {
 }
 
 for workload in "${workloads[@]}"; do
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 done

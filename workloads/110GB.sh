@@ -12,14 +12,14 @@ workloads=(
 	"ycsba_uniform_110GB_220GB"
 	"ycsbc_uniform_110GB_220GB"
 )
-function run-rocksdb-fd {
+function run-rocksdb {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd
+	DIR=../../data/$1/$2
 	echo Result directory: $DIR
-	./test-rocksdb-fd-110GB.sh ../config/$1 $DIR "$2"
+	./test-$2-110GB.sh ../config/$1 $DIR "$3"
 	../helper/rocksdb-plot.sh $DIR
 }
-function run-rocksdb {
+function run-version {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
@@ -48,10 +48,10 @@ function run-workload {
 }
 
 for workload in "${workloads[@]}"; do
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-rocksdb $workload rocksdb-tiered
-	run-rocksdb $workload prismdb
-	run-rocksdb $workload SAS-Cache
+	run-version $workload prismdb
+	run-version $workload SAS-Cache
 	run-hotrap $workload hotrap
 done
 
@@ -72,7 +72,7 @@ workloads=(
 	"ycsbc_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	run-rocksdb $workload mutant
+	run-version $workload mutant
 done
 
 workloads=(
@@ -82,7 +82,7 @@ workloads=(
 	"ycsba_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	run-rocksdb $workload mutant "--run_90p_ops=10000"
+	run-version $workload mutant "--run_90p_ops=10000"
 done
 
 hotspot_workloads=(
@@ -100,7 +100,7 @@ uniform_workloads=(
 
 for workload in "${hotspot_workloads[@]}"; do
 	run-hotrap $workload hotrap
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 done
 for workload in "${uniform_workloads[@]}"; do
 	run-hotrap $workload hotrap

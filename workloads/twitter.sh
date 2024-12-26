@@ -42,12 +42,12 @@ twitter_dir=../../twitter/processed
 if [ ! "$twitter_zst_dir" ]; then
 	twitter_zst_dir=$twitter_dir
 fi
-function run-rocksdb-fd {
+function run-rocksdb {
 	../helper/checkout-rocksdb
-	DIR=../../data/$1/rocksdb-fd
+	DIR=../../data/$1/$2
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-rocksdb-fd-110GB-replay.sh $prefix $DIR "--enable_fast_process"
+	./test-$2-110GB-replay.sh $prefix $DIR "--enable_fast_process"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -58,7 +58,7 @@ function run-hotrap {
 	./test-hotrap-110GB-replay.sh $prefix $DIR "--enable_fast_process"
 	../helper/hotrap-plot.sh $DIR
 }
-function run-rocksdb {
+function run-version {
 	../helper/checkout-$2
 	DIR=../../data/$1/$2
 	echo Result directory: $DIR
@@ -74,12 +74,12 @@ for workload in "${workloads[@]}"; do
 	if [ ! -f $twitter_dir/$workload-run ]; then
 		unzstd "$twitter_zst_dir/$workload-run.zst" --output-dir-flat $twitter_dir
 	fi
-	run-rocksdb-fd $workload
+	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 	run-rocksdb $workload rocksdb-tiered
-	run-rocksdb $workload SAS-Cache
-	run-rocksdb $workload mutant
-	run-rocksdb $workload prismdb
+	run-version $workload SAS-Cache
+	run-version $workload mutant
+	run-version $workload prismdb
 	if [ "$twitter_delete_after_use" ]; then
 		rm $twitter_dir/$workload-load $twitter_dir/$workload-run
 	fi
