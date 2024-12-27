@@ -30,7 +30,7 @@ class MulticolorPatchHandler(object):
             handlebox.add_artist(patch)
         return ret
 
-def read_hit_rates(data_dir):
+def read_hit_rates_hotrap(data_dir):
     first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-last-tier')).read())
     last_tier0 = 0
     last_total = 0
@@ -53,6 +53,15 @@ def read_hit_rates(data_dir):
     hit_rates = pd.concat(hit_rates, axis=1).T
     hit_rates.columns = ['Timestamp(ns)', 'hit-rate']
     return hit_rates
+
+def read_hit_rates(data_dir):
+    if os.path.exists(os.path.join(data_dir, 'num-accesses')):
+        return read_hit_rates_hotrap(data_dir)
+    report = pd.read_table(os.path.join(data_dir, 'report.csv'), sep=',')
+    return pd.DataFrame({
+        'Timestamp(ns)': report['Timestamp(ns)'],
+        'hit-rate': report['num-hits'] / report['num-reads']
+    })
 
 def read_compaction_bytes(data_dir):
     compaction_bytes = []
