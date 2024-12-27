@@ -16,7 +16,7 @@ fd_size=12179869184
 sd_size=1073741824000
 cd "$(dirname $0)"
 workspace=$(realpath ../..)
-kvexe_path=$workspace/kvexe-prismdb/build/rocksdb-kvexe
+kvexe_path=$workspace/kvexe-rocksdb/build/rocksdb-kvexe
 
 num_load_op=$(jq -er ".\"num-load-op\"" < $trace_prefix.json)
 num_run_inserts=$(jq -er ".\"num-run-inserts\"" < $trace_prefix.json)

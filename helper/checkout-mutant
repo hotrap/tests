@@ -9,5 +9,6 @@ cd mutant
 make -j$(nproc) shared_lib
 cd ..
 
-cd kvexe-mutant
+cd kvexe-rocksdb
+git checkout mutant
 build_kvexe_mutant

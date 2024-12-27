@@ -7,5 +7,5 @@ user=$1
 IP=$2
 cd ../..
 rsync -zrpt --partial -e ssh prismdb $user@$IP:~/ --exclude='build'
-rsync -zrpt --partial -e ssh kvexe-prismdb $user@$IP:~/ --exclude='build'
+rsync -zrpt --partial -e ssh kvexe-rocksdb $user@$IP:~/ --exclude='build'
 ssh $user@$IP "./tests/helper/checkout-prismdb"

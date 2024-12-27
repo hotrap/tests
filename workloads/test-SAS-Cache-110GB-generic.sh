@@ -12,7 +12,7 @@ fi
 prefix="$2"
 extra_kvexe_args="$3"
 workspace=$(realpath $(dirname $0)/../..)
-kvexe_dir=$workspace/kvexe-SAS-Cache/build/
+kvexe_dir=$workspace/kvexe-rocksdb/build/
 fd_size=4000000000
 
 memtable_size=$((64 * 1024 * 1024))

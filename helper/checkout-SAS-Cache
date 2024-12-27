@@ -11,6 +11,6 @@ if [ ! -d build ]; then
 	build_sas
 fi
 
-cd ../kvexe-SAS-Cache
+cd ../kvexe-rocksdb
 git checkout SAS-Cache
 build_kvexe_sas

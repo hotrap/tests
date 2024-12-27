@@ -12,6 +12,7 @@ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_DIO=ON
 make -j$(nproc)
 cd ../..
 
-cd kvexe-prismdb
+cd kvexe-rocksdb
+git checkout prismdb
 rm -rf build
 build_kvexe_prismdb
