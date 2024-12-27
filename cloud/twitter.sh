@@ -1,11 +1,14 @@
-if [[ $# != 2 ]]; then
-	echo Usage: $0 config-file output-dir
+if [[ $# != 3 ]]; then
+	echo Usage: $0 config-file output-dir max-running-instances
 	exit 1
 fi
 config_file=$(realpath $1)
 output_dir=$(realpath $2)
+max_running_instances=$3
 user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
+
+. ./common.sh
 
 workloads=(
 	"cluster01-4168x"
@@ -75,8 +78,6 @@ for workload in "${workloads[@]}"; do
 	fi
 done
 
-. ./common.sh
-
 function upload-trace {
 	if [ -f ../../upload-trace ]; then
 		../../upload-trace $user $IP $workload
@@ -116,28 +117,12 @@ function run-hotrap {
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 }
 
-num=${#workloads[@]}
-max_concurrent=10
-i=0
-running=0
-while [ $i -lt $num ]; do
-	workload="${workloads[$i]}"
+for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload rocksdb-fd
 	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-version $workload SAS-Cache
 	cloud-run run-version $workload mutant
 	cloud-run run-version $workload prismdb
 	cloud-run run-hotrap $workload hotrap
-	i=$(($i + 1))
-	running=$(($running + 1))
-	if [ $running -eq $max_concurrent ]; then
-		wait -n
-		wait -n
-		wait -n
-		wait -n
-		wait -n
-		wait -n
-		running=$(($running - 1))
-	fi
 done
 wait
