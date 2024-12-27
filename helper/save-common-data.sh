@@ -9,9 +9,13 @@ DIR=$(realpath "$2")
 cd "$1"
 "$mydir"/latency-after .
 mv LOG *-latency period_stats progress cpu cputimes mem info.json timers run-phase-perf-context-* run-phase-iostats-contexts-* "$DIR"/
-if [ -f worker-cpu-nanos ]; then
-	mv worker-cpu-nanos "$DIR"/
-fi
+mv_if_exists() {
+	if [ -f "$1" ]; then
+		mv "$1" "$DIR"/
+	fi
+}
+mv_if_exists worker-cpu-nanos
+mv_if_exists report.csv
 if [ -f ans-0.xxh64 ]; then
 	mv ans-*.xxh64 "$DIR"/
 fi
