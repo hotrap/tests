@@ -7,6 +7,7 @@ user=$1
 IP=$2
 $(dirname $0)/helper/upload-cachelib $user $IP
 cd ../..
+rsync -zrpt --partial -e ssh CacheLib $user@$IP:~/ --exclude='build-*'
 rsync -zrpt --partial -e ssh rocksdb $user@$IP:~/ --exclude='build'
-rsync -zrpt --partial -e ssh kvexe-secondary-cache $user@$IP:~/ --exclude='build'
-ssh $user@$IP ". .profile && ./tests/helper/checkout-secondary-cache"
+rsync -zrpt --partial -e ssh kvexe-rocksdb $user@$IP:~/ --exclude='build'
+ssh $user@$IP ". .profile && ./tests/helper/checkout-cachelib"
