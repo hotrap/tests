@@ -61,32 +61,71 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut key_run_phase_reads: Vec<(String, usize)> = key_run_phase_reads.into_iter().collect();
     key_run_phase_reads.sort_unstable_by(|a, b| b.1.cmp(&a.1));
 
-    let mut reads_hits = Vec::new();
-    let mut total_reads = 0;
-    let mut total_hits = 0;
+    #[derive(Clone)]
+    struct Num {
+        reads: usize,
+        hits: usize,
+        keys_accessed: usize,
+        keys_with_hit: usize,
+    }
+    let mut cur = Num {
+        reads: 0,
+        hits: 0,
+        keys_accessed: 0,
+        keys_with_hit: 0,
+    };
+    let mut cdf = Vec::new();
     for (key, _) in &key_run_phase_reads {
         let (reads, hits) = key_reads_hits.get(key).map(|v| *v).unwrap_or((0, 0));
-        total_reads += reads;
-        total_hits += hits;
-        reads_hits.push((total_reads, total_hits))
+        cur.reads += reads;
+        cur.hits += hits;
+        if reads > 0 {
+            cur.keys_accessed += 1;
+        }
+        if hits > 0 {
+            cur.keys_with_hit += 1;
+        }
+        cdf.push(cur.clone());
     }
 
     let mut writer = BufWriter::new(File::create(data_dir.join("hit")).unwrap());
-    writeln!(&mut writer, "key-rank reads hits").unwrap();
+    writeln!(
+        &mut writer,
+        "key-rank reads hits keys-accessed keys-with-hit"
+    )
+    .unwrap();
     let max_dots = 10000;
-    let n = reads_hits.len();
+    let n = cdf.len();
     if n == 0 {
         return Ok(());
     }
     let step = (n + max_dots - 1) / max_dots;
     let mut i = 0;
     while i < n - 1 {
-        let (reads, hits) = reads_hits[i];
-        writeln!(&mut writer, "{} {} {}", i + 1, reads, hits).unwrap();
+        let num = &cdf[i];
+        writeln!(
+            &mut writer,
+            "{} {} {} {} {}",
+            i + 1,
+            num.reads,
+            num.hits,
+            num.keys_accessed,
+            num.keys_with_hit
+        )
+        .unwrap();
         i += step;
     }
-    let (reads, hits) = reads_hits[n - 1];
-    writeln!(&mut writer, "{} {} {}", n - 1, reads, hits).unwrap();
+    let num = &cdf[n - 1];
+    writeln!(
+        &mut writer,
+        "{} {} {} {} {}",
+        n - 1,
+        num.reads,
+        num.hits,
+        num.keys_accessed,
+        num.keys_with_hit,
+    )
+    .unwrap();
 
     Ok(())
 }
