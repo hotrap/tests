@@ -66,7 +66,6 @@ $workspace/tests/helper/exe-while.sh . $db_bench \
 	--cache_size=134217728 \
 	--max_bytes_for_level_base=$L1_size \
 	--reads=$(($num_op / 16)) \
-	--compaction_pri=5 \
 	--max_hot_set_size=5000000000 \
 	--max_ralt_size=1500000000 \
 	--ralt_path="$workspace/testdb/ralt" \
