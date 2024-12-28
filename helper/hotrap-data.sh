@@ -12,10 +12,6 @@ if [ ! -d "$db_dir" ]; then
 fi
 cd "$db_dir"
 "$mydir"/save-common-data.sh . $DIR
-if [ -f occurrences ]; then
-	sort -nk2 -r occurrences > occurrences_sorted_by_count
-	$mydir/hit . "$DIR"
-fi
 find . \
 	-mindepth 1 \
 	\! -regex "\./[0-9]*\.log" \

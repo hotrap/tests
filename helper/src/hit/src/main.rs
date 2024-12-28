@@ -20,24 +20,37 @@ fn main() -> Result<(), Box<dyn Error>> {
     let dir = std::path::PathBuf::from(args.next().unwrap());
     let data_dir = std::path::PathBuf::from(args.next().unwrap());
 
-    let mut first_level_in_sd =
-        File::open(data_dir.join("first-level-in-last-tier")).unwrap();
+    let mut buf = String::new();
+    File::open(data_dir.join("timestamp-90p"))
+        .unwrap()
+        .read_to_string(&mut buf)
+        .unwrap();
+    let timestamp_90p: u64 = buf.trim().parse().unwrap();
+
+    let mut first_level_in_sd = File::open(data_dir.join("first-level-in-last-tier")).unwrap();
     let mut buf = String::new();
     first_level_in_sd.read_to_string(&mut buf).unwrap();
-    let first_level_in_sd: usize = buf.trim().parse().unwrap();
+    let first_level_in_sd: isize = buf.trim().parse().unwrap();
 
+    let mut key_reads = HashMap::new();
     let mut key_hits = HashMap::new();
     let mut i = 0;
-    while let Ok(key_hit_level) =
-        File::open(dir.join(i.to_string() + "_key_hit_level_70_100"))
+    while let Ok(key_hit_level) = File::open(dir.join("key-hit-level-".to_owned() + &i.to_string()))
     {
         let key_hit_level = BufReader::new(key_hit_level);
         for line in key_hit_level.lines() {
             let line = line.unwrap();
-            let line = line.trim();
-            let mut s = line.split(' ');
+            let mut s = line.trim().split(' ');
+            let timestamp: u64 = s.next().unwrap().parse().unwrap();
+            if timestamp < timestamp_90p {
+                continue;
+            }
             let key = s.next().unwrap();
-            let level: usize = s.next().unwrap().parse().unwrap();
+            let level: isize = s.next().unwrap().parse().expect(&line);
+            key_reads
+                .entry(key.to_owned())
+                .and_modify(|v| *v += 1)
+                .or_insert(1usize);
             if level < first_level_in_sd {
                 key_hits
                     .entry(key.to_owned())
@@ -47,41 +60,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         i += 1;
     }
-    eprintln!("{} key_hit_level files processed", i);
+    eprintln!("{} key-hit-level files processed", i);
 
-    let occurrences = if let Ok(occurrences) =
-        File::open(dir.join("occurrences_sorted_by_count"))
-    {
-        occurrences
-    } else {
-        return Ok(());
-    };
-    let occurrences = BufReader::new(occurrences);
-    let mut occurrences_cdf = vec![0];
+    let mut key_reads: Vec<(String, usize)> = key_reads.into_iter().collect();
+    key_reads.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+
+    let mut reads_cdf = vec![0];
     let mut hits_cdf = vec![0];
-    for line in occurrences.lines() {
-        let line = line.unwrap();
-        let line = line.trim();
-        let mut s = line.split(' ');
-        let key = s.next().unwrap();
-        let count: usize = s.next().unwrap().parse().unwrap();
-        occurrences_cdf.push(occurrences_cdf.last().unwrap() + count);
-
-        if !key_hits.is_empty() {
-            let hit_count = key_hits.get(key).map(|v| *v).unwrap_or(0);
-            hits_cdf.push(hits_cdf.last().unwrap() + hit_count);
-        }
+    for (key, reads) in &key_reads {
+        reads_cdf.push(reads_cdf.last().unwrap() + reads);
+        let hit_count = key_hits.get(key).map(|v| *v).unwrap_or(0);
+        hits_cdf.push(hits_cdf.last().unwrap() + hit_count);
     }
 
-    let mut writer =
-        BufWriter::new(File::create(data_dir.join("hit")).unwrap());
-    write!(&mut writer, "key-rank occurrences").unwrap();
-    if hits_cdf.len() != 1 {
-        write!(&mut writer, " hits").unwrap();
-    }
-    writeln!(&mut writer).unwrap();
+    let mut writer = BufWriter::new(File::create(data_dir.join("hit")).unwrap());
+    writeln!(&mut writer, "key-rank reads hits").unwrap();
     let max_dots = 10000;
-    let n = occurrences_cdf.len();
+    let n = reads_cdf.len();
     if n == 0 {
         return Ok(());
     }
@@ -91,14 +86,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     let mut i = 0;
     while i < n - 1 {
-        write!(&mut writer, "{} {}", i + 1, occurrences_cdf[i]).unwrap();
+        write!(&mut writer, "{} {}", i + 1, reads_cdf[i]).unwrap();
         if hits_cdf.len() != 1 {
             write!(&mut writer, " {}", hits_cdf[i]).unwrap();
         }
         writeln!(&mut writer).unwrap();
         i += step;
     }
-    write!(&mut writer, "{} {}", n, occurrences_cdf[n - 1]).unwrap();
+    write!(&mut writer, "{} {}", n, reads_cdf[n - 1]).unwrap();
     if hits_cdf.len() != 1 {
         write!(&mut writer, " {}", hits_cdf[n - 1]).unwrap();
     }

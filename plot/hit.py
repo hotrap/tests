@@ -30,7 +30,7 @@ plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/hit.pdf'
-plt.plot(rank_occurrence_hit['key-rank'], rank_occurrence_hit['occurrences'])
+plt.plot(rank_occurrence_hit['key-rank'], rank_occurrence_hit['reads'])
 legends = ['# accessed']
 if 'hits' in rank_occurrence_hit:
 	plt.plot(rank_occurrence_hit['key-rank'], rank_occurrence_hit['hits'])

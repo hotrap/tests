@@ -19,6 +19,3 @@ mv_if_exists report.csv
 if [ -f ans-0.xxh64 ]; then
 	mv ans-*.xxh64 "$DIR"/
 fi
-if [ -f 0_key_only_trace ]; then
-	find . -name "*_key_only_trace" -exec cat {} \; | awk '{if ($1 == "READ" || $1 == "RMW") print $2}' | "$mydir"/bin/occurrences > "$DIR"/occurrences
-fi
