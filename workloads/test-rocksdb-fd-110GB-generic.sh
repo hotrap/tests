@@ -4,4 +4,4 @@ if [ $# -lt 1 -o $# -gt 3 ]; then
 	exit 1
 fi
 workspace=$(realpath "$(dirname $0)"/../..)
-$(dirname $0)/test-rocksdb-fd-generic.sh 192MiB $((12 * 64))MiB "$@"
+$(dirname $0)/test-rocksdb-fd-generic.sh 320MiB $((12 * 64))MiB "$@"
