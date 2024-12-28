@@ -68,6 +68,7 @@ for workload in "${workloads[@]}"; do
 	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-version $workload prismdb
 	cloud-run run-version $workload SAS-Cache
+	cloud-run run-version $workload cachelib
 	cloud-run run-hotrap $workload hotrap
 done
 cloud-run run-workload "u24685531" hotrap
