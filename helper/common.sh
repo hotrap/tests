@@ -104,3 +104,16 @@ build_kvexe_sas() {
 	make
 	cd ..
 }
+build_kvexe_cachelib() {
+	workspace=$(realpath ..)
+
+	# Additional "FindXXX.cmake" files are here (e.g. FindSodium.cmake)
+	CLCMAKE="$workspace/CacheLib/cachelib/cmake"
+	CMAKE_PARAMS="-DCMAKE_MODULE_PATH='$CLCMAKE'"
+
+	mkdir -p build
+	cd build
+	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo $CMAKE_PARAMS -DROCKSDB_INCLUDE_DIR=$workspace/rocksdb/include -DROCKSDB_LIB_DIR=$workspace/rocksdb/build
+	make
+	cd ..
+}
