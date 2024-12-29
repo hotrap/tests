@@ -21,6 +21,7 @@ ulimit -n 100000
 ulimit -c unlimited
 cd $DIR
 $workspace/tests/helper/exe-while.sh . sh -c "$command \
+--switches=0x1 \
 --num_threads=16 \
 --cache_size=$cache_size \
 --max_bytes_for_level_base=$L1_size \

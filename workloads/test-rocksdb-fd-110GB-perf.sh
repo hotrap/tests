@@ -10,5 +10,5 @@ workspace=$(realpath ../..)
 ./test-rocksdb-fd-110GB-generic.sh "$2" "" "--load --enable_fast_generator --workload_file=$workload_file $3"
 rm -r $DIR
 mkdir $DIR
-./test-rocksdb-fd-110GB-generic.sh "$2" "perf record --call-graph=fp -o $DIR/perf.data" "--run --enable_fast_generator --workload_file=$workload_file --switches=0x1 $3"
+./test-rocksdb-fd-110GB-generic.sh "$2" "perf record --call-graph=fp -o $DIR/perf.data" "--run --enable_fast_generator --workload_file=$workload_file $3"
 perf script -i $DIR/perf.data | inferno-collapse-perf > $DIR/perf.folded

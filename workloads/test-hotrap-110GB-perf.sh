@@ -10,5 +10,5 @@ workspace=$(realpath ../..)
 ./test-hotrap-110GB-generic.sh "$2" "" "--load --enable_fast_generator --workload_file=$workload_file"
 rm -r $DIR
 mkdir $DIR
-./test-hotrap-110GB-generic.sh "$2" "perf record --call-graph=fp -o $DIR/perf.data" "--run --enable_fast_generator --workload_file=$workload_file --switches=0x1"
+./test-hotrap-110GB-generic.sh "$2" "perf record --call-graph=fp -o $DIR/perf.data" "--run --enable_fast_generator --workload_file=$workload_file"
 perf script -i $DIR/perf.data | inferno-collapse-perf > $DIR/perf.folded

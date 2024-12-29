@@ -43,7 +43,7 @@ function run-workload {
 	../helper/checkout-hotrap
 	DIR=../../data/$workload/hotrap
 	echo Result directory: $DIR
-	./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload --switches=0x1"
+	./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload"
 	../helper/hotrap-plot.sh $DIR
 }
 
