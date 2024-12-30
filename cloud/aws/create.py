@@ -17,7 +17,7 @@ response = client.run_instances(
             'Ebs': {
                 'DeleteOnTermination': True,
                 'Iops': 10000,
-                'VolumeSize': 2048, # GiBs
+                'VolumeSize': 4096, # GiBs
                 'VolumeType': 'gp3',
                 'Throughput': 300, # MiB/s
                 'Encrypted': False
