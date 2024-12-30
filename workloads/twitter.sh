@@ -38,10 +38,6 @@ workloads=(
 	"cluster52-3x"
 	"cluster53-12x"
 )
-twitter_dir=../../twitter/processed
-if [ ! "$twitter_zst_dir" ]; then
-	twitter_zst_dir=$twitter_dir
-fi
 function run-rocksdb {
 	../helper/checkout-rocksdb
 	DIR=../../data/$1/$2
@@ -68,19 +64,12 @@ function run-version {
 }
 
 for workload in "${workloads[@]}"; do
-	if [ ! -f $twitter_dir/$workload-load ]; then
-		unzstd "$twitter_zst_dir/$workload-load.zst" --output-dir-flat $twitter_dir
-	fi
-	if [ ! -f $twitter_dir/$workload-run ]; then
-		unzstd "$twitter_zst_dir/$workload-run.zst" --output-dir-flat $twitter_dir
-	fi
+	../helper/unzstd-processed.sh $workload
 	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
 	run-rocksdb $workload rocksdb-tiered
 	run-version $workload SAS-Cache
 	run-version $workload mutant
 	run-version $workload prismdb
-	if [ "$twitter_delete_after_use" ]; then
-		rm $twitter_dir/$workload-load $twitter_dir/$workload-run
-	fi
+	../helper/delete-uncompressed.sh $workload
 done

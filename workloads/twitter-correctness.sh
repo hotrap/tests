@@ -47,6 +47,8 @@ function run-hotrap {
 }
 
 for workload in "${workloads[@]}"; do
+	../helper/unzstd-processed.sh $workload
 	run-rocksdb $workload rocksdb-fd
 	run-hotrap $workload hotrap
+	../helper/delete-uncompressed.sh $workload
 done
