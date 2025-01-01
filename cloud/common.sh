@@ -38,7 +38,7 @@ function cloud-run-bg {
 			# https://unix.stackexchange.com/questions/33271/how-to-avoid-ssh-asking-permission
 			while ! ssh $user@$IP -o StrictHostKeyChecking=accept-new "true"; do
 				# https://stackoverflow.com/questions/21383806/how-can-i-force-ssh-to-accept-a-new-host-fingerprint-from-the-command-line
-				ssh-keygen -R $IP
+				flock ~/.ssh/known_hosts ssh-keygen -R $IP
 				sleep 1
 			done
 			ssh $user@$IP "sudo apt update"
