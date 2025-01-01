@@ -13,7 +13,6 @@ from matplotlib.patches import Patch
 def draw_io_breakdown(dir, size, pdf_name):
     # Paper specific settings
     SINGLE_COL_WIDTH = 8.5
-    DOUBLE_COL_WIDTH = 17.8
     def cm_to_inch(value):
         return value/2.54
 
@@ -82,34 +81,31 @@ def draw_io_breakdown(dir, size, pdf_name):
 
                 bottom = 0
 
-                rand_read_bytes = common.read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd)
+                rand_read_bytes = common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd)
                 rand_read_bytes = version_data.run_phase(rand_read_bytes)
                 rand_read_bytes = rand_read_bytes.iloc[-1] - rand_read_bytes.iloc[0]
 
                 if version['path'] == 'rocksdb-fd':
-                    assert rand_read_bytes['sd'] == 0
+                    assert '1' not in rand_read_bytes
                 else:
-                    height = rand_read_bytes['sd'] / 1e12
+                    height = rand_read_bytes['1'] / 1e12
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[0], color=version['colors'][0], edgecolor='black', linewidth=0.5)
                     bottom += height
 
-                height = rand_read_bytes['fd'] / 1e12
+                height = rand_read_bytes['0'] / 1e12
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[1], color=version['colors'][1], edgecolor='black', linewidth=0.5)
                 bottom += height
 
-                compaction_bytes = common.read_compaction_bytes_fd_sd(data_dir, first_level_in_sd)
+                compaction_bytes = common.read_compaction_bytes_per_tier(data_dir, first_level_in_sd)
                 compaction_bytes = version_data.run_phase(compaction_bytes)
                 compaction_bytes = compaction_bytes.iloc[-1] - compaction_bytes.iloc[0]
 
-                if version['path'] == 'rocksdb-fd':
-                    assert compaction_bytes['sd-read'] == 0
-                    assert compaction_bytes['sd-write'] == 0
-                else:
-                    height = (compaction_bytes['sd-read'] + compaction_bytes['sd-write']) / 1e12
+                if version['path'] != 'rocksdb-fd':
+                    height = (compaction_bytes['1-read'] + compaction_bytes['1-write']) / 1e12
                     ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[2], color=version['colors'][2], edgecolor='black', linewidth=0.5)
                     bottom += height
 
-                height = (compaction_bytes['fd-read'] + compaction_bytes['fd-write']) / 1e12
+                height = (compaction_bytes['0-read'] + compaction_bytes['0-write']) / 1e12
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[3], color=version['colors'][3], edgecolor='black', linewidth=0.5)
                 bottom += height
 

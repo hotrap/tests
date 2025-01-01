@@ -7,4 +7,4 @@ import common
 
 data_dir = '.'
 first_level_in_sd = int(open(data_dir + '/first-level-in-last-tier').read())
-print(sum(common.read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd).iloc[-1][1:3]) / 1e9, 'GB')
+print(sum(common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd).iloc[-1][1:]) / 1e9, 'GB')

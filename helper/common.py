@@ -92,8 +92,12 @@ def read_compaction_bytes(data_dir):
     compaction_bytes.columns = ['Timestamp(ns)', 'read', 'write']
     return compaction_bytes
 
-def read_compaction_bytes_fd_sd(data_dir, first_level_in_sd):
+def read_compaction_bytes_per_tier(data_dir, first_level_in_last_tier):
     compaction_bytes = []
+    if first_level_in_last_tier == 0:
+        num_tiers = 1
+    else:
+        num_tiers = 2
     compaction_stats = open(os.path.join(data_dir, 'compaction-stats'))
     while True:
         line = compaction_stats.readline()
@@ -104,49 +108,56 @@ def read_compaction_bytes_fd_sd(data_dir, first_level_in_sd):
         timestamp = int(s[1])
         line = compaction_stats.readline()
         assert line == 'Level Read Write\n'
-        fd_read = 0
-        fd_write = 0
-        sd_read = 0
-        sd_write = 0
+        tier_read_write = [[0, 0] for _ in range(num_tiers)]
         level = 0
         while True:
             line = compaction_stats.readline()
-            if line == ''  or line == '\n':
+            if line == '' or line == '\n':
                 break
             s = line.split(' ')
             assert s[0] == 'L' + str(level)
             read = int(s[1])
             write = int(s[2])
-            if level < first_level_in_sd:
-                fd_read += read
-                fd_write += write
+            if first_level_in_last_tier == 0:
+                tier = 0
             else:
-                sd_read += read
-                sd_write += write
+                if level < first_level_in_last_tier:
+                    tier = 0
+                else:
+                    tier = 1
+            tier_read_write[tier][0] += read
+            tier_read_write[tier][1] += write
             level += 1
-        compaction_bytes.append(pd.Series([timestamp, fd_read, fd_write, sd_read, sd_write]))
+        compaction_bytes.append(pd.Series([timestamp] + [x for read_write in tier_read_write for x in read_write]))
     compaction_bytes = pd.concat(compaction_bytes, axis=1).T
-    compaction_bytes.columns = ['Timestamp(ns)', 'fd-read', 'fd-write', 'sd-read', 'sd-write']
+    compaction_bytes.columns = ['Timestamp(ns)'] + [str(tier) + rw for tier in range(0, num_tiers) for rw in ['-read', '-write']]
     return compaction_bytes
 
-def read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd):
+def read_rand_read_bytes_per_tier(data_dir, first_level_in_last_tier):
     rand_read_bytes = []
+    if first_level_in_last_tier == 0:
+        num_tiers = 1
+    else:
+        num_tiers = 2
     for line in open(os.path.join(data_dir, 'rand-read-bytes')):
         if line == '':
             break
         s = line.split(' ')
-        fd = 0
-        sd = 0
+        tier_bytes = [0] * num_tiers
         timestamp_ns = int(s[0])
         for level, bytes in enumerate(s[1:]):
             bytes = int(bytes)
-            if level < first_level_in_sd:
-                fd += bytes
+            if first_level_in_last_tier == 0:
+                tier = 0
             else:
-                sd += bytes
-        rand_read_bytes.append(pd.Series([timestamp_ns, fd, sd]))
+                if level < first_level_in_last_tier:
+                    tier = 0
+                else:
+                    tier = 1
+            tier_bytes[tier] += bytes
+        rand_read_bytes.append(pd.Series([timestamp_ns] + tier_bytes))
     rand_read_bytes = pd.concat(rand_read_bytes, axis=1).T
-    rand_read_bytes.columns = ['Timestamp(ns)', 'fd', 'sd']
+    rand_read_bytes.columns = ['Timestamp(ns)'] + [str(i) for i in range(0, num_tiers)]
     return rand_read_bytes
 
 class VersionData:

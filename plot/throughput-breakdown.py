@@ -60,13 +60,13 @@ for (i, version) in enumerate(versions):
     ax.set_axisbelow(True)
     ax.grid(axis='y')
     data_dir = os.path.join(dir, version['path'])
+    version_data = common.VersionData(data_dir)
+    info = version_data.info()
 
     first_level_in_sd = int(open(data_dir + '/first-level-in-last-tier').read())
-    info = os.path.join(data_dir, 'info.json')
-    info = json5.load(open(info))
     def read_table(file):
         iostat_raw = pd.read_table(file, sep='\s+')
-        iostat_raw = iostat_raw[(iostat_raw['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (iostat_raw['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
+        iostat_raw = version_data.run_phase(iostat_raw)
         iostat_raw['Time(Seconds)'] = (iostat_raw['Timestamp(ns)'] - iostat_raw['Timestamp(ns)'].iloc[0]) / 1e9
         iostat = iostat_raw[['rkB/s', 'wkB/s']].groupby(iostat_raw.index // mean_step).mean()
         iostat['Time(Seconds)'] = iostat_raw['Time(Seconds)'].groupby(iostat_raw.index // mean_step).first()
@@ -74,30 +74,32 @@ for (i, version) in enumerate(versions):
     fd = read_table(data_dir + '/iostat-fd.txt')
     sd = read_table(data_dir + '/iostat-sd.txt')
 
-    compaction_bytes = common.read_compaction_bytes_fd_sd(data_dir, first_level_in_sd)
-    timestamps = np.array(compaction_bytes['Timestamp(ns)'])
-    run_phase = (timestamps >= info['run-start-timestamp(ns)']) & (timestamps < info['run-end-timestamp(ns)'])
-    timestamps = timestamps[run_phase]
-    compaction_bytes = compaction_bytes[run_phase]
-    time = (timestamps[1:] - info['run-start-timestamp(ns)']) / 1e9
-
-    throughput = compaction_bytes[1:].values - compaction_bytes[:-1].values
-    throughput = throughput[:,1:] / (throughput[:,0][:, np.newaxis] / 1e9)
-    throughput = pd.DataFrame(throughput, columns=['fd-read', 'fd-write', 'sd-read', 'sd-write'])
-    throughput['Time(Seconds)'] = time
-    throughput = throughput.groupby(throughput.index // mean_step).mean()
-
     markevery = int(len(fd['Time(Seconds)']) / num_marks)
     ax.plot(sd['Time(Seconds)'], (fd['rkB/s'] + fd['wkB/s']) / 1e3, marker='o', linewidth=linewidth, markersize=markersize, markevery=markevery)
     ax.plot(sd['Time(Seconds)'], (sd['rkB/s'] + sd['wkB/s']) / 1e3, marker='D', linewidth=linewidth, markersize=markersize, markevery=markevery)
-    markevery = int(len(throughput['Time(Seconds)']) / num_marks)
-    ax.plot(throughput['Time(Seconds)'], (throughput['fd-read'] + throughput['fd-write']) / 1e6, marker='s', linewidth=linewidth, markersize=markersize, markevery=markevery)
-    ax.plot(throughput['Time(Seconds)'], (throughput['sd-read'] + throughput['sd-write']) / 1e6, marker='x', linewidth=linewidth, markersize=markersize_x, markevery=markevery)
+    markevery = int(len(sd['Time(Seconds)']) / num_marks)
 
-    rand_read_bytes = common.read_rand_read_bytes_fd_sd(data_dir, first_level_in_sd)
-    rand_read_bytes = rand_read_bytes[(info['run-start-timestamp(ns)'] <= rand_read_bytes['Timestamp(ns)']) & (rand_read_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
+    compaction_bytes = common.read_compaction_bytes_per_tier(data_dir, first_level_in_sd)
+    compaction_bytes = version_data.run_phase(compaction_bytes)
+    time = (compaction_bytes[1:]['Timestamp(ns)'].values - info['run-start-timestamp(ns)']) / 1e9
+
+    throughput = compaction_bytes[1:].values - compaction_bytes[:-1].values
+    throughput = throughput[:,1:] / (throughput[:,0][:, np.newaxis] / 1e9)
+    throughput = pd.DataFrame(throughput, columns=compaction_bytes.columns[1:])
+    throughput['Time(Seconds)'] = time
+    throughput = throughput.groupby(throughput.index // mean_step).mean()
+
+    ax.plot(throughput['Time(Seconds)'], (throughput['0-read'] + throughput['0-write']) / 1e6, marker='s', linewidth=linewidth, markersize=markersize, markevery=markevery)
+    if version['path'] == 'rocksdb-fd':
+        sd_compaction_throughput = np.zeros(len(throughput['Time(Seconds)']))
+    else:
+        sd_compaction_throughput = (throughput['1-read'] + throughput['1-write']) / 1e6
+    ax.plot(throughput['Time(Seconds)'], sd_compaction_throughput, marker='x', linewidth=linewidth, markersize=markersize_x, markevery=markevery)
+
+    rand_read_bytes = common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd)
+    rand_read_bytes = version_data.run_phase(rand_read_bytes)
     time = (rand_read_bytes['Timestamp(ns)'][1:] - info['run-start-timestamp(ns)']) / 1e9
-    rand_read_bytes = rand_read_bytes['fd'] + rand_read_bytes['sd']
+    rand_read_bytes = rand_read_bytes.iloc[:,1:].sum(axis=1)
     throughput = rand_read_bytes[1:].values - rand_read_bytes[:-1].values
     get_throughput = pd.DataFrame({
         'Time(s)': time,
