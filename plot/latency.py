@@ -71,7 +71,7 @@ versions=[
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB-FD', 'RocksDB-tiered', 'Mutant', 'PrismDB', 'SAS-Cache', 'HotRAP']
+version_names = ['RocksDB-FD', 'RocksDB-tiered', 'Mutant', 'PrismDB', 'SAS-Cache', common.sysname]
 
 gs = gridspec.GridSpec(1, 2, figure=figure)
 bar_width = 1 / (len(versions) + 1)

@@ -43,7 +43,7 @@ versions=[
         'path': 'rocksdb-tiered',
     },
     {
-        'name': '(c) HotRAP',
+        'name': '(c) ' + common.sysname,
         'path': 'hotrap',
     },
 ]

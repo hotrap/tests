@@ -36,7 +36,7 @@ figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_in
 
 versions = [
     {
-        'name': '(a) HotRAP',
+        'name': '(a) ' + common.sysname,
         'path': 'ycsbc_hotspot0.01_110GB_220GB/hotrap',
         'ymax': 4e4,
         'yticks': [0, 1e4, 2e4, 3e4, 4e4],

@@ -37,7 +37,7 @@ def calc(data_dir):
 
 tex = io.StringIO()
 print('\\begin{tabular}{|c|c|c|c|}\n\t\\hline\n\tVersion & Promoted & Retained & Compaction \\\\\n\t\hline', file=tex)
-print('\tHotRAP & %.1fGB & %.1fMB & %.1fGB \\\\\n\t\\hline' %(hotrap_promoted / 1e9, hotrap_retained / 1e6, hotrap_compaction_io / 1e9), file=tex)
+print('\t' + common.sysname + ' & %.1fGB & %.1fMB & %.1fGB \\\\\n\t\\hline' %(hotrap_promoted / 1e9, hotrap_retained / 1e6, hotrap_compaction_io / 1e9), file=tex)
 print('\tno-hotness-check & %.1fGB & %.1fGB & %.1fGB \\\\\n\t\hline' %(pa_promoted / 1e9, pa_retained / 1e9, pa_compaction_io / 1e9), file=tex)
 print('\\end{tabular}', file=tex)
 tex = tex.getvalue()
