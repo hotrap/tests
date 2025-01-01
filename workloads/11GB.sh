@@ -33,3 +33,5 @@ run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" hotrap
 run-hotrap "ycsbc_uniform_11GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-retain
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-promote-by-compaction
+
+run-rocksdb "ycsbc_hotspot0.05_11GB_200B" rocksdb-fd
