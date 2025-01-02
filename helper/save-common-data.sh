@@ -8,7 +8,7 @@ mydir=$(realpath "$mydir")
 DIR=$(realpath "$2")
 cd "$1"
 "$mydir"/latency-after .
-mv LOG *-latency period_stats progress cpu cputimes mem info.json timers run-phase-perf-context-* run-phase-iostats-contexts-* "$DIR"/
+mv LOG *-latency period_stats progress cpu cputimes mem info.json timers load-phase-perf-context-* load-phase-iostats-contexts-* run-phase-perf-context-* run-phase-iostats-contexts-* "$DIR"/
 mv_if_exists() {
 	if [ -f "$1" ]; then
 		mv "$1" "$DIR"/
