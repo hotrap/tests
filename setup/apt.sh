@@ -18,7 +18,7 @@ sudo apt install -y liburcu-dev libboost-program-options-dev libxxhash-dev
 # iostat.sh
 sudo apt install -y gawk
 # CacheLib
-sudo apt install -y libjemalloc-dev libevent-dev libdouble-conversion-dev libnuma-dev libboost-regex-dev libsodium-dev libboost-context-dev libboost-filesystem-dev libsnappy-dev libunwind-dev zlib1g-dev libboost-iostreams-dev libdwarf-dev libiberty-dev
+sudo apt install -y libjemalloc-dev libevent-dev libdouble-conversion-dev libnuma-dev libboost-regex-dev libsodium-dev libboost-context-dev libboost-filesystem-dev libsnappy-dev libunwind-dev zlib1g-dev libboost-iostreams-dev libdwarf-dev libiberty-dev liburing-dev
 # SAS-Cache
 sudo apt install -y libssl-dev libbz2-dev liblz4-dev libaio-dev
 # PrismDB
