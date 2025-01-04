@@ -17,4 +17,4 @@ max_kvsize_bytes=$(($max_kvsize_bytes + 34))
 num_reads=$(jq -er ".\"num-reads\"" < $trace_prefix.json)
 stop_upsert_trigger=$(($num_reads / 10 * 7))
 
-$(dirname $0)/test-prismdb-110GB-generic.sh "$DIR" "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--load=$trace_file_load --run=$trace_file_run --format=plain-length-only --num_keys=$num_keys --stop_upsert_trigger=$stop_upsert_trigger --max_kvsize_bytes=$max_kvsize_bytes $3"
+$(dirname $0)/test-prismdb-110GB-generic.sh "$2" "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--load=$trace_file_load --run=$trace_file_run --format=plain-length-only --num_keys=$num_keys --stop_upsert_trigger=$stop_upsert_trigger --max_kvsize_bytes=$max_kvsize_bytes $3"

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 if [ $# -lt 4 -o $# -gt 5 ]; then
-	echo Usage: $0 command db-path cache-size L1-size output-dir [extra-kvexe-args]
+	echo Usage: $0 command db-path cache-size output-dir [extra-kvexe-args]
 	exit 1
 fi
 command=$1

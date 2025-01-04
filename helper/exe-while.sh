@@ -5,7 +5,7 @@ if [ ! "$2" ]; then
 fi
 
 if [ ! -d "$1" ]; then
-	mkdir -p $1
+	mkdir -p "$1"
 fi
 output_dir="$1"
 shift

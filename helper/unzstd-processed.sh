@@ -10,7 +10,7 @@ if [ ! "$twitter_zst_dir" ]; then
 	twitter_zst_dir=$twitter_dir
 fi
 
-mkdir -p $twitter_dir
+mkdir -p "$twitter_dir"
 
 if [ ! -f "$twitter_dir/$workload.json" ]; then
 	cp "$twitter_zst_dir/$workload.json" $twitter_dir/
