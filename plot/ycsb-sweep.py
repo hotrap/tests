@@ -12,7 +12,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
 
 import io
-import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -68,11 +67,6 @@ versions=[
         'color': plt.get_cmap('Set2')(1),
     },
     {
-        'path': 'mutant',
-        'pattern': '---',
-        'color': plt.get_cmap('tab20c')(1),
-    },
-    {
         'path': 'prismdb',
         'pattern': '---\\\\\\\\\\\\',
         'color': plt.get_cmap('Set2')(5),
@@ -83,12 +77,17 @@ versions=[
         'color': plt.get_cmap('Set2')(3),
     },
     {
+        'path': 'cachelib',
+        'pattern': '---',
+        'color': plt.get_cmap('tab20c')(1),
+    },
+    {
         'path': 'hotrap',
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB-FD', 'RocksDB-tiered', 'Mutant', 'PrismDB', 'SAS-Cache', common.sysname]
+version_names = ['RocksDB-FD', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'RocksDB-CacheLib', common.sysname]
 size='110GB_220GB'
 
 skewness_ratio_version_ops = {}
@@ -127,8 +126,7 @@ def speedup_ratio_skewness(ratio, skewness):
 def speedup(ratio):
     speedup_hotspot = speedup_ratio_skewness(ratio, 'hotspot0.05')
     speedup_zipfian = speedup_ratio_skewness(ratio, 'zipfian')
-    assert speedup_hotspot >= speedup_zipfian
-    return speedup_hotspot
+    return max(speedup_hotspot, speedup_zipfian)
 
 tex = io.StringIO()
 speedup_ro = speedup('RO')
@@ -167,7 +165,7 @@ for i in range(len(skewnesses)):
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=9)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=9)
-figure.legend(version_names, fontsize=9, ncol=len(version_names), loc='center', bbox_to_anchor=(0.51, 1.07))
+figure.legend(version_names, fontsize=9, ncol=len(version_names), loc='center', bbox_to_anchor=(0.51, 1.07), handletextpad=0.5, columnspacing=1.2)
 pdf_path = dir + '/ycsb-sweep.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
