@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -e
+
+cd $(dirname $0)
+. ./common.sh
+cd ..
+
+cd ../hotrap
+git checkout no-hotness-aware-compaction
+build_rocksdb
+
+cd ../RALT
+git checkout main
+build_ralt
+
+cd ../kvexe
+git checkout main
+build_kvexe_ralt
