@@ -53,14 +53,14 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(1),
         },
         {
-            'path': 'prismdb',
-            'pattern': '---\\\\\\\\\\\\',
-            'color': plt.get_cmap('Set2')(5),
-        },
-        {
             'path': 'SAS-Cache',
             'pattern': 'XXX',
             'color': plt.get_cmap('Set2')(3),
+        },
+        {
+            'path': 'prismdb',
+            'pattern': '---\\\\\\\\\\\\',
+            'color': plt.get_cmap('Set2')(5),
         },
         {
             'path': 'cachelib',
@@ -73,7 +73,7 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(0),
         },
     ]
-    version_names = ['RocksDB-FD', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'RocksDB-CL', common.sysname]
+    version_names = ['RocksDB-FD', 'RocksDB-tiered', 'SAS-Cache', 'PrismDB', 'RocksDB-CL', common.sysname]
 
     workload_version_ops = {}
     for workload in workloads:
