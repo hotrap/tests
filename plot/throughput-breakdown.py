@@ -44,7 +44,7 @@ versions=[
         'path': 'rocksdb-tiered',
     },
     {
-        'name': '(c) RocksDB-CacheLib',
+        'name': '(c) RocksDB-CL',
         'path': 'cachelib',
         'ticks': [0, 300],
     },

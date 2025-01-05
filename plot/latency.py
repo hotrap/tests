@@ -71,7 +71,7 @@ versions=[
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB-FD', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'RocksDB-CacheLib', common.sysname]
+version_names = ['RocksDB-FD', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'RocksDB-CL', common.sysname]
 
 gs = gridspec.GridSpec(1, 2, figure=figure)
 bar_width = 1 / (len(versions) + 1)
@@ -133,7 +133,7 @@ for (i, fig) in enumerate(figs):
 handles = []
 for version in versions:
     handles.append(mpl.patches.Patch(facecolor=version['color'], hatch=version['pattern'], edgecolor='black', linewidth=0.5))
-figure.legend(handles=handles, labels=version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.15), handletextpad=0.5, columnspacing=1)
+figure.legend(handles=handles, labels=version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.15), handletextpad=0.4, columnspacing=0.8)
 pdf_path = os.path.join(dir, 'latency.pdf')
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)

@@ -87,7 +87,7 @@ versions=[
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB-FD', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'RocksDB-CacheLib', common.sysname]
+version_names = ['RocksDB-FD', 'RocksDB-tiered', 'PrismDB', 'SAS-Cache', 'RocksDB-CL', common.sysname]
 size='110GB_220GB'
 
 skewness_ratio_version_ops = {}
