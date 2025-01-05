@@ -83,6 +83,7 @@ figs = [
         'subfig': plt.subplot(gs[0, 0]),
         'ax': plt.gca(),
         'percentile': '99%',
+        'yscale': 'log',
     },
     {
         'title': '(b) 99.9% (log scale)',
