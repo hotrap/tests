@@ -40,8 +40,8 @@ function run-hotrap {
 }
 function run-workload {
 	workload=$1
-	../helper/checkout-hotrap
-	DIR=../../data/$workload/hotrap
+	../helper/checkout-$2
+	DIR=../../data/$workload/$2
 	echo Result directory: $DIR
 	./test-hotrap-110GB-generic.sh $DIR "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4" "--enable_fast_generator --workload=$workload"
 	../helper/hotrap-plot.sh $DIR
@@ -50,6 +50,7 @@ function run-workload {
 for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-fd
 	run-rocksdb $workload rocksdb-tiered
+	run-version $workload cachelib
 	run-version $workload prismdb
 	run-version $workload SAS-Cache
 	run-hotrap $workload hotrap
