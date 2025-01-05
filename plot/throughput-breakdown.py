@@ -37,14 +37,21 @@ versions=[
     {
         'name': '(a) RocksDB-FD',
         'path': 'rocksdb-fd',
+        'ticks': [0, 1000],
     },
     {
         'name': '(b) RocksDB-tiered',
         'path': 'rocksdb-tiered',
     },
     {
-        'name': '(c) ' + common.sysname,
+        'name': '(c) RocksDB-CacheLib',
+        'path': 'cachelib',
+        'ticks': [0, 300],
+    },
+    {
+        'name': '(d) ' + common.sysname,
         'path': 'hotrap',
+        'ticks': [0, 300, 1000],
     },
 ]
 
@@ -75,8 +82,10 @@ for (i, version) in enumerate(versions):
     sd = read_table(data_dir + '/iostat-sd.txt')
 
     markevery = int(len(fd['Time(Seconds)']) / num_marks)
-    ax.plot(sd['Time(Seconds)'], (fd['rkB/s'] + fd['wkB/s']) / 1e3, marker='o', linewidth=linewidth, markersize=markersize, markevery=markevery)
-    ax.plot(sd['Time(Seconds)'], (sd['rkB/s'] + sd['wkB/s']) / 1e3, marker='D', linewidth=linewidth, markersize=markersize, markevery=markevery)
+    fd_MiB = (fd['rkB/s'] + fd['wkB/s']) / 1e3
+    sd_MiB = (sd['rkB/s'] + sd['wkB/s']) / 1e3
+    ax.plot(sd['Time(Seconds)'], fd_MiB, marker='o', linewidth=linewidth, markersize=markersize, markevery=markevery)
+    ax.plot(sd['Time(Seconds)'], sd_MiB, marker='D', linewidth=linewidth, markersize=markersize, markevery=markevery)
     markevery = int(len(sd['Time(Seconds)']) / num_marks)
 
     compaction_bytes = common.read_compaction_bytes_per_tier(data_dir, first_level_in_sd)
@@ -89,27 +98,44 @@ for (i, version) in enumerate(versions):
     throughput['Time(Seconds)'] = time
     throughput = throughput.groupby(throughput.index // mean_step).mean()
 
-    ax.plot(throughput['Time(Seconds)'], (throughput['0-read'] + throughput['0-write']) / 1e6, marker='s', linewidth=linewidth, markersize=markersize, markevery=markevery)
-    if version['path'] == 'rocksdb-fd':
-        sd_compaction_throughput = np.zeros(len(throughput['Time(Seconds)']))
+    if version['path'] == 'cachelib':
+        fd_compaction_MiB = np.zeros(len(throughput['Time(Seconds)']))
     else:
-        sd_compaction_throughput = (throughput['1-read'] + throughput['1-write']) / 1e6
-    ax.plot(throughput['Time(Seconds)'], sd_compaction_throughput, marker='x', linewidth=linewidth, markersize=markersize_x, markevery=markevery)
+        fd_compaction_MiB = (throughput['0-read'] + throughput['0-write']) / 1e6
+    ax.plot(throughput['Time(Seconds)'], fd_compaction_MiB, marker='s', linewidth=linewidth, markersize=markersize, markevery=markevery)
+    if version['path'] == 'rocksdb-fd':
+        sd_compaction_MiB = np.zeros(len(throughput['Time(Seconds)']))
+    elif version['path'] == 'cachelib':
+        sd_compaction_MiB = (throughput['0-read'] + throughput['0-write']) / 1e6
+    else:
+        sd_compaction_MiB = (throughput['1-read'] + throughput['1-write']) / 1e6
+    ax.plot(throughput['Time(Seconds)'], sd_compaction_MiB, marker='x', linewidth=linewidth, markersize=markersize_x, markevery=markevery)
 
-    rand_read_bytes = common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd)
-    rand_read_bytes = version_data.run_phase(rand_read_bytes)
-    time = (rand_read_bytes['Timestamp(ns)'][1:] - info['run-start-timestamp(ns)']) / 1e9
-    rand_read_bytes = rand_read_bytes.iloc[:,1:].sum(axis=1)
-    throughput = rand_read_bytes[1:].values - rand_read_bytes[:-1].values
-    get_throughput = pd.DataFrame({
-        'Time(s)': time,
-        'Throughput(B/s)': throughput,
-    })
-    get_throughput = get_throughput.groupby(get_throughput.index // mean_step).mean()
-    ax.plot(get_throughput['Time(s)'], get_throughput['Throughput(B/s)'] / 1e6, color='black', linestyle='dashed', linewidth=linewidth, markersize=markersize, markevery=markevery)
+    if version['path'] == 'cachelib':
+        n = min(len(fd_MiB), len(fd_compaction_MiB), len(sd_MiB), len(sd_compaction_MiB))
+        get_MiB = np.array(fd_MiB[:n]) - np.array(fd_compaction_MiB[:n]) + np.array(sd_MiB[:n]) - np.array(sd_compaction_MiB[:n])
+        get_MiB = pd.DataFrame({
+            'Time(s)': throughput['Time(Seconds)'][:n],
+            'Throughput(MB/s)': get_MiB,
+        })
+    else:
+        rand_read_bytes = common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd)
+        rand_read_bytes = version_data.run_phase(rand_read_bytes)
+        time = (rand_read_bytes['Timestamp(ns)'][1:] - info['run-start-timestamp(ns)']) / 1e9
+        rand_read_bytes = rand_read_bytes.iloc[:,1:].sum(axis=1)
+        get_MiB = (rand_read_bytes[1:].values - rand_read_bytes[:-1].values) / 1e6
+        get_MiB = pd.DataFrame({
+            'Time(s)': time,
+            'Throughput(MB/s)': get_MiB,
+        })
+        get_MiB = get_MiB.groupby(get_MiB.index // mean_step).mean()
+    ax.plot(get_MiB['Time(s)'], get_MiB['Throughput(MB/s)'], color='black', linestyle='dashed', linewidth=linewidth, markersize=markersize, markevery=markevery)
     subfig.text(0.5, -0.35, 'Time (Seconds)', fontsize=9, ha='center', va='center', transform=subfig.transAxes)
     plt.xticks(fontsize=9)
-    plt.yticks(fontsize=9)
+    if 'ticks' in version:
+        plt.yticks(version['ticks'], fontsize=9)
+    else:
+        plt.yticks(fontsize=9)
     ax.set_ylim(bottom=0)
     plt.xlabel(version['name'], labelpad=10, fontsize=9)
     if i == 0:
