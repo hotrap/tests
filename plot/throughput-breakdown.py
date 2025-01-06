@@ -12,7 +12,6 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
 import common
 
-import json5
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -20,6 +19,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 # Paper specific settings
+SINGLE_COL_WIDTH = 8.5
 DOUBLE_COL_WIDTH = 17.8
 def cm_to_inch(value):
     return value/2.54
@@ -31,27 +31,16 @@ mpl.rcParams.update({
 })
 plt.rcParams['axes.unicode_minus'] = False
 
-figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
+figure = plt.figure(dpi = 300, figsize = (cm_to_inch(SINGLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
 versions=[
     {
         'name': '(a) RocksDB-FD',
         'path': 'rocksdb-fd',
-        'ticks': [0, 1000],
     },
     {
-        'name': '(b) RocksDB-tiered',
-        'path': 'rocksdb-tiered',
-    },
-    {
-        'name': '(c) RocksDB-CL',
-        'path': 'cachelib',
-        'ticks': [0, 300],
-    },
-    {
-        'name': '(d) ' + common.sysname,
+        'name': '(b) ' + common.sysname,
         'path': 'hotrap',
-        'ticks': [0, 300, 1000],
     },
 ]
 
@@ -98,37 +87,24 @@ for (i, version) in enumerate(versions):
     throughput['Time(Seconds)'] = time
     throughput = throughput.groupby(throughput.index // mean_step).mean()
 
-    if version['path'] == 'cachelib':
-        fd_compaction_MiB = np.zeros(len(throughput['Time(Seconds)']))
-    else:
-        fd_compaction_MiB = (throughput['0-read'] + throughput['0-write']) / 1e6
+    fd_compaction_MiB = (throughput['0-read'] + throughput['0-write']) / 1e6
     ax.plot(throughput['Time(Seconds)'], fd_compaction_MiB, marker='s', linewidth=linewidth, markersize=markersize, markevery=markevery)
     if version['path'] == 'rocksdb-fd':
         sd_compaction_MiB = np.zeros(len(throughput['Time(Seconds)']))
-    elif version['path'] == 'cachelib':
-        sd_compaction_MiB = (throughput['0-read'] + throughput['0-write']) / 1e6
     else:
         sd_compaction_MiB = (throughput['1-read'] + throughput['1-write']) / 1e6
     ax.plot(throughput['Time(Seconds)'], sd_compaction_MiB, marker='x', linewidth=linewidth, markersize=markersize_x, markevery=markevery)
 
-    if version['path'] == 'cachelib':
-        n = min(len(fd_MiB), len(fd_compaction_MiB), len(sd_MiB), len(sd_compaction_MiB))
-        get_MiB = np.array(fd_MiB[:n]) - np.array(fd_compaction_MiB[:n]) + np.array(sd_MiB[:n]) - np.array(sd_compaction_MiB[:n])
-        get_MiB = pd.DataFrame({
-            'Time(s)': throughput['Time(Seconds)'][:n],
-            'Throughput(MB/s)': get_MiB,
-        })
-    else:
-        rand_read_bytes = common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd)
-        rand_read_bytes = version_data.run_phase(rand_read_bytes)
-        time = (rand_read_bytes['Timestamp(ns)'][1:] - info['run-start-timestamp(ns)']) / 1e9
-        rand_read_bytes = rand_read_bytes.iloc[:,1:].sum(axis=1)
-        get_MiB = (rand_read_bytes[1:].values - rand_read_bytes[:-1].values) / 1e6
-        get_MiB = pd.DataFrame({
-            'Time(s)': time,
-            'Throughput(MB/s)': get_MiB,
-        })
-        get_MiB = get_MiB.groupby(get_MiB.index // mean_step).mean()
+    rand_read_bytes = common.read_rand_read_bytes_per_tier(data_dir, first_level_in_sd)
+    rand_read_bytes = version_data.run_phase(rand_read_bytes)
+    time = (rand_read_bytes['Timestamp(ns)'][1:] - info['run-start-timestamp(ns)']) / 1e9
+    rand_read_bytes = rand_read_bytes.iloc[:,1:].sum(axis=1)
+    get_MiB = (rand_read_bytes[1:].values - rand_read_bytes[:-1].values) / 1e6
+    get_MiB = pd.DataFrame({
+        'Time(s)': time,
+        'Throughput(MB/s)': get_MiB,
+    })
+    get_MiB = get_MiB.groupby(get_MiB.index // mean_step).mean()
     ax.plot(get_MiB['Time(s)'], get_MiB['Throughput(MB/s)'], color='black', linestyle='dashed', linewidth=linewidth, markersize=markersize, markevery=markevery)
     subfig.text(0.5, -0.35, 'Time (Seconds)', fontsize=9, ha='center', va='center', transform=subfig.transAxes)
     plt.xticks(fontsize=9)
@@ -141,7 +117,7 @@ for (i, version) in enumerate(versions):
     if i == 0:
         plt.ylabel('Throughput (MB/s)', fontsize=9)
 
-figure.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=9, ncol=5, loc='center', bbox_to_anchor=(0.5, 1.08))
+figure.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.15))
 pdf_path = 'throughput-breakdown.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
 print('Plot saved to ' + pdf_path)
