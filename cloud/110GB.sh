@@ -76,6 +76,13 @@ cloud-run run-workload "2-4-6-8" hotrap
 cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
 cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
+cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
+
+cloud-run run-hotrap "read_0.5_insert_0.5_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run run-hotrap "read_0.85_insert_0.15_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run run-hotrap "read_0.95_insert_0.05_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run run-hotrap "ycsbc_hotspot0.05_110GB_220GB" no-promote-by-flush
 
 workloads=(
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
