@@ -21,8 +21,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 
 # Paper specific settings
+SINGLE_COL_WIDTH = 8.5
 STANDARD_WIDTH = 17.8
-SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
 DOUBLE_COL_WIDTH = STANDARD_WIDTH
 def cm_to_inch(value):
     return value/2.54
