@@ -30,17 +30,41 @@ function run-hotrap {
 }
 
 workloads=(
+	"read_0.5_insert_0.5_hotspot0.05_1.1TB"
+	"read_0.75_insert_0.25_hotspot0.05_1.1TB"
+	"ycsba_hotspot0.05_1.1TB"
+	"ycsbc_hotspot0.05_1.1TB"
+	"read_0.5_insert_0.5_zipfian_1.1TB"
+	"read_0.75_insert_0.25_zipfian_1.1TB"
+	"ycsba_zipfian_1.1TB"
+	"ycsbc_zipfian_1.1TB"
+	"read_0.5_insert_0.5_uniform_1.1TB"
+	"read_0.75_insert_0.25_uniform_1.1TB"
+	"ycsba_uniform_1.1TB"
+	"ycsbc_uniform_1.1TB"
+)
+check-workload-files "${workloads[@]}"
+for workload in "${workloads[@]}"; do
+	cloud-run run-rocksdb $workload rocksdb-fd
+	cloud-run run-rocksdb $workload rocksdb-tiered
+done
+
+workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_1.1TB_2.2TB"
 	"read_0.75_insert_0.25_hotspot0.05_1.1TB_2.2TB"
 	"ycsba_hotspot0.05_1.1TB_2.2TB"
 	"ycsbc_hotspot0.05_1.1TB_2.2TB"
-	"ycsbc_zipfian_1.1TB"
+	"read_0.5_insert_0.5_zipfian_1.1TB_2.2TB"
+	"read_0.75_insert_0.25_zipfian_1.1TB_2.2TB"
+	"ycsba_zipfian_1.1TB_2.2TB"
+	"ycsbc_zipfian_1.1TB_2.2TB"
+	"read_0.5_insert_0.5_uniform_1.1TB_2.2TB"
+	"read_0.75_insert_0.25_uniform_1.1TB_2.2TB"
+	"ycsba_uniform_1.1TB_2.2TB"
+	"ycsbc_uniform_1.1TB_2.2TB"
 )
 check-workload-files "${workloads[@]}"
-
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-tiered
 	cloud-run run-hotrap $workload hotrap
 done
 wait
