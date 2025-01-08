@@ -77,13 +77,13 @@ for test in tests:
     (x, hit_rates) = common.estimate(version_data, hit_rates, 'hit-rate')
     plt.plot(x, hit_rates, linewidth=test['linewidth'], marker=test['marker'], markersize=4, markevery=int(len(x) / 5))
 
-plt.xlabel('Completed operation count', fontsize=9, loc='center')
+plt.xlabel('Completed operation count', fontsize=9, loc='center', labelpad=1.5)
 plt.xticks(fontsize=9)
 ax.ticklabel_format(useMathText=True)
 ax.xaxis.get_offset_text().set_fontsize(9)
 plt.ylabel('Hit rate', fontsize=9)
 plt.yticks(np.linspace(0, 1, 6), fontsize=9)
-legend = fig.legend([common.sysname + ' 0% W', 'no-flush 50% W', 'no-flush 25% W', 'no-flush 15% W', 'no-flush 5% W', 'no-flush 0% W'], frameon=False, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handlelength=1.3, handletextpad=0.3, columnspacing=0.7)
+legend = fig.legend([common.sysname + ' 0% W', 'no-flush 50% W', 'no-flush 25% W', 'no-flush 15% W', 'no-flush 5% W', 'no-flush 0% W'], frameon=False, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.1), handlelength=1.3, handletextpad=0.3, columnspacing=0.7)
 
 pdf_path = dir + '/progress-hit-rate-' + skewness + '.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
