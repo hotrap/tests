@@ -93,8 +93,8 @@ function run-rocksdb {
 	workload=$1
 	version=$2
 	IP=$3
-	upload-trace
 	./checkout-rocksdb $user $IP
+	upload-trace
 	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-110GB-replay.sh $prefix ../../data/$workload/$version \"--enable_fast_process\" && ../helper/rocksdb-plot.sh ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 }
@@ -102,8 +102,8 @@ function run-version {
 	workload=$1
 	version=$2
 	IP=$3
-	upload-trace
 	./checkout-$version $user $IP
+	upload-trace
 	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-110GB-replay.sh $prefix ../../data/$workload/$version \"--enable_fast_process\" && ../helper/rocksdb-plot.sh ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 }
@@ -111,8 +111,8 @@ function run-hotrap {
 	workload=$1
 	version=$2
 	IP=$3
-	upload-trace
 	./checkout-hotrap $user $IP $version
+	upload-trace
 	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-hotrap-110GB-replay.sh $prefix ../../data/$workload/$version \"--enable_fast_process\" && ../helper/hotrap-plot.sh ../../data/$workload/$version"
 	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
 }
