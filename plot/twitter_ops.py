@@ -4,9 +4,8 @@ workloads=[
     'cluster11-25x',
     'cluster17-80x',
     'cluster19-3x',
-    'cluster16-67x',
     'cluster53-12x',
-    'cluster10',
+    'cluster15',
     'cluster29',
 ]
 

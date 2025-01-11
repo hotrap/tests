@@ -5,8 +5,8 @@ import json5
 
 workloads=[
     'cluster02-283x',
-    'cluster10',
     'cluster11-25x',
+    'cluster15',
     'cluster16-67x',
     'cluster17-80x',
     'cluster18-186x',
@@ -14,10 +14,9 @@ workloads=[
     'cluster22-9x',
     'cluster23',
     'cluster29',
-    'cluster37',
     'cluster46',
     'cluster48-5x',
-    'cluster52-3x',
+    'cluster51-175x',
     'cluster53-12x',
 ]
 
