@@ -32,6 +32,7 @@ plt.rcParams['axes.unicode_minus'] = False
 figure = plt.figure(dpi = 300, figsize = (cm_to_inch(DOUBLE_COL_WIDTH), cm_to_inch(3.5)), constrained_layout=True)
 
 ticks = [0, 5e4, 10e4, 15e4]
+ylim = 17e4
 subfigs = [
     {
         'title': '(a) hotspot-5%',
@@ -161,7 +162,7 @@ for i in range(len(skewnesses)):
     ax.yaxis.get_offset_text().set_fontsize(9)
     plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=9)
     plt.yticks(subfigs[i]['ticks'], fontsize=9)
-    plt.ylim((0, max(subfigs[i]['ticks']) + 1e4))
+    plt.ylim((0, ylim))
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=9)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=9)
