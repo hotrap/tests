@@ -22,6 +22,10 @@ if [ -d ycsbc_zipfian_110GB_220GB ]; then
 	$tests/plot/ops-1.1TB.py .
 fi
 
+if [ -d read_0.95_insert_0.05_hotspot0.05_110GB_220GB ]; then
+	~/tests/plot/progress-hit-rate.py .
+fi
+
 if [ -d u24685531/hotrap ]; then
 	cd u24685531/hotrap
 	$tests/plot/dymanic-workload.py .

@@ -31,6 +31,10 @@ if [ -f ycsb-sweep.pdf ]; then
 	cp ops-1.1TB.pdf "$paper_dir"/fig/
 fi
 
+if [ -f progress-hit-rate-hotspot0.05.pdf ]; then
+	cp progress-hit-rate-hotspot0.05.pdf "$paper_dir"/fig/
+fi
+
 if [ -f u24685531/hotrap/plot/dynamic-workload.pdf ]; then
 	cp u24685531/hotrap/plot/dynamic-workload.pdf "$paper_dir"/fig/
 fi
