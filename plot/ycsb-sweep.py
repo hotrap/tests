@@ -14,7 +14,6 @@ import common
 import io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 
 # Paper specific settings
 SINGLE_COL_WIDTH = 8.5
@@ -35,16 +34,13 @@ ticks = [0, 5e4, 10e4, 15e4]
 ylim = 17e4
 subfigs = [
     {
-        'title': '(a) hotspot-5%',
-        'ticks': ticks
+        'title': '(b) hotspot-5%',
     },
     {
-        'title': '(b) zipfian',
-        'ticks': ticks
+        'title': '(c) zipfian',
     },
     {
-        'title': '(c) uniform',
-        'ticks': ticks
+        'title': '(d) uniform',
     },
 ]
 
@@ -143,12 +139,33 @@ tex = tex.getvalue()
 print(tex)
 open(os.path.join(dir, 'ycsb-sweep.tex'), mode='w').write(tex)
 
-gs = gridspec.GridSpec(1, len(skewnesses), figure=figure)
+len_load_phase = 1
+len_other = 4
+grid = (1, len_load_phase + len_other * 3)
 bar_width = 1 / (len(versions) + 1)
 cluster_width = bar_width * len(versions)
 
+plt.subplot2grid(grid, (0, 0), colspan=len_load_phase)
+ax = plt.gca()
+for (version_idx, version) in enumerate(versions):
+    x = -cluster_width / 2 + bar_width / 2 + version_idx * bar_width
+    data_dir = os.path.join(dir, 'ycsbc_hotspot0.05_110GB_220GB', version['path'])
+    info = common.VersionData(data_dir).info()
+    value = info['num-load-op'] / info['load-time(secs)']
+    ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
+ax.set_axisbelow(True)
+ax.grid(axis='y')
+ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
+ax.yaxis.get_offset_text().set_fontsize(9)
+plt.xlim((-cluster_width / 2 - bar_width / 2, cluster_width / 2 + bar_width / 2))
+plt.xticks([], [])
+plt.yticks(ticks, fontsize=9)
+plt.ylim((0, ylim))
+plt.xlabel('(a) Load-\nphase', labelpad=5, fontsize=9, loc='right')
+plt.ylabel('Operations per second', fontsize=9)
+
 for i in range(len(skewnesses)):
-    subfig = plt.subplot(gs[0, i])
+    plt.subplot2grid(grid, (0, len_load_phase + i * len_other), colspan=len_other)
     ax = plt.gca()
     ax.set_axisbelow(True)
     ax.grid(axis='y')
@@ -161,11 +178,9 @@ for i in range(len(skewnesses)):
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(9)
     plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=9)
-    plt.yticks(subfigs[i]['ticks'], fontsize=9)
+    plt.yticks(ticks, fontsize=9)
     plt.ylim((0, ylim))
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=9)
-    if i == 0:
-        plt.ylabel('Operations per second', fontsize=9)
 figure.legend(version_names, fontsize=9, ncol=len(version_names), loc='center', bbox_to_anchor=(0.51, 1.07), handletextpad=0.5, columnspacing=1.2)
 pdf_path = dir + '/ycsb-sweep.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
