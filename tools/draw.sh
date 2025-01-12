@@ -11,7 +11,6 @@ if [ -d ycsbc_zipfian_110GB_220GB ]; then
 	$tests/plot/io-breakdown-200B.py .
 
 	cd read_0.75_insert_0.25_hotspot0.05_110GB_220GB
-	$tests/plot/throughput-breakdown.py . 200
 	$tests/tex/table-no-hotness-aware-compaction.py .
 	cd ..
 

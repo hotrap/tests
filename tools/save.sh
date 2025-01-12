@@ -20,7 +20,6 @@ if [ -f ycsb-sweep.pdf ]; then
 	cp io-breakdown-200B.tex "$paper_dir"/data/
 
 	cd read_0.75_insert_0.25_hotspot0.05_110GB_220GB
-	cp throughput-breakdown.pdf "$paper_dir"/fig/
 	cp table-no-hotness-aware-compaction.tex "$paper_dir"/data/
 	cd ..
 
