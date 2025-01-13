@@ -115,7 +115,7 @@ for (i, fig) in enumerate(figs):
     ax.yaxis.get_offset_text().set_fontsize(9)
     plt.xticks(range(0, len(rw_ratios)), rw_ratios, fontsize=9)
     plt.yticks(fig['ticks'], fontsize=9)
-    plt.ylim((0, max(fig['ticks']) + 1e4))
+    plt.ylim(bottom=0)
     plt.xlabel(fig['title'], labelpad=1, fontsize=9)
     if i == 0:
         plt.ylabel('Operations per second', fontsize=9, y=0.4)
