@@ -64,6 +64,11 @@ versions=[
         'color': plt.get_cmap('Set2')(1),
     },
     {
+        'path': 'cachelib',
+        'pattern': '---',
+        'color': plt.get_cmap('tab20c')(1),
+    },
+    {
         'path': 'SAS-Cache',
         'pattern': 'XXX',
         'color': plt.get_cmap('Set2')(3),
@@ -74,17 +79,12 @@ versions=[
         'color': plt.get_cmap('Set2')(5),
     },
     {
-        'path': 'cachelib',
-        'pattern': '---',
-        'color': plt.get_cmap('tab20c')(1),
-    },
-    {
         'path': 'hotrap',
         'pattern': '///',
         'color': plt.get_cmap('Set2')(0),
     },
 ]
-version_names = ['RocksDB-FD', 'RocksDB-tiered', 'SAS-Cache', 'PrismDB', 'RocksDB-CL', common.sysname]
+version_names = ['RocksDB-FD', 'RocksDB-tiering', 'RocksDB-caching', 'SAS-Cache', 'PrismDB', common.sysname]
 size='110GB_220GB'
 
 skewness_ratio_version_ops = {}

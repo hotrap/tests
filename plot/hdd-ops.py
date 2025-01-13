@@ -42,7 +42,7 @@ versions = [
         'yticks': [0, 1e4, 2e4, 3e4, 4e4],
     },
     {
-        'name': '(b) RocksDB-tiered',
+        'name': '(b) RocksDB-tiering',
         'path': 'ycsbc_hotspot0.01_110GB_1GB/rocksdb-tiered',
         'ymax': 400,
         'yticks': [0, 100, 200, 300, 400],

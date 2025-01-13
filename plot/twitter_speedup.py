@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
     max_speedup = max(speedups)
     tex = io.StringIO()
-    print('% Max speedup over RocksDB-tiered under twitter production workloads', file=tex)
+    print('% Max speedup over RocksDB-tiering under twitter production workloads', file=tex)
     print('\defmacro{MaxSpeedupTwitterRocksdbTiered}{%.2f}' %max_speedup, file=tex)
 
     tex = tex.getvalue()

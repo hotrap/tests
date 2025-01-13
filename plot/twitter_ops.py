@@ -52,6 +52,11 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(1),
         },
         {
+            'path': 'cachelib',
+            'pattern': '---',
+            'color': plt.get_cmap('tab20c')(1),
+        },
+        {
             'path': 'SAS-Cache',
             'pattern': 'XXX',
             'color': plt.get_cmap('Set2')(3),
@@ -62,17 +67,12 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(5),
         },
         {
-            'path': 'cachelib',
-            'pattern': '---',
-            'color': plt.get_cmap('tab20c')(1),
-        },
-        {
             'path': 'hotrap',
             'pattern': '///',
             'color': plt.get_cmap('Set2')(0),
         },
     ]
-    version_names = ['RocksDB-FD', 'RocksDB-tiered', 'SAS-Cache', 'PrismDB', 'RocksDB-CL', common.sysname]
+    version_names = ['RocksDB-FD', 'RocksDB-tiering', 'RocksDB-caching', 'SAS-Cache', 'PrismDB', common.sysname]
 
     workload_version_ops = {}
     for workload in workloads:
@@ -118,10 +118,10 @@ if __name__ == "__main__":
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(9)
     plt.xticks(range(0, len(workloads)), ids, fontsize=9)
-    plt.yticks([0, 5e4, 10e4, 15e4, 20e4], fontsize=9)
+    plt.yticks([0, 10e4, 20e4, 30e4], fontsize=9)
     plt.xlabel('Cluster ID', labelpad=1, fontsize=9)
     plt.ylabel('Operations per second', fontsize=9, y=0.45)
-    fig.legend(version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.5, columnspacing=1)
+    fig.legend(version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.2, columnspacing=0.6)
     pdf_path = dir + '/twitter-ops.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)

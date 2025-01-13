@@ -123,7 +123,8 @@ def draw_io_breakdown(dir, size, pdf_name):
                 height = device_io - bottom
                 ax.bar(x, height, bottom=bottom, width=bar_width, hatch=patterns[-1], color=version['colors'][-1], edgecolor='black', linewidth=0.5)
         plt.xticks(range(0, len(cluster_labels)), cluster_labels, fontsize=9)
-        plt.yticks(fontsize=9)
+        plt.yticks([0, 10, 20], fontsize=9)
+        plt.ylim((0, 21))
         plt.ylabel('I/O (TB)', labelpad=0.5, fontsize=9)
 
     min_max_portion = [1, 0]
@@ -138,8 +139,8 @@ def draw_io_breakdown(dir, size, pdf_name):
         ],
         ['RocksDB-FD', common.sysname],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=7, ncol=2, loc='center',
-        bbox_to_anchor=(0.43, subfig_anchor_y),
+        fontsize=7, ncol=2, loc='right',
+        bbox_to_anchor=(1.03, subfig_anchor_y),
         handletextpad=0.2, columnspacing=0.6,
     )
 
@@ -153,10 +154,10 @@ def draw_io_breakdown(dir, size, pdf_name):
             common.MulticolorPatch(colors=rocksdb_tiered['legend-colors']),
             common.MulticolorPatch(colors=promote_stably_hot['legend-colors']),
         ],
-        ['RocksDB-tiered', common.sysname],
+        ['RocksDB-tiering', common.sysname],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=7, ncol=2, loc='center',
-        bbox_to_anchor=(0.39, subfig_anchor_y),
+        fontsize=7, ncol=2, loc='right',
+        bbox_to_anchor=(1.03, subfig_anchor_y),
         handletextpad=0.2, columnspacing=0.6,
     )
 

@@ -128,7 +128,7 @@ def draw_cputime_breakdown(dir, size, pdf_name):
         ],
         ['RocksDB-FD', common.sysname],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(0.45, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
+        fontsize=7, ncol=2, loc='right', bbox_to_anchor=(1.03, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
     )
 
     workload='uniform'
@@ -141,9 +141,9 @@ def draw_cputime_breakdown(dir, size, pdf_name):
             common.MulticolorPatch(colors=rocksdb_tiered['colors']),
             common.MulticolorPatch(colors=promote_stably_hot['colors']),
         ],
-        ['RocksDB-tiered', common.sysname],
+        ['RocksDB-tiering', common.sysname],
         handler_map={common.MulticolorPatch: common.MulticolorPatchHandler()},
-        fontsize=7, ncol=2, loc='center', bbox_to_anchor=(0.41, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
+        fontsize=7, ncol=2, loc='right', bbox_to_anchor=(1.03, subfig_anchor_y), handletextpad=0.2, columnspacing=0.6,
     )
 
     labels = []

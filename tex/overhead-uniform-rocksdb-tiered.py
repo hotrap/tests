@@ -15,7 +15,7 @@ ops200B = json5.load(open(os.path.join(dir, 'ops-200B.json')))
 overhead = max(ops1KiB['OverheadUniformRocksdbTiered1KiB'], ops200B['OverheadUniformRocksdbTiered200B'])
 
 tex = io.StringIO()
-print('% Max overhead under uniform workloads compared to RocksDB-tiered', file=tex)
+print('% Max overhead under uniform workloads compared to RocksDB-tiering', file=tex)
 print('\defmacro{OverheadUniformRocksdbTiered}{%.1f\\%%}' %(overhead * 100), file=tex)
 print('\defmacro{OverheadUniformRocksdbTieredCeil}{%d\\%%}' %math.ceil(overhead * 100), file=tex)
 tex = tex.getvalue()

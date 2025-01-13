@@ -48,7 +48,7 @@ versions = {
         'color': plt.get_cmap('Set2')(0),
     },
 }
-version_names = ['RocksDB-FD', 'RocksDB-tiered', common.sysname]
+version_names = ['RocksDB-FD', 'RocksDB-tiering', common.sysname]
 figs = [
     {
         'title': '(a) hotspot-5%',

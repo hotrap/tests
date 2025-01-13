@@ -77,7 +77,7 @@ versions = [
         'color': plt.get_cmap('Set2')(0),
     }
 ]
-labels = ['RocksDB-FD', 'RocksDB-tiered', common.sysname]
+labels = ['RocksDB-FD', 'RocksDB-tiering', common.sysname]
 
 gs = gridspec.GridSpec(1, len(figs), figure=figure)
 num_clusters = len(versions)
