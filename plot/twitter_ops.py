@@ -72,7 +72,7 @@ if __name__ == "__main__":
             'color': plt.get_cmap('Set2')(0),
         },
     ]
-    version_names = ['RocksDB-FD', 'RocksDB-tiering', 'RocksDB-caching', 'SAS-Cache', 'PrismDB', common.sysname]
+    version_names = ['RocksDB-FD', 'RocksDB-tiering', 'RocksDB-CL', 'SAS-Cache', 'PrismDB', common.sysname]
 
     workload_version_ops = {}
     for workload in workloads:
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     plt.yticks([0, 10e4, 20e4, 30e4], fontsize=9)
     plt.xlabel('Cluster ID', labelpad=1, fontsize=9)
     plt.ylabel('Operations per second', fontsize=9, y=0.45)
-    fig.legend(version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.2, columnspacing=0.6)
+    fig.legend(version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.5, columnspacing=1)
     pdf_path = dir + '/twitter-ops.pdf'
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
     print('Plot saved to ' + pdf_path)
