@@ -23,8 +23,8 @@ def calc(data_dir):
     num_bytes = pd.read_table(data_dir + '/promoted-or-retained-bytes', sep='\s+')
     num_bytes = num_bytes[(num_bytes['Timestamp(ns)'] >= info['run-start-timestamp(ns)']) & (num_bytes['Timestamp(ns)'] < info['run-end-timestamp(ns)'])]
     num_bytes = num_bytes.iloc[-1]
-    promoted = num_bytes['2fdlast'] + num_bytes['by-flush']
-    retained = num_bytes['retained.fd']
+    promoted = num_bytes['by-flush'] + num_bytes['by-compaction']
+    retained = num_bytes['2fdlast'] - num_bytes['by-compaction']
 
     compaction_bytes = run_phase(info, common.read_compaction_bytes(data_dir))
     compaction_bytes['read'] -= compaction_bytes.iloc[0]['read']
