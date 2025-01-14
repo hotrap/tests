@@ -111,30 +111,36 @@ json_output = json_output.getvalue()
 print(json_output)
 open(os.path.join(dir, 'ycsb-sweep.json'), mode='w').write(json_output)
 
-def speedup_ratio_skewness(ratio, skewness):
-    version_ops = skewness_ratio_version_ops[skewness][ratio]
-    hotrap_ops = version_ops['hotrap']
-    other_sys_max_ops = 0
-    for (version, ops) in version_ops.items():
-        if version == 'hotrap' or version == 'rocksdb-fd':
-            continue
-        other_sys_max_ops = max(other_sys_max_ops, ops)
-    return hotrap_ops / other_sys_max_ops
-def speedup(ratio):
-    speedup_hotspot = speedup_ratio_skewness(ratio, 'hotspot0.05')
-    speedup_zipfian = speedup_ratio_skewness(ratio, 'zipfian')
-    return max(speedup_hotspot, speedup_zipfian)
+def speedup(ratio, version):
+    ret = None
+    for skewness in skewnesses:
+        version_ops = skewness_ratio_version_ops[skewness][ratio]
+        cur = version_ops['hotrap'] / version_ops[version]
+        if ret is None:
+            ret = cur
+        else:
+            ret = max(ret, cur)
+    return ret
 
 tex = io.StringIO()
-speedup_ro = speedup('RO')
-print('% Speedup over second best under read-only workloads', file=tex)
-print('\defmacro{SpeedupRO}{%.1f}' %speedup_ro, file=tex)
-speedup_rw = speedup('RW')
-print("% Speedup over second best under read-write workloads", file=tex)
+print('% Speedup over the second best tiering baseline under read-only workloads', file=tex)
+print('\defmacro{SpeedupROTiering}{%.1f}' %min(speedup('RO', 'rocksdb-tiered'), speedup('RO', 'prismdb')), file=tex)
+
+print('% Speedup over the second best caching baseline under write-heavy workloads', file=tex)
+print('\defmacro{SpeedupWHCaching}{%.1f}' %min(speedup('WH', 'cachelib'), speedup('WH', 'SAS-Cache')), file=tex)
+
+speedup_rw = None
+for version in versions:
+    if version['path'] == 'hotrap' or version['path'] == 'rocksdb-fd':
+        continue
+    cur = speedup('RW', version['path'])
+    if speedup_rw is None:
+        speedup_rw = cur
+    else:
+        speedup_rw = min(speedup_rw, cur)
+print("% Speedup over the second best baseline under read-write workloads", file=tex)
 print('\defmacro{SpeedupRW}{%.1f}' %speedup_rw, file=tex)
-max_speedup_ro_rw = max(speedup_ro, speedup_rw)
-print("% Max speedup over second best under RO & RW", file=tex)
-print('\defmacro{MaxSpeedupRORW}{%.1f}' %max_speedup_ro_rw, file=tex)
+
 tex = tex.getvalue()
 print(tex)
 open(os.path.join(dir, 'ycsb-sweep.tex'), mode='w').write(tex)
