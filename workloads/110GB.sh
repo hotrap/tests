@@ -56,12 +56,23 @@ for workload in "${workloads[@]}"; do
 	run-hotrap $workload hotrap
 done
 
-run-workload "u24685531"
-run-workload "2-4-6-8"
+run-workload "u24685531" hotrap
+run-workload "2-4-6-8" hotrap
+run-workload "5-shift-5" hotrap
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
+
+workloads=(
+	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
+	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
+	"read_0.85_insert_0.15_hotspot0.05_110GB_220GB"
+	"read_0.95_insert_0.05_hotspot0.05_110GB_220GB"
+	"ycsbc_hotspot0.05_110GB_220GB"
+)
+for workload in "${workloads[@]}"; do
+	~/loaded/deploy.sh 110GB/hotrap
+	run-hotrap "$workload" no-promote-by-flush
+done
 
 workloads=(
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
