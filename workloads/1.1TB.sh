@@ -27,7 +27,6 @@ workloads=(
 	"ycsba_uniform_1.1TB"
 	"ycsbc_uniform_1.1TB"
 )
-run-rocksdb "read_0.75_insert_0.25_hotspot0.05_1.1TB" rocksdb-fd
 for workload in "${workloads[@]}"; do
 	run-rocksdb $workload rocksdb-fd
 	run-rocksdb $workload rocksdb-tiered
