@@ -45,8 +45,8 @@ workloads=(
 )
 check-workload-files "${workloads[@]}"
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-tiered
+	cloud-run machine-config/1.1TB.json run-rocksdb $workload rocksdb-fd
+	cloud-run machine-config/1.1TB.json run-rocksdb $workload rocksdb-tiered
 done
 
 workloads=(
@@ -65,6 +65,6 @@ workloads=(
 )
 check-workload-files "${workloads[@]}"
 for workload in "${workloads[@]}"; do
-	cloud-run run-hotrap $workload hotrap
+	cloud-run machine-config/1.1TB.json run-hotrap $workload hotrap
 done
 wait

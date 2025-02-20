@@ -64,25 +64,25 @@ workloads=(
 check-workload-files "${workloads[@]}"
 
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-tiered
-	cloud-run run-version $workload prismdb
-	cloud-run run-version $workload SAS-Cache
-	cloud-run run-version $workload cachelib
-	cloud-run run-hotrap $workload hotrap
+	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-fd
+	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-tiered
+	cloud-run machine-config/110GB.json run-version $workload prismdb
+	cloud-run machine-config/110GB.json run-version $workload SAS-Cache
+	cloud-run machine-config/110GB.json run-version $workload cachelib
+	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
 done
-cloud-run run-workload "u24685531" hotrap
-cloud-run run-workload "2-4-6-8" hotrap
-cloud-run run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
-cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
-cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
-cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
+cloud-run machine-config/110GB.json run-workload "u24685531" hotrap
+cloud-run machine-config/110GB.json run-workload "2-4-6-8" hotrap
+cloud-run machine-config/110GB.json run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
+cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
+cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
+cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
 
-cloud-run run-hotrap "read_0.5_insert_0.5_hotspot0.05_110GB_220GB" no-promote-by-flush
-cloud-run run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-flush
-cloud-run run-hotrap "read_0.85_insert_0.15_hotspot0.05_110GB_220GB" no-promote-by-flush
-cloud-run run-hotrap "read_0.95_insert_0.05_hotspot0.05_110GB_220GB" no-promote-by-flush
-cloud-run run-hotrap "ycsbc_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run machine-config/110GB.json run-hotrap "read_0.5_insert_0.5_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run machine-config/110GB.json run-hotrap "read_0.85_insert_0.15_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run machine-config/110GB.json run-hotrap "read_0.95_insert_0.05_hotspot0.05_110GB_220GB" no-promote-by-flush
+cloud-run machine-config/110GB.json run-hotrap "ycsbc_hotspot0.05_110GB_220GB" no-promote-by-flush
 
 workloads=(
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
@@ -95,7 +95,7 @@ workloads=(
 	"ycsbc_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	cloud-run run-version $workload mutant
+	cloud-run machine-config/110GB.json run-version $workload mutant
 done
 
 workloads=(
@@ -105,7 +105,7 @@ workloads=(
 	"ycsba_uniform_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	cloud-run run-version $workload mutant "--run_90p_ops=10000"
+	cloud-run machine-config/110GB.json run-version $workload mutant "--run_90p_ops=10000"
 done
 
 hotspot_workloads=(
@@ -124,11 +124,11 @@ check-workload-files "${hotspot_workloads[@]}"
 check-workload-files "${uniform_workloads[@]}"
 
 for workload in "${hotspot_workloads[@]}"; do
-	cloud-run run-hotrap $workload hotrap
-	cloud-run run-rocksdb $workload rocksdb-fd
+	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
+	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-fd
 done
 for workload in "${uniform_workloads[@]}"; do
-	cloud-run run-hotrap $workload hotrap
-	cloud-run run-rocksdb $workload rocksdb-tiered
+	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
+	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-tiered
 done
 wait

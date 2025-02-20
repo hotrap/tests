@@ -73,10 +73,12 @@ function cloud-run {
 		echo "max_running_instances not set!"
 		return 1
 	fi
-	if [[ $# < 3 ]]; then
-		echo Usage: $0 command-to-run workload version other-arguments. workload, version, instance-ip, and other arguments will be passed to \"command-to-run\" as arguments.
+	if [[ $# < 4 ]]; then
+		echo Usage: $0 machine-config command-to-run workload version other-arguments. workload, version, instance-ip, and other arguments will be passed to \"command-to-run\" as arguments.
 		return 1
 	fi
+	machine_config=$1
+	shift
 
 	if [ ! "$num_running_instances" ]; then
 		num_running_instances=1
@@ -92,10 +94,10 @@ function cloud-run {
 		while ! ./aliyun/instance-name-unused.py $config_file "$instance_name_prefix$suffix"; do
 			suffix=$(($suffix+1))
 		done
-		instance_id=$(./aliyun/create.py $config_file "$instance_name_prefix$suffix")
+		instance_id=$(./aliyun/create.py $config_file $machine_config "$instance_name_prefix$suffix")
 		suffix=$(($suffix+1))
 	else
-		instance_id=$(./aws/create.py $config_file)
+		instance_id=$(./aws/create.py $config_file $machine_config)
 	fi
 
 	if [ ! "$instance_id" ]; then

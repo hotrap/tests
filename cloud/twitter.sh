@@ -118,12 +118,12 @@ function run-hotrap {
 }
 
 for workload in "${workloads[@]}"; do
-	cloud-run run-rocksdb $workload rocksdb-fd
-	cloud-run run-rocksdb $workload rocksdb-tiered
-	cloud-run run-version $workload SAS-Cache
-	cloud-run run-version $workload mutant
-	cloud-run run-version $workload prismdb
-	cloud-run run-version $workload cachelib
-	cloud-run run-hotrap $workload hotrap
+	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-fd
+	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-tiered
+	cloud-run machine-config/110GB.json run-version $workload SAS-Cache
+	cloud-run machine-config/110GB.json run-version $workload mutant
+	cloud-run machine-config/110GB.json run-version $workload prismdb
+	cloud-run machine-config/110GB.json run-version $workload cachelib
+	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
 done
 wait

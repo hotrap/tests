@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 import sys
-if len(sys.argv) != 3:
-    print("Usage: " + sys.argv[0] + " config-file instance-name")
+if len(sys.argv) != 4:
+    print("Usage: " + sys.argv[0] + " config-file machine-config instance-name")
     exit(1)
 
 import json
 with open(sys.argv[1], "r") as config_file:
     config = json.load(config_file)
-
-instance_name = sys.argv[2]
+machine_config = json.load(open(sys.argv[2]))
+instance_name = sys.argv[3]
 
 from common import *
 
@@ -38,7 +38,7 @@ def create_after_pay_instance(client, instance_name):
     request.set_VSwitchId(config['vswitch_id'])
     request.set_SystemDiskCategory('cloud_essd')
     request.set_SystemDiskPerformanceLevel('PL0')
-    request.set_SystemDiskSize(1024)
+    request.set_SystemDiskSize(machine_config['SlowDiskGiB'])
     response = client.send_request(request)
     instance_id = response.get('InstanceId')
     return instance_id

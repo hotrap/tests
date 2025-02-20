@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import sys
-if len(sys.argv) != 2:
-    print('Usage: ' + sys.argv[0] + ' config-file')
+if len(sys.argv) != 3:
+    print('Usage: ' + sys.argv[0] + ' aws-config machine-config')
     exit(1)
 
 import json5
-config = json5.load(open(sys.argv[1]))
+aws_config = json5.load(open(sys.argv[1]))
+machine_config = json5.load(open(sys.argv[2]))
 
 import boto3
 client = boto3.client('ec2')
@@ -17,20 +18,20 @@ response = client.run_instances(
             'Ebs': {
                 'DeleteOnTermination': True,
                 'Iops': 10000,
-                'VolumeSize': 4096, # GiBs
+                'VolumeSize': machine_config['SlowDiskGiB'],
                 'VolumeType': 'gp3',
                 'Throughput': 300, # MiB/s
                 'Encrypted': False
             },
         },
     ],
-    ImageId=config['ImageId'],
+    ImageId=aws_config['ImageId'],
     InstanceType='i4i.2xlarge',
-    KeyName=config['KeyName'],
+    KeyName=aws_config['KeyName'],
     MinCount=1,
     MaxCount=1,
     SecurityGroupIds=[
-        config['SecurityGroupId'],
+        aws_config['SecurityGroupId'],
     ],
     TagSpecifications=[
         {
@@ -38,7 +39,7 @@ response = client.run_instances(
             'Tags': [
                 {
                     'Key': 'Name',
-                    'Value': config['InstanceName'],
+                    'Value': aws_config['InstanceName'],
                 },
             ],
         },
