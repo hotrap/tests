@@ -1,13 +1,21 @@
-build_rocksdb() {
+build_rocksdb_common() {
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
-	#cmake .. -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on -DPORTABLE=ON
-	#cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on
+	cmake .. -DUSE_RTTI=true -DFAIL_ON_WARNINGS=OFF -DWITH_TBB=on "$@"
 	make -j$(nproc) rocksdb-shared
 	#make -j$(nproc) rocksdb
 	cd ..
 }
+build_rocksdb() {
+	build_rocksdb_common -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g"
+}
+build_rocksdb_portable() {
+	build_rocksdb -DPORTABLE=ON
+}
+build_rocksdb_debug() {
+	build_rocksdb_common -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON
+}
+
 build_db_bench_rocksdb() {
 	build_rocksdb
 	cd build
@@ -52,10 +60,14 @@ build_ralt() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build/ $1
+	cmake .. -DROCKSDB_INCLUDE=$workspace/hotrap/include -DROCKSDB_LIB=$workspace/hotrap/build/ "$@"
 	make ralt
 	cd ..
 }
+build_ralt_debug() {
+	build_ralt -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON
+}
+
 build_kvexe_viscnts_splay_rs() {
 	mkdir -p build
 	cd build
@@ -64,14 +76,22 @@ build_kvexe_viscnts_splay_rs() {
 	make
 	cd ..
 }
-build_kvexe_ralt() {
+
+build_kvexe_ralt_common() {
 	workspace=$(realpath ..)
 	mkdir -p build
 	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/hotrap/include -DROCKSDB_LIB_DIR=$workspace/hotrap/build -DRALT_INCLUDE_DIR=$workspace/RALT/include -DRALT_LIB_DIR=$workspace/RALT/build
+	cmake .. -DROCKSDB_INCLUDE_DIR=$workspace/hotrap/include -DROCKSDB_LIB_DIR=$workspace/hotrap/build -DRALT_INCLUDE_DIR=$workspace/RALT/include -DRALT_LIB_DIR=$workspace/RALT/build "$@"
 	make
 	cd ..
 }
+build_kvexe_ralt() {
+	build_kvexe_ralt_common -DCMAKE_BUILD_TYPE=RelWithDebInfo
+}
+build_kvexe_ralt_debug() {
+	build_kvexe_ralt_common -DCMAKE_BUILD_TYPE=Debug -DWITH_ASAN=ON
+}
+
 build_kvexe_rocksdb() {
 	mkdir -p build
 	cd build
