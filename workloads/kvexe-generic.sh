@@ -19,7 +19,7 @@ workspace=$(realpath ../..)
 ulimit -n 100000
 # Dump core when crash
 ulimit -c unlimited
-export ASAN_OPTIONS=abort_on_error=1
+export ASAN_OPTIONS="abort_on_error=1:disable_coredump=0"
 cd $DIR
 $workspace/tests/helper/exe-while.sh . sh -c "$command \
 --switches=0x1 \
