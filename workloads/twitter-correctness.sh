@@ -33,7 +33,7 @@ function run-rocksdb {
 	DIR=../../data/$1/$2-correctness
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-$2-110GB-replay.sh $prefix-load $prefix-run $DIR "--export_ans_xxh64"
+	./test-$2-110GB-replay.sh $prefix $DIR "--export_ans_xxh64"
 	../helper/rocksdb-plot.sh $DIR
 }
 function run-hotrap {
@@ -41,7 +41,7 @@ function run-hotrap {
 	DIR=../../data/$1/$2-correctness
 	echo Result directory: $DIR
 	prefix=../../twitter/processed/$1
-	./test-hotrap-110GB-replay.sh $prefix-load $prefix-run $DIR "--export_ans_xxh64"
+	./test-hotrap-110GB-replay.sh $prefix $DIR "--export_ans_xxh64"
 	../helper/hotrap-plot.sh $DIR
 	../tools/check-ans.sh ../../data/$1/rocksdb-fd-correctness/ $DIR/
 }
