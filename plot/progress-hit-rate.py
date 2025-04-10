@@ -53,7 +53,7 @@ tests = [
         'marker': 's',
     },
     {
-        'workload': 'read_0.95_insert_0.05',
+        'workload': 'read_0.9_insert_0.1',
         'version': 'no-promote-by-flush',
         'linewidth': 0.5,
         'marker': 'X',
@@ -83,7 +83,7 @@ ax.ticklabel_format(useMathText=True)
 ax.xaxis.get_offset_text().set_fontsize(9)
 plt.ylabel('Hit rate', fontsize=9)
 plt.yticks(np.linspace(0, 1, 6), fontsize=9)
-legend = fig.legend([common.sysname + ' 0% W', 'no-flush 50% W', 'no-flush 25% W', 'no-flush 15% W', 'no-flush 5% W', 'no-flush 0% W'], frameon=False, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.1), handlelength=1.3, handletextpad=0.3, columnspacing=0.7)
+legend = fig.legend([common.sysname + ' 0% W', 'no-flush 50% W', 'no-flush 25% W', 'no-flush 15% W', 'no-flush 10% W', 'no-flush 0% W'], frameon=False, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.1), handlelength=1.3, handletextpad=0.3, columnspacing=0.7)
 
 pdf_path = dir + '/progress-hit-rate-' + skewness + '.pdf'
 plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)

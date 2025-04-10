@@ -66,11 +66,10 @@ workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
 	"read_0.85_insert_0.15_hotspot0.05_110GB_220GB"
-	"read_0.95_insert_0.05_hotspot0.05_110GB_220GB"
+	"read_0.9_insert_0.1_hotspot0.05_110GB_220GB"
 	"ycsbc_hotspot0.05_110GB_220GB"
 )
 for workload in "${workloads[@]}"; do
-	~/loaded/deploy.sh 110GB/hotrap
 	run-hotrap "$workload" no-promote-by-flush
 done
 
