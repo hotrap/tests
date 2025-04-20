@@ -13,8 +13,6 @@ mkdir data
 
 git clone -b v2023.11.20.00-debian12 https://github.com/hotrap/CacheLib.git
 cd CacheLib
-./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
-cd ..
 cat >> ~/.profile <<EOF
 export CACHELIB_HOME=$(pwd)/opt/cachelib
 export CPLUS_INCLUDE_PATH=\$CACHELIB_HOME/include:\$CPLUS_INCLUDE_PATH
@@ -22,9 +20,14 @@ export LIBRARY_PATH=\$CACHELIB_HOME/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=\$CACHELIB_HOME/lib:\$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=\$CACHELIB_HOME/lib/cmake:\$CMAKE_PREFIX_PATH
 EOF
+. ~/.profile
+./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
+cd ..
 
 git clone git@github.com:hotrap/hotrap.git rocksdb
-cp -r rocksdb hotrap
+if [ ! -d hotrap ]; then
+	cp -r rocksdb hotrap
+fi
 git clone git@github.com:hotrap/SAS-Cache.git
 git clone --recursive git@github.com:hotrap/prismdb.git
 git clone git@github.com:hotrap/mutant.git
