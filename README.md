@@ -79,6 +79,12 @@ Export environment variable `sd_dev` to be the device in iostat that is used as 
 
 Restart your shell to make changes take effect.
 
+## Process twitter traces
+
+1. Download twitter traces from <http://iotta.snia.org/traces/key-value/28652>
+
+2. For each cluster: `$workspace/tests/helper/process-trace.sh <cluster-ID> <output-dir>`. For example, if your workspace is the home directory, and you want to put processed results in `~/twitter/processed`, for cluster17: `~/tests/helper/process-trace.sh cluster17 ~/twitter/processed`
+
 ## Run tests on a local machine
 
 You may want to comment out systems or workloads that you don't want to test.

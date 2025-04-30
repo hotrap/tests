@@ -11,7 +11,7 @@ if [ -f	$cluster_id.sort.zst ]; then
 else
 	i=0
 	while true; do
-		trace_file=$cluster_id.$(printf "%03d" $i)
+		trace_file="$cluster_id.$(printf "%03d" $i)"
 		if [ ! -f $trace_file.zst ]; then
 			break
 		fi
