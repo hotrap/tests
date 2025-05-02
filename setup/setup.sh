@@ -24,17 +24,17 @@ EOF
 ./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
 cd ..
 
-git clone git@github.com:hotrap/hotrap.git rocksdb
+git clone https://github.com/hotrap/hotrap.git rocksdb
 if [ ! -d hotrap ]; then
 	cp -r rocksdb hotrap
 fi
-git clone git@github.com:hotrap/SAS-Cache.git
-git clone --recursive git@github.com:hotrap/prismdb.git
+git clone https://github.com/hotrap/SAS-Cache.git
+git clone --recursive https://github.com/hotrap/prismdb.git
 
-git clone --recursive git@github.com:hotrap/kvexe.git
-git clone -b rocksdb --recursive git@github.com:hotrap/kvexe.git kvexe-rocksdb
+git clone --recursive https://github.com/hotrap/kvexe.git
+git clone -b rocksdb --recursive https://github.com/hotrap/kvexe.git kvexe-rocksdb
 
-git clone --recursive git@github.com:hotrap/RALT.git
+git clone --recursive https://github.com/hotrap/RALT.git
 
 # Correctness checking
 git clone https://github.com/brianfrankcooper/YCSB.git
