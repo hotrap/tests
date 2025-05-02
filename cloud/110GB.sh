@@ -74,8 +74,6 @@ done
 cloud-run machine-config/110GB.json run-workload "u24685531" hotrap
 cloud-run machine-config/110GB.json run-workload "2-4-6-8" hotrap
 cloud-run machine-config/110GB.json run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
-cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-retain
-cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-promote-by-compaction
 cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
 
 cloud-run machine-config/110GB.json run-hotrap "read_0.5_insert_0.5_hotspot0.05_110GB_220GB" no-promote-by-flush

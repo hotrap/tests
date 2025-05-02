@@ -35,5 +35,3 @@ for workload in "${workloads[@]}"; do
 	run-hotrap $workload hotrap
 done
 run-hotrap "ycsbc_uniform_11GB" promote-accessed
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-retain
-run-hotrap "read_0.75_insert_0.25_hotspot0.05_11GB" no-promote-by-compaction
