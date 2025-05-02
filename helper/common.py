@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-sysname = 'Hodalet'
+sysname = 'HotRAP'
 
 # https://stackoverflow.com/a/77614517/13688160
 # define an object that will be used by the legend
