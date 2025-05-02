@@ -62,10 +62,10 @@ add_phase(3.3e9)
 add_phase(1.1e9)
 hotspot_sizes = np.array(hotspot_sizes)
 
-plt.plot(hotspot_sizes[:,0], hotspot_sizes[:,1] / 1e9, linewidth=0.5, marker='^', markersize=4)
-plt.plot(x, real_hot_size / 1e9, linewidth=0.5, marker='o', markersize=4, markevery=int(len(x) / 5))
+plt.plot(hotspot_sizes[:,0], hotspot_sizes[:,1] / 1e9, linewidth=1, marker='^', markersize=4, linestyle='dashed')
+plt.plot(x, real_hot_size / 1e9, linewidth=1, marker='o', markersize=4, markevery=int(len(x) / 5))
 def draw_hotspot_shifts(ax):
-    plt.axvline(132e7, linewidth=0.5, linestyle='--', color='black')
+    plt.axvline(132e7, linewidth=1, linestyle='--', color='black')
     plt.text(0.66, 1.05, 'Hotspot shifts', transform=ax.transAxes, fontsize=9)
 draw_hotspot_shifts(ax1)
 
@@ -82,7 +82,7 @@ ax2.grid(axis='y')
 
 hit_rates = common.read_hit_rates(version_data.data_dir)
 (x, hit_rates) = common.estimate(version_data, hit_rates, 'hit-rate')
-plt.plot(x, hit_rates, linewidth=0.5)
+plt.plot(x, hit_rates, linewidth=1)
 draw_hotspot_shifts(ax2)
 plt.ylabel('Hit rate', fontsize=9)
 plt.yticks(fontsize=9)
@@ -100,7 +100,7 @@ def mean_every_n(a, n):
         res = np.append(res, a[split:].mean())
     return res
 
-progress = pd.read_table(data_dir + '/progress', delim_whitespace=True)
+progress = pd.read_table(data_dir + '/progress', sep='\s+')
 info_json = os.path.join(data_dir, 'info.json')
 info_json = json5.load(open(info_json))
 progress = progress[(progress['Timestamp(ns)'] >= info_json['run-start-timestamp(ns)']) & (progress['Timestamp(ns)'] < info_json['run-end-timestamp(ns)'])]
@@ -111,7 +111,7 @@ progress = progress[:-1]
 progress = mean_every_n(progress, mean_step)
 ops = mean_every_n(ops, mean_step)
 
-plt.plot(progress, ops, linewidth=0.5)
+plt.plot(progress, ops, linewidth=1)
 draw_hotspot_shifts(ax3)
 
 formatter = ScalarFormatter(useMathText=True)
