@@ -108,14 +108,6 @@ build_kvexe_prismdb() {
 	make
 	cd ..
 }
-build_kvexe_mutant() {
-	workspace=$(realpath ..)
-	mkdir -p build
-	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DROCKSDB_INCLUDE_DIR=$workspace/mutant/include -DROCKSDB_LIB_DIR=$workspace/mutant
-	make
-	cd ..
-}
 build_kvexe_sas() {
 	workspace=$(realpath ..)
 	mkdir -p build

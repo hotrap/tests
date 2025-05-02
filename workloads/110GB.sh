@@ -73,30 +73,6 @@ for workload in "${workloads[@]}"; do
 	run-hotrap "$workload" no-promote-by-flush
 done
 
-workloads=(
-	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"
-	"ycsba_hotspot0.05_110GB_220GB"
-	"ycsbc_hotspot0.05_110GB_220GB"
-	"read_0.75_insert_0.25_zipfian_110GB_220GB"
-	"ycsba_zipfian_110GB_220GB"
-	"ycsbc_zipfian_110GB_220GB"
-	"read_0.75_insert_0.25_uniform_110GB_220GB"
-	"ycsbc_uniform_110GB_220GB"
-)
-for workload in "${workloads[@]}"; do
-	run-version $workload mutant
-done
-
-workloads=(
-	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
-	"read_0.5_insert_0.5_zipfian_110GB_220GB"
-	"read_0.5_insert_0.5_uniform_110GB_220GB"
-	"ycsba_uniform_110GB_220GB"
-)
-for workload in "${workloads[@]}"; do
-	run-version $workload mutant "--run_90p_ops=10000"
-done
-
 hotspot_workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB_200B"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB_200B"

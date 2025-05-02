@@ -30,7 +30,6 @@ if [ ! -d hotrap ]; then
 fi
 git clone git@github.com:hotrap/SAS-Cache.git
 git clone --recursive git@github.com:hotrap/prismdb.git
-git clone git@github.com:hotrap/mutant.git
 
 git clone --recursive git@github.com:hotrap/kvexe.git
 git clone -b rocksdb --recursive git@github.com:hotrap/kvexe.git kvexe-rocksdb

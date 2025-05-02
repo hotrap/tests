@@ -121,7 +121,6 @@ for workload in "${workloads[@]}"; do
 	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-fd
 	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-tiered
 	cloud-run machine-config/110GB.json run-version $workload SAS-Cache
-	cloud-run machine-config/110GB.json run-version $workload mutant
 	cloud-run machine-config/110GB.json run-version $workload prismdb
 	cloud-run machine-config/110GB.json run-version $workload cachelib
 	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
