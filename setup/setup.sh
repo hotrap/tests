@@ -24,10 +24,8 @@ EOF
 ./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
 cd ..
 
-git clone https://github.com/hotrap/hotrap.git rocksdb
-if [ ! -d hotrap ]; then
-	cp -r rocksdb hotrap
-fi
+git clone --recursive https://github.com/hotrap/hotrap.git hotrap
+git clone -b rocksdb https://github.com/hotrap/hotrap.git rocksdb
 git clone https://github.com/hotrap/SAS-Cache.git
 git clone --recursive https://github.com/hotrap/prismdb.git
 
