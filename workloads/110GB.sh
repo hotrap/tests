@@ -57,8 +57,6 @@ for workload in "${workloads[@]}"; do
 done
 
 run-workload "u24685531" hotrap
-run-workload "2-4-6-8" hotrap
-run-workload "5-shift-5" hotrap
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
 
