@@ -125,8 +125,8 @@ You may want to comment out systems or workloads that you don't want to test.
 
 ```shell
 cd workloads
-# Run YCSB tests
-bash 110GB.sh
 # Run Twitter tests
 bash twitter.sh
+# Run YCSB tests
+bash 110GB.sh
 ```
