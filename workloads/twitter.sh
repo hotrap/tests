@@ -25,7 +25,6 @@ function run-version {
 
 workloads=(
 	"cluster02-283x"
-	"cluster10"
 	"cluster11-25x"
 	"cluster15"
 	"cluster16-67x"
