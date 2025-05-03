@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-tests=$(realpath $(dirname $0)/..)
+workspace=$(realpath $(dirname $0)/../..)
+tests=$workspace/tests
 
 if [ -d ycsbc_zipfian_110GB_220GB ]; then
 	$tests/plot/ycsb-sweep.py .
@@ -22,7 +23,7 @@ if [ -d ycsbc_zipfian_110GB_220GB ]; then
 fi
 
 if [ -d read_0.95_insert_0.05_hotspot0.05_110GB_220GB ]; then
-	~/tests/plot/progress-hit-rate.py .
+	$tests/plot/progress-hit-rate.py .
 fi
 
 if [ -d u24685531/hotrap ]; then
@@ -32,7 +33,7 @@ if [ -d u24685531/hotrap ]; then
 fi
 
 if [ -d cluster02-283x ]; then
-	~/tests/plot/twitter_speedup.py . ../stats
+	$tests/plot/twitter_speedup.py . $workspace/twitter/processed/stats
 fi
 
 if [ -d cluster17-80x/rocksdb-fd ]; then
@@ -41,5 +42,5 @@ if [ -d cluster17-80x/rocksdb-fd ]; then
 		echo "PrismDB crashes under cluster29. Using the last 10% of its completed run phase."
 		echo -e "\t\"run-end-timestamp(ns)\": $(tail -n 1 $data_dir/progress | cut -d' ' -f1)\n}" >> $data_dir/info.json
 	fi
-	~/tests/plot/twitter_ops.py .
+	$tests/plot/twitter_ops.py .
 fi

@@ -2,7 +2,14 @@
 
 ## Prerequisites
 
-`cd setup`
+### Clone this repo
+
+```shell
+cd $workspace
+git clone https://github.com/hotrap/tests.git
+cd tests
+cd setup
+```
 
 ### `./apt.sh`
 
@@ -59,11 +66,9 @@ Chinese users may prefer installing Rust with `rsproxy.cn`:
 
 ### `./setup.sh`
 
-Note: `setup.sh` currently doesn't work because we make the repositories private for anonymity.
-
 ## Manual work
 
-These directories should be created in the parent directory of this repository:
+These directories should be created in the parent directory of this repository (i.e., in `$workspace`):
 
 - `testdb/db`: Store the basic database files. Expected to be a symbolic link to a directory on the fast disk.
 
@@ -83,7 +88,36 @@ Restart your shell to make changes take effect.
 
 1. Download twitter traces from <http://iotta.snia.org/traces/key-value/28652>
 
-2. For each cluster: `$workspace/tests/helper/process-trace.sh <cluster-ID> <output-dir>`. For example, if your workspace is the home directory, and you want to put processed results in `~/twitter/processed`, for cluster17: `~/tests/helper/process-trace.sh cluster17 ~/twitter/processed`
+2. For each cluster: `$workspace/tests/helper/process-trace.sh <cluster-ID> $workspace/twitter/processed`. For example, if your workspace is the home directory, for cluster17: `~/tests/helper/process-trace.sh cluster17 ~/twitter/processed`
+
+3. Processing twitter traces can consume hundreds of GBs of memory. Therefore, you may want to process them in a server with large memory and transmit the results to servers that run experiments. An example to transmit the results is shown below.
+
+```shell
+server_path=admin@IP:/home/admin/twitter/processed/
+rsync -e ssh -zPrpt *.json ${server_path}
+rsync -e ssh -zPrpt stats/*-read-hot-5p-read ${server_path}/stats/
+rsync -e ssh -zPrpt stats/*-read-with-more-than-5p-write-size ${server_path}/stats/
+workloads=(
+	"cluster02-283x"
+	"cluster10"
+	"cluster11-25x"
+	"cluster15"
+	"cluster16-67x"
+	"cluster17-80x"
+	"cluster18-186x"
+	"cluster19-3x"
+	"cluster22-9x"
+	"cluster23"
+	"cluster29"
+	"cluster46"
+	"cluster48-5x"
+	"cluster51-175x"
+	"cluster53-12x"
+)
+for workload in "${workloads[@]}"; do
+	rsync -e ssh -zPrpt $workload-*.zst ${server_path}
+done
+```
 
 ## Run tests on a local machine
 
