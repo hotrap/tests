@@ -44,7 +44,7 @@ If you don't have a virtual environment yet, we provide a simple way to install 
 
 ```shell
 python3 -m venv ~/.venvs/base
-echo "source ~/.venvs/base/bin/activate" >> ~/.profile
+echo ". ~/.venvs/base/bin/activate" >> ~/.profile
 . ~/.profile
 ```
 
