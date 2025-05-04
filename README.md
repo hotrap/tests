@@ -125,8 +125,16 @@ You may want to comment out systems or workloads that you don't want to test.
 
 ```shell
 cd workloads
-# Run Twitter tests
+# Figure 8, Figure 9, Figure 10
 bash twitter.sh
-# Run YCSB tests
+$workspace/tests/tools/draw.sh $workspace/data
+# Figure 6, Figure 11, Figure 12
+bash 200B.sh
+$workspace/tests/tools/draw.sh $workspace/data
+# Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5
 bash 110GB.sh
+$workspace/tests/tools/draw.sh $workspace/data
+# Figure 15
+bash 1.1TB.sh
+$workspace/tests/tools/draw.sh $workspace/data
 ```
