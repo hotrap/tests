@@ -11,8 +11,6 @@ cd ..
 cd ..
 mkdir data
 
-git clone -b v2023.11.20.00-debian12 https://github.com/hotrap/CacheLib.git
-cd CacheLib
 cat >> ~/.profile <<EOF
 export CACHELIB_HOME=$(pwd)/opt/cachelib
 export CPLUS_INCLUDE_PATH=\$CACHELIB_HOME/include:\$CPLUS_INCLUDE_PATH
@@ -21,6 +19,8 @@ export LD_LIBRARY_PATH=\$CACHELIB_HOME/lib:\$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=\$CACHELIB_HOME/lib/cmake:\$CMAKE_PREFIX_PATH
 EOF
 . ~/.profile
+git clone -b v2023.11.20.00-debian12 https://github.com/hotrap/CacheLib.git
+cd CacheLib
 ./contrib/build.sh -j -p $(realpath ..)/opt/cachelib
 cd ..
 
