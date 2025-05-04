@@ -112,6 +112,7 @@ You may skip this step if you don't need to run `twitter.sh`.
 ```shell
 server_path=admin@IP:/home/admin/twitter/processed/
 rsync -e ssh -zPrpt *.json ${server_path}
+rsync -e ssh -zPrpt stats/*.json ${server_path}/stats/
 rsync -e ssh -zPrpt stats/*-read-hot-5p-read ${server_path}/stats/
 rsync -e ssh -zPrpt stats/*-read-with-more-than-5p-write-size ${server_path}/stats/
 workloads=(
@@ -143,7 +144,7 @@ You may want to comment out systems or workloads that you don't want to test.
 ```shell
 cd workloads
 # Figure 8
-$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed/stats
+$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed
 # Figure 9, Figure 10
 bash twitter.sh
 $workspace/tests/tools/draw.sh $workspace/data
@@ -202,7 +203,7 @@ region = YOUR_REGION
 
 ### Run tests
 
-Note that running all tests may require more than one thousand dollars.
+Note that running all tests may cost more than one thousand dollars.
 
 We recommend to run these scripts in `tmux`. You can simultaneously run these scripts in different tmux sessions. We recommend to run each script in a different session.
 
@@ -224,7 +225,7 @@ Each script requires an argument `max-running-instances`, which restricts the ma
 ```shell
 cd $workspace/tests/cloud
 # Figure 8
-$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed/stats
+$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed
 # Figure 9, Figure 10
 bash twitter.sh $workspace/config.json $workspace/data 16
 $workspace/tests/tools/draw.sh $workspace/data

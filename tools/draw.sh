@@ -36,7 +36,7 @@ if [ -d u24685531/hotrap ]; then
 fi
 
 if [ -d cluster02-283x ]; then
-	$tests/plot/twitter_speedup.py . $workspace/twitter/processed/stats
+	$tests/plot/twitter_speedup.py . $workspace/twitter/processed
 fi
 
 if [ -d cluster17-80x/rocksdb-fd ]; then

@@ -27,7 +27,7 @@ read_heavy = set([])
 read_write = set([19, 22])
 write_heavy = set([8, 10])
 
-def workload_marker(workload, stat_dir):
+def workload_marker(workload, twitter_dir):
     id = workload_id(workload)
     if id in read_heavy:
         return 'o'
@@ -35,7 +35,7 @@ def workload_marker(workload, stat_dir):
         return '^'
     elif id in write_heavy:
         return 's'
-    stat = json5.load(open(os.path.join(stat_dir, workload + '.json')))
+    stat = json5.load(open(os.path.join(twitter_dir, workload + '.json')))
     num_reads = stat['num-reads']
     read_ratio = num_reads / stat['num-run-op']
     if read_ratio > 0.75:
@@ -48,10 +48,10 @@ def workload_marker(workload, stat_dir):
 if __name__ == '__main__':
     import sys
     if len(sys.argv) != 3:
-        print('Usage: ' + sys.argv[0] + ' dir stat-dir')
+        print('Usage: ' + sys.argv[0] + ' dir twitter-trace-dir')
         exit()
     dir = sys.argv[1]
-    stat_dir = sys.argv[2]
+    twitter_dir = sys.argv[2]
 
     sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
     import common
@@ -90,11 +90,11 @@ if __name__ == '__main__':
     for workload in workloads:
         id = workload_id(workload)
         ids.append(id)
-        x = float(open(os.path.join(stat_dir, workload + '-read-hot-5p-read')).read())
+        x = float(open(os.path.join(twitter_dir, 'stats', workload + '-read-hot-5p-read')).read())
         xs.append(x)
-        y = float(open(os.path.join(stat_dir, workload + '-read-with-more-than-5p-write-size')).read())
+        y = float(open(os.path.join(twitter_dir, 'stats', workload + '-read-with-more-than-5p-write-size')).read())
         ys.append(y)
-        markers.append(workload_marker(workload, stat_dir))
+        markers.append(workload_marker(workload, twitter_dir))
 
         workload_dir = os.path.join(dir, workload)
         data_dir = os.path.join(workload_dir, 'hotrap')

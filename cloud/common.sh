@@ -77,6 +77,11 @@ function cloud-run {
 		echo Usage: $0 machine-config command-to-run workload version other-arguments. workload, version, instance-ip, and other arguments will be passed to \"command-to-run\" as arguments.
 		return 1
 	fi
+	DIR="$output_dir/$3/$4"
+	if [ -d "$DIR" ] && [ "$(ls -A "$DIR")" ]; then
+		echo "$DIR" not empty. Skipping.
+		return
+	fi
 	machine_config=$1
 	shift
 

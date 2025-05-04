@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 if len(sys.argv) != 3:
-    print('Usage: ' + sys.argv[0] + ' dir stat-dir')
+    print('Usage: ' + sys.argv[0] + ' dir twitter-trace-dir')
     exit()
 dir = sys.argv[1]
-stat_dir = sys.argv[2]
+twitter_dir = sys.argv[2]
 
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]), '../helper/'))
@@ -101,11 +101,11 @@ speedup = []
 for (index, workload) in enumerate(workloads):
     id = workload_id(workload)
     ids.append(id)
-    x = float(open(os.path.join(stat_dir, workload + '-read-hot-5p-read')).read())
+    x = float(open(os.path.join(twitter_dir, 'stats', workload + '-read-hot-5p-read')).read())
     xs.append(x)
-    y = float(open(os.path.join(stat_dir, workload + '-read-with-more-than-5p-write-size')).read())
+    y = float(open(os.path.join(twitter_dir, 'stats', workload + '-read-with-more-than-5p-write-size')).read())
     ys.append(y)
-    markers.append(workload_marker(workload, stat_dir))
+    markers.append(workload_marker(workload, twitter_dir))
     if workload in twitter_speedup.workloads:
         sampled.append(index)
     else:
