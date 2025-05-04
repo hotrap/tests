@@ -140,3 +140,7 @@ $workspace/tests/tools/draw.sh $workspace/data
 bash 1.1TB.sh
 $workspace/tests/tools/draw.sh $workspace/data
 ```
+
+## Run tests parallelly with an AWS access key
+
+Running all tests on a single machine costs more than a month. Reproducing all results in a shorter time requires an AWS access key to create instances automatically and run tests on these instances simultaneously. An automatically created instance will be terminated after the test running on it is finished.
