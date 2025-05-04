@@ -2,6 +2,21 @@
 
 ## Prerequisites
 
+### Find a workspace
+
+For example, if you want to place all the stuff of this project in the home directory:
+
+```shell
+workspace=~
+```
+
+If you prefer to put everything in a subdirectory:
+
+```shell
+mkdir ~/hotrap
+workspace=~/hotrap
+```
+
 ### Clone this repo
 
 ```shell
@@ -66,7 +81,7 @@ Chinese users may prefer installing Rust with `rsproxy.cn`:
 
 ### `./setup.sh`
 
-## Manual work
+### Manual work
 
 These directories should be created in the parent directory of this repository (i.e., in `$workspace`):
 
@@ -85,6 +100,8 @@ Export environment variable `sd_dev` to be the device in iostat that is used as 
 Restart your shell to make changes take effect.
 
 ## Process twitter traces
+
+You may skip this step if you don't need to run `twitter.sh`.
 
 1. Download twitter traces from <http://iotta.snia.org/traces/key-value/28652>
 
@@ -141,6 +158,83 @@ bash 1.1TB.sh
 $workspace/tests/tools/draw.sh $workspace/data
 ```
 
-## Run tests parallelly with an AWS access key
+## Run tests in parallel with an AWS access key
 
-Running all tests on a single machine costs more than a month. Reproducing all results in a shorter time requires an AWS access key to create instances automatically and run tests on these instances simultaneously. An automatically created instance will be terminated after the test running on it is finished.
+Running all tests on a single machine costs more than a month. Reproducing all results in a shorter time requires an AWS access key to create instances automatically and run tests on these instances simultaneously. An automatically created instance will be automatically terminated after the test running on it is finished.
+
+### Setup a central node
+
+The central node is responsible for creating and terminating instances automatically. Experiment results will be transmitted and stored in the central node before a worker instance is terminated. The central node should also be configured following the instructions in [Prerequisites](#prerequisites), so that source code can be directly copied to worker instances in the future.
+
+### Obtain an AWS access key
+
+In the AWS EC2 console, click the drop-down menu in the upper right corner, click `Security credentials` in it, click `Create access key`, and then you obtain the access key and secret key.
+
+In the central node:
+
+```shell
+mkdir ~/.aws
+```
+
+Create a file `~/.aws/credentials`, put your access key and secret key there:
+
+```text
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY
+region = YOUR_REGION
+```
+
+### Create a config file
+
+`$workspace/config.json`:
+
+```json
+{
+	"vendor": "aws",
+	"ImageId": "ami-xxxxxx",
+	"KeyName": "your-ssh-key-name",
+	"SecurityGroupId": "sg-xxxxx",
+	"user": "admin",
+	"InstanceName": "atc25-hotrap-ae"
+}
+```
+
+### Run tests
+
+Note that running all tests may require more than one thousand dollars.
+
+We recommend to run these scripts in `tmux`. You can simultaneously run these scripts in different tmux sessions. We recommend to run each script in a different session.
+
+Create a tmux session:
+
+```shell
+# If you want to run 110GB.sh in this session, you can name the session as "110GB"
+tmux new -s "session-name"
+```
+
+`ctrl+b` then `d` to detach from the session.
+
+`tmux ls` to list all sessions.
+
+`tmux a -t "session-name"` to reconnect to the session.
+
+Each script requires an argument `max-running-instances`, which restricts the maximum number of live worker instances for that script. For example, if you set it to 16, the script will first create 16 worker instances. A new worker instance will not be created until a previously running worker instance terminates. We set the argument to 16 in the examples below.
+
+```shell
+cd $workspace/tests/cloud
+# Figure 8
+$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed/stats
+# Figure 9, Figure 10
+bash twitter.sh $workspace/config.json $workspace/data 16
+$workspace/tests/tools/draw.sh $workspace/data
+# Figure 6, Figure 11, Figure 12
+bash 200B.sh $workspace/config.json $workspace/data 16
+$workspace/tests/tools/draw.sh $workspace/data
+# Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5
+bash 110GB.sh $workspace/config.json $workspace/data 16
+$workspace/tests/tools/draw.sh $workspace/data
+# Figure 15
+bash 1.1TB.sh $workspace/config.json $workspace/data 16
+$workspace/tests/tools/draw.sh $workspace/data
+```
