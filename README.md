@@ -125,7 +125,9 @@ You may want to comment out systems or workloads that you don't want to test.
 
 ```shell
 cd workloads
-# Figure 8, Figure 9, Figure 10
+# Figure 8
+$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed/stats
+# Figure 9, Figure 10
 bash twitter.sh
 $workspace/tests/tools/draw.sh $workspace/data
 # Figure 6, Figure 11, Figure 12
