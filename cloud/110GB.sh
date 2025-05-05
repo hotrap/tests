@@ -8,44 +8,7 @@ max_running_instances=$3
 user=$(cat $config_file | jq -er ".user")
 cd $(dirname $0)
 
-. ./common.sh
-
-function run-rocksdb {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-rocksdb $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
-}
-function run-version {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-$version $user $IP
-	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-$version-110GB.sh ../config/$workload ../../data/$workload/$version"
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/rocksdb-plot.sh $output_dir/$workload/$version
-}
-function run-hotrap {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-hotrap-110GB.sh ../config/$workload ../../data/$workload/$version \"${@:4}\""
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/hotrap-plot.sh $output_dir/$workload/$version
-}
-function run-workload {
-	workload=$1
-	version=$2
-	IP=$3
-	./checkout-hotrap $user $IP $version
-	ssh $user@$IP -o ServerAliveInterval=60 ". ~/.profile && cd tests/workloads && ./test-hotrap-110GB-generic.sh ../../data/$workload/$version \"LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4\" \"--enable_fast_generator --workload=$workload ${@:4}\""
-	rsync -zrpt --partial -e ssh $user@$IP:~/data/$workload $output_dir/
-	../helper/hotrap-plot.sh $output_dir/$workload/$version
-}
+. common/110GB.sh
 
 workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
@@ -80,28 +43,3 @@ cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.0
 cloud-run machine-config/110GB.json run-hotrap "read_0.85_insert_0.15_hotspot0.05_110GB_220GB" no-promote-by-flush
 cloud-run machine-config/110GB.json run-hotrap "read_0.95_insert_0.05_hotspot0.05_110GB_220GB" no-promote-by-flush
 cloud-run machine-config/110GB.json run-hotrap "ycsbc_hotspot0.05_110GB_220GB" no-promote-by-flush
-
-hotspot_workloads=(
-	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB_200B"
-	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB_200B"
-	"ycsba_hotspot0.05_110GB_220GB_200B"
-	"ycsbc_hotspot0.05_110GB_220GB_200B"
-)
-uniform_workloads=(
-	"read_0.5_insert_0.5_uniform_110GB_220GB_200B"
-	"read_0.75_insert_0.25_uniform_110GB_220GB_200B"
-	"ycsba_uniform_110GB_220GB_200B"
-	"ycsbc_uniform_110GB_220GB_200B"
-)
-check-workload-files "${hotspot_workloads[@]}"
-check-workload-files "${uniform_workloads[@]}"
-
-for workload in "${hotspot_workloads[@]}"; do
-	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
-	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-fd
-done
-for workload in "${uniform_workloads[@]}"; do
-	cloud-run machine-config/110GB.json run-hotrap $workload hotrap
-	cloud-run machine-config/110GB.json run-rocksdb $workload rocksdb-tiered
-done
-wait
