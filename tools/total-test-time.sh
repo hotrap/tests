@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 set -e
 total_time=0
-for workload in $(ls); do
+while true; do
+	if ! read workload; then
+		break
+	fi
 	if [ ! -d $workload ]; then
 		continue
 	fi
