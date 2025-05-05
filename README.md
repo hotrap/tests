@@ -105,9 +105,16 @@ You may skip this step if you don't need to run `twitter.sh`.
 
 1. Download twitter traces from <http://iotta.snia.org/traces/key-value/28652>
 
-2. For each cluster: `$workspace/tests/helper/process-trace.sh <cluster-ID> $workspace/twitter/processed`. For example, if your workspace is the home directory, for cluster17: `~/tests/helper/process-trace.sh cluster17 ~/twitter/processed`
+2. For each cluster: `$workspace/tests/helper/process-trace.sh <cluster-ID> $workspace/twitter/processed`. To process all traces:
 
-3. Processing twitter traces can consume hundreds of GBs of memory. Therefore, you may want to process them in a server with large memory and transmit the results to servers that run experiments. An example to transmit the results is shown below.
+```shell
+# cd to the directory where original twitter traces are in
+for i in $(seq 1 54); do
+	$workspace/tests/helper/process-trace.sh cluster$(printf "%02d" $i) $workspace/twitter/processed
+done
+```
+
+4. Processing twitter traces can consume hundreds of GBs of memory. Therefore, you may want to process them in a server with large memory and transmit the results to servers that run experiments. An example to transmit the results is shown below.
 
 ```shell
 server_path=admin@IP:/home/admin/twitter/processed/
