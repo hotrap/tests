@@ -212,7 +212,7 @@ region = YOUR_REGION
 
 Note that running all tests may cost one to two thousand dollars.
 
-We recommend to run these scripts in `tmux`. You can simultaneously run these scripts in different tmux sessions. We recommend to run each script in a different session.
+We recommend running these scripts in `tmux`. You can simultaneously run these scripts in different tmux sessions, and we recommend running each script in a different session.
 
 Create a tmux session:
 
