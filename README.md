@@ -99,11 +99,31 @@ Export environment variable `sd_dev` to be the device in iostat that is used as 
 
 Restart your shell to make changes take effect.
 
-## Process twitter traces
+## Process Twitter traces
 
 You may skip this step if you don't need to run `twitter.sh`.
 
-1. Download twitter traces from <http://iotta.snia.org/traces/key-value/28652>
+### Download processed Twitter traces
+
+Some zst files exceeds the 4GB file size limit of TeraBox / Baidu Netdisk, so we split them into 1GB files with digital suffixes like `file.zstXX`. You can combine them into the original zst file with `cat file.zst* > file.zst`.
+
+We only uploaded traces necessary to reproduce our results in paper. Please contact us or file an issue if you need processed traces of other Twitter traces.
+
+#### TeraBox
+
+<https://1024terabox.com/s/1cwU2x_Ux8tDUKG3CII-lQQ>
+
+#### Baidu Netdisk
+
+<https://pan.baidu.com/s/1y9se6aUlgQw26L5gg4sjGw?pwd=fika>
+
+access code: `fika`
+
+Note: the interface is only available in Chinese.
+
+### Process Twitter traces by yourself
+
+1. Download Twitter traces from <http://iotta.snia.org/traces/key-value/28652>
 
 2. For each cluster: `$workspace/tests/helper/process-trace.sh <cluster-ID> $workspace/twitter/processed`. To process all traces:
 
