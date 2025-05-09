@@ -43,3 +43,5 @@ cloud-run machine-config/110GB.json run-hotrap "read_0.75_insert_0.25_hotspot0.0
 cloud-run machine-config/110GB.json run-hotrap "read_0.85_insert_0.15_hotspot0.05_110GB_220GB" no-promote-by-flush
 cloud-run machine-config/110GB.json run-hotrap "read_0.95_insert_0.05_hotspot0.05_110GB_220GB" no-promote-by-flush
 cloud-run machine-config/110GB.json run-hotrap "ycsbc_hotspot0.05_110GB_220GB" no-promote-by-flush
+
+wait
