@@ -12,16 +12,18 @@ function run-version {
 	./test-$2-110GB.sh ../config/$1 $DIR "$3"
 	../helper/rocksdb-plot.sh $DIR
 }
+function run-row-cache {
+	../helper/checkout-row-cache
+	DIR=../../data/$1/row-cache
+	echo Result directory: $DIR
+	./test-rocksdb-tiered-110GB.sh ../config/$1 $DIR "$2"
+	../helper/rocksdb-plot.sh $DIR
+}
 function run-hotrap {
 	../helper/checkout-$2
-	if [ "$3" ]; then
-		version=$3
-	else
-		version=$2
-	fi
-	DIR="../../data/$1/$version"
+	DIR="../../data/$1/$2"
 	echo Result directory: $DIR
-	./test-hotrap-110GB.sh ../config/$1 $DIR "$4"
+	./test-hotrap-110GB.sh ../config/$1 $DIR "$3"
 	../helper/hotrap-plot.sh $DIR
 }
 function run-workload {

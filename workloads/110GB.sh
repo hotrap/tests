@@ -27,6 +27,9 @@ run-workload "u24685531" hotrap
 run-hotrap "ycsbc_uniform_110GB_220GB" promote-accessed
 run-hotrap "read_0.75_insert_0.25_hotspot0.05_110GB_220GB" no-hotness-aware-compaction
 
+run-row-cache "ycsbc_zipfian_110GB_220GB"
+run-hotrap "ycsbc_zipfian_110GB_220GB" hotrap-row-cache
+
 workloads=(
 	"read_0.5_insert_0.5_hotspot0.05_110GB_220GB"
 	"read_0.75_insert_0.25_hotspot0.05_110GB_220GB"

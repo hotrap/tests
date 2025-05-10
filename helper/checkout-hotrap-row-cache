@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -e
+
+cd $(dirname $0)
+. ./common.sh
+cd ..
+
+cd ../hotrap
+git checkout main
+build_rocksdb
+
+cd ../RALT
+git checkout main
+build_ralt
+
+cd ../hotrap
+build_db_bench_ralt
+
+cd ../kvexe
+git checkout hotrap-row-cache
+build_kvexe_ralt
