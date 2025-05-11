@@ -118,7 +118,7 @@ if scatter_label:
     for i in range(0, len(labels)):
         plt.text(args['x'][i] + 0.01, args['y'][i], labels[i], fontsize=6)
 if pdf_path is not None:
-    plt.savefig(pdf_path)
+    plt.savefig(pdf_path, metadata={'CreationDate': None})
     print('Plot saved to ' + pdf_path)
 if scatter_tooltip:
     assert chart_type == 'scatter'

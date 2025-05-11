@@ -43,7 +43,7 @@ plt.plot(sd['Time(Seconds)'], sd['%util'])
 plt.legend(['FD', 'SD'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.title('Percentage of utilization of FD and SD')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show()

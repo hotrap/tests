@@ -37,7 +37,7 @@ plt.legend([1], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Size (Bytes)', fontdict=fonten)
 plt.title('Hot set size of ralt')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

@@ -45,7 +45,7 @@ plt.plot(sd['Time(Seconds)'], sd['w/s'])
 plt.legend(['r/s (FD)', 'w/s (FD)', 'r/s (SD)', 'w/s (SD)'], prop={'size': fontsize})
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.title('Read/Write per second of FD and SD')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

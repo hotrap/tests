@@ -32,7 +32,7 @@ pdf_path = plot_dir + '/mem.pdf'
 plt.plot(time, mem)
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Memory usage (GB)', fontdict=fonten)
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

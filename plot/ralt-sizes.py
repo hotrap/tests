@@ -39,7 +39,7 @@ plot_dir = os.path.join(data_dir, 'plot')
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
 pdf_path = os.path.join(plot_dir, 'ralt-sizes.pdf')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

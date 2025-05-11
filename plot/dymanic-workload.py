@@ -127,7 +127,7 @@ plt.xlabel('Completed operation count', fontsize=9)
 plt.ylabel('Operations per second', fontsize=9)
 
 pdf_path = os.path.join(data_dir, 'plot', 'dynamic-workload.pdf')
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

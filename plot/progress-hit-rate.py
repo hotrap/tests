@@ -86,7 +86,7 @@ plt.yticks(np.linspace(0, 1, 6), fontsize=9)
 legend = fig.legend([common.sysname + ' 0% W', 'no-flush 50% W', 'no-flush 25% W', 'no-flush 15% W', 'no-flush 10% W', 'no-flush 0% W'], frameon=False, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.1), handlelength=1.3, handletextpad=0.3, columnspacing=0.7)
 
 pdf_path = dir + '/progress-hit-rate-' + skewness + '.pdf'
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

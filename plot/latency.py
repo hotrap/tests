@@ -135,5 +135,5 @@ for version in versions:
     handles.append(mpl.patches.Patch(facecolor=version['color'], hatch=version['pattern'], edgecolor='black', linewidth=0.5))
 figure.legend(handles=handles, labels=version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.17), handletextpad=0.5, columnspacing=1)
 pdf_path = os.path.join(dir, 'latency.pdf')
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)

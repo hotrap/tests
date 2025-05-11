@@ -46,7 +46,7 @@ plt.legend(['read (FD)', 'write (FD)', 'read (SD)', 'write (SD)'], prop={'size':
 plt.xlabel('Time (Seconds)', fontdict=fonten)
 plt.ylabel('Throughput (MB/s)', fontdict=fonten)
 plt.title('Throughput of FD and SD')
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

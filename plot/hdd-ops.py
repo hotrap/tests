@@ -94,7 +94,7 @@ print(tex)
 open('hdd-test.tex', mode='w').write(tex)
 
 pdf_path = dir + '/hdd-ops.pdf'
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show()

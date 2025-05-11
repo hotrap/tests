@@ -69,7 +69,7 @@ plot_dir = d + '/plot'
 if not os.path.exists(plot_dir):
     os.system('mkdir -p ' + plot_dir)
 pdf_path = plot_dir + '/hit.pdf'
-plt.savefig(pdf_path)
+plt.savefig(pdf_path, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show()

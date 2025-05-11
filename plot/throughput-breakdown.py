@@ -119,7 +119,7 @@ for (i, version) in enumerate(versions):
 
 figure.legend(['FD', 'SD', 'FD-Compaction', 'SD-Compaction', 'Get'], fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.15))
 pdf_path = 'throughput-breakdown.pdf'
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show()

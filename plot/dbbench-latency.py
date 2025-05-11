@@ -70,7 +70,7 @@ def op_latency(data, name):
     plt.ylabel('Average latency (ns)', fontsize=8)
 
     pdf_path = plot_dir + '/latency-' + name + '.pdf'
-    plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+    plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
     print('Plot saved to ' + pdf_path)
     if 'DISPLAY' in os.environ:
         plt.show(block=False)
@@ -95,7 +95,7 @@ plt.ylabel('Average latency (ns)', fontsize=8)
 plt.legend(['read', 'write', 'seek'], fontsize=8)
 
 pdf_path = plot_dir + '/latency.pdf'
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
     plt.show(block=False)

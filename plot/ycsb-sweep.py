@@ -189,7 +189,7 @@ for i in range(len(skewnesses)):
     plt.xlabel(subfigs[i]['title'], labelpad=1, fontsize=9)
 figure.legend(version_names, fontsize=9, ncol=len(version_names), loc='center', bbox_to_anchor=(0.51, 1.07), handletextpad=0.5, columnspacing=1.2)
 pdf_path = dir + '/ycsb-sweep.pdf'
-plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
 print('Plot saved to ' + pdf_path)
 if 'DISPLAY' in os.environ:
 	plt.show()

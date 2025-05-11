@@ -186,7 +186,7 @@ def draw_io_breakdown(dir, size, pdf_name):
     )
 
     pdf_path = os.path.join(dir, pdf_name)
-    plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01)
+    plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
     print('Plot saved to ' + pdf_path)
     if 'DISPLAY' in os.environ:
         plt.show()
