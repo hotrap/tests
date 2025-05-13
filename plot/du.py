@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-
 import sys
-
 if len(sys.argv) != 2:
 	print('Usage: ' + sys.argv[0] + ' dir')
 	exit()
+d = sys.argv[1]
 
 import os
 import pandas as pd
@@ -20,14 +19,13 @@ mpl.rcParams.update({
     })  # 设置全局字体
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
-d = sys.argv[1]
-du = pd.read_table(d + '/du.sh.txt', sep='\s+')
+du = pd.read_table(os.path.join(d, 'du.sh.txt'), sep='\s+')
 time = (du['Timestamp(ns)'] - du['Timestamp(ns)'][0]) / 1e9
 
-plot_dir = d + '/plot'
+plot_dir = os.path.join(d, 'plot')
 if not os.path.exists(plot_dir):
 	os.system('mkdir -p ' + plot_dir)
-pdf_path = plot_dir + '/du.pdf'
+pdf_path = os.path.join(plot_dir, 'du.pdf')
 plt.plot(time, du['DB'])
 plt.plot(time, du['FD'])
 plt.plot(time, du['SD'])
