@@ -304,4 +304,4 @@ $workspace/tests/tools/draw.sh $workspace/data
 
 ## Notes
 
-- The `du` warnings like `du: cannot access 'fd/003409.sst': No such file or directory` are expected. You may ignore them safely.
+- The `du` warnings like `du: cannot access 'fd/003409.sst': No such file or directory` are expected and can be safely ignored.
