@@ -99,11 +99,13 @@ Export environment variable `sd_dev` to be the device in iostat that is used as 
 
 Restart your shell to make changes take effect.
 
-## Process Twitter traces
+## Obtain Twitter traces
 
 You may skip this step if you don't need to run `twitter.sh`.
 
 ### Download processed Twitter traces
+
+The downloaded files should be placed under `$workspace/twitter/processed`.
 
 Some zst files exceeds the 4GB file size limit of TeraBox / Baidu Netdisk, so we split them into 1GB files with digital suffixes like `file.zstXX`. You can combine them into the original zst file with `cat file.zst* > file.zst`.
 
