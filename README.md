@@ -109,6 +109,7 @@ Our experiments are conducted using AWS i4i.2xlarge instances. For i4i.2xlarge i
 
 ```shell
 # !!!! Please make sure there is no data in /dev/nvme1n1 !!!!
+
 # The slow disk has been used by the root file system, so you only need to format and mount the fast disk
 sudo mkfs.ext4 /dev/nvme1n1
 sudo mkdir -p /mnt/fd
