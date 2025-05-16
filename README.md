@@ -81,23 +81,55 @@ Chinese users may prefer installing Rust with `rsproxy.cn`:
 
 ### `./setup.sh`
 
-### Manual work
+This script downloads the source code and compiles CacheLib. It may take up to an hour to complete.
 
-These directories should be created in the parent directory of this repository (i.e., in `$workspace`):
+### Specify the fast disk and the slow disk
 
-- `testdb/db`: Store the basic database files. Expected to be a symbolic link to a directory on the fast disk.
+This part is hardware-specific. In general, you need to perform the following steps:
 
-- `testdb/fd`: Store LSM-tree files on the fast disk. Expected to be a symbolic link to a directory on the fast disk.
+Create the following directories in `$workspace`:
 
-- `testdb/sd`: Store LSM-tree files on the slow disk. Expected to be a symbolic link to a directory on the slow disk.
+- `testdb/db`: Stores the basic database files. Expected to be a symbolic link to a directory on the fast disk.
 
-- `testdb/ralt`: Store the files of RALT. Expected to be a symbolic link to a directory on the fast disk.
+- `testdb/fd`: Stores LSM-tree files on the fast disk. Expected to be a symbolic link to a directory on the fast disk.
+
+- `testdb/sd`: Stores LSM-tree files on the slow disk. Expected to be a symbolic link to a directory on the slow disk.
+
+- `testdb/ralt`: Stores the files of RALT. Expected to be a symbolic link to a directory on the fast disk.
 
 Export environment variable `fd_dev` to be the device in iostat that is used as FD.
 
 Export environment variable `sd_dev` to be the device in iostat that is used as SD.
 
 Restart your shell to make changes take effect.
+
+#### AWS i4i.2xlarge instances
+
+Our experiments are conducted using AWS i4i.2xlarge instances. For i4i.2xlarge instances, the fast disk is `nvme1n1` and the slow disk is `nvme0n1`. You may specify them using the following commands. Before doing so, please make sure that there is no data in the fast disk.
+
+```shell
+# !!!! Please make sure there is no data in /dev/nvme1n1 !!!!
+# The slow disk has been used by the root file system, so you only need to format and mount the fast disk
+sudo mkfs.ext4 /dev/nvme1n1
+sudo mkdir -p /mnt/fd
+sudo mount /dev/nvme1n1 /mnt/fd
+sudo chown $USER:$USER /mnt/fd
+mkdir /mnt/fd/{db,fd,ralt}
+
+# Link the directories to testdb
+mkdir ~/testdb
+ln -s /mnt/fd/{db,fd,ralt} ~/testdb/
+
+# The root file system is already on the slow disk
+mkdir ~/testdb/sd
+
+# Set the environment variables
+cat >> ~/.profile <<EOF
+export fd_dev=nvme1n1
+export sd_dev=nvme0n1
+EOF
+. ~/.profile
+```
 
 ## Obtain Twitter traces
 
