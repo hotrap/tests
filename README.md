@@ -301,3 +301,7 @@ $workspace/tests/tools/draw.sh $workspace/data
 bash 1.1TB.sh $workspace/config.json $workspace/data 16
 $workspace/tests/tools/draw.sh $workspace/data
 ```
+
+## Notes
+
+- The `du` warnings like `du: cannot access 'fd/003409.sst': No such file or directory` are expected. You may ignore them safely.
