@@ -286,20 +286,35 @@ Each script requires an argument `max-running-instances`, which restricts the ma
 
 ```shell
 cd $workspace/tests/cloud
-# Figure 8
-$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed
 # Figure 9, Figure 10
 bash twitter.sh $workspace/config.json $workspace/data 16
-$workspace/tests/tools/draw.sh $workspace/data
 # Figure 6, Figure 11, Figure 12
 bash 200B.sh $workspace/config.json $workspace/data 16
-$workspace/tests/tools/draw.sh $workspace/data
 # Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5
 bash 110GB.sh $workspace/config.json $workspace/data 16
-$workspace/tests/tools/draw.sh $workspace/data
 # Figure 15
 bash 1.1TB.sh $workspace/config.json $workspace/data 16
+```
+
+## Process results
+
+```shell
+# Figure 8
+$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed
+# Other figures and tables:
 $workspace/tests/tools/draw.sh $workspace/data
+```
+
+Some figures can be partially generated based on available results, i.e., corresponding data points will be absent if some results are not available.
+
+```shell
+cd $workspace/data
+# Figure 9
+$workspace/tests/tools/draw-twitter-speedup.sh
+# Figure 10
+$workspace/tests/tools/draw-twitter-ops.sh
+# Figure 6, Figure 11, Figure 12
+$workspace/tests/tools/draw-200B.sh
 ```
 
 ## Notes
