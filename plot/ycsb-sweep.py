@@ -15,6 +15,9 @@ import io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+
 # Paper specific settings
 SINGLE_COL_WIDTH = 8.5
 DOUBLE_COL_WIDTH = 17.8

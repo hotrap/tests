@@ -9,6 +9,9 @@ import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 from matplotlib.patches import Patch
 
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+
 # Return min and max ralt portion
 def draw_io_breakdown(dir, size, pdf_name):
     # Paper specific settings

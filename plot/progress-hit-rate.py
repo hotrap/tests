@@ -15,6 +15,9 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+
 mpl.rcParams.update({
     'hatch.linewidth': 0.5,
     'font.family': 'sans-serif',

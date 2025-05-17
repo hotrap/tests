@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.ticker import ScalarFormatter
 
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+
 def draw_cputime_breakdown(dir, size, pdf_name):
     # Paper specific settings
     SINGLE_COL_WIDTH = 8.5

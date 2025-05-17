@@ -65,6 +65,9 @@ if __name__ == '__main__':
     from matplotlib import cm, colors
     import matplotlib.lines as mlines
 
+    mpl.rcParams['pdf.fonttype'] = 42
+    mpl.rcParams['ps.fonttype'] = 42
+
     # Paper specific settings
     SINGLE_COL_WIDTH = 8.5
     DOUBLE_COL_WIDTH = 17.8

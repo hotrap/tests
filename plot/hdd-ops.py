@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 import matplotlib.gridspec as gridspec
 
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+
 # Paper specific settings
 SINGLE_COL_WIDTH = 8.5
 DOUBLE_COL_WIDTH = 17.8

@@ -18,6 +18,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+
 # Paper specific settings
 STANDARD_WIDTH = 17.8
 SINGLE_COL_WIDTH = STANDARD_WIDTH / 2
