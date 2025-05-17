@@ -113,6 +113,9 @@ if __name__ == '__main__':
         speedup = hotrap / rocksdb_tiered
         speedups.append(speedup)
 
+    if len(speedups) == 0:
+        print('No data points available for twitter-speedup.pdf')
+        exit()
     max_speedup = max(speedups)
     tex = io.StringIO()
     print('% Max speedup over RocksDB-tiering under twitter production workloads', file=tex)
