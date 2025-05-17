@@ -205,20 +205,14 @@ You may want to comment out systems or workloads that you don't want to test.
 
 ```shell
 cd workloads
-# Figure 8
-$workspace/tests/plot/twitter-scatter.py $workspace/data $workspace/twitter/processed
 # Figure 9, Figure 10. About a week.
 bash twitter.sh
-$workspace/tests/tools/draw.sh $workspace/data
 # Figure 6, Figure 11, Figure 12. About 9 days.
 bash 200B.sh
-$workspace/tests/tools/draw.sh $workspace/data
 # Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5. About 11 days.
 bash 110GB.sh
-$workspace/tests/tools/draw.sh $workspace/data
 # Figure 15. About a month.
 bash 1.1TB.sh
-$workspace/tests/tools/draw.sh $workspace/data
 ```
 
 ## Run tests in parallel with an AWS access key
