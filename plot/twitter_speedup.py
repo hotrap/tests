@@ -91,6 +91,14 @@ if __name__ == '__main__':
     markers = []
     speedups = []
     for workload in workloads:
+        workload_dir = os.path.join(dir, workload)
+        hotrap_data_dir = os.path.join(workload_dir, 'hotrap')
+        if not os.path.exists(os.path.join(hotrap_data_dir, 'info.json')):
+            continue
+        rocksdb_tiered_data_dir = os.path.join(workload_dir, "rocksdb-tiered")
+        if not os.path.exists(os.path.join(rocksdb_tiered_data_dir, 'info.json')):
+            continue
+
         id = workload_id(workload)
         ids.append(id)
         x = float(open(os.path.join(twitter_dir, 'stats', workload + '-read-hot-5p-read')).read())
@@ -99,12 +107,8 @@ if __name__ == '__main__':
         ys.append(y)
         markers.append(workload_marker(workload, twitter_dir))
 
-        workload_dir = os.path.join(dir, workload)
-        data_dir = os.path.join(workload_dir, 'hotrap')
-        hotrap = common.last_10p_ops(common.VersionData(data_dir))
-
-        data_dir = os.path.join(workload_dir, "rocksdb-tiered")
-        rocksdb_tiered = common.last_10p_ops(common.VersionData(data_dir))
+        hotrap = common.last_10p_ops(common.VersionData(hotrap_data_dir))
+        rocksdb_tiered = common.last_10p_ops(common.VersionData(rocksdb_tiered_data_dir))
 
         speedup = hotrap / rocksdb_tiered
         speedups.append(speedup)

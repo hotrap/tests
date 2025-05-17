@@ -74,6 +74,8 @@ def draw_io_breakdown(dir, size, pdf_name):
             for (version_idx, version) in enumerate(versions):
                 data_dir = os.path.join(workload_dir, version['path'])
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
+                if not os.path.exists(os.path.join(data_dir, 'info.json')):
+                    continue
                 version_data = common.VersionData(data_dir)
                 first_level_in_sd = int(open(os.path.join(data_dir, 'first-level-in-last-tier')).read())
                 def run_time_io_kB(fname):

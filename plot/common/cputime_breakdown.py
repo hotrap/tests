@@ -78,6 +78,8 @@ def draw_cputime_breakdown(dir, size, pdf_name):
             for (version_idx, version) in enumerate(versions):
                 data_dir = os.path.join(workload_dir, version['path'])
                 x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
+                if not os.path.exists(os.path.join(data_dir, 'info.json')):
+                    continue
                 version_data = common.VersionData(data_dir)
                 cputimes = pd.read_table(os.path.join(data_dir, 'cputimes'), sep='\s+')
                 cputimes = version_data.run_phase(cputimes)

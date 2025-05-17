@@ -82,6 +82,7 @@ bar_width = 1 / (num_clusters + 1)
 cluster_width = bar_width * num_clusters
 
 skewness_ratio_version_ops = {}
+is_partial = False
 for fig in figs:
     skewness = fig['skewness']
     skewness_ratio_version_ops[skewness] = {}
@@ -91,17 +92,21 @@ for fig in figs:
         for version in fig['versions']:
             workload = ratios_ycsb[ratio] + '_' + skewness + '_' + size
             data_dir = os.path.join(dir, workload, version)
+            if not os.path.exists(os.path.join(data_dir, 'info.json')):
+                is_partial = True
+                continue
             skewness_ratio_version_ops[skewness][ratio][version] = common.last_10p_ops(common.VersionData(data_dir))
 
-json_output = io.StringIO()
-min_ratio = 1
-for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
-    min_ratio = min(min_ratio, version_ops['hotrap'] / version_ops['rocksdb-tiered'])
-overhead = 1 - min_ratio
-print('{\n\t\"OverheadUniformRocksdbTiered200B\": %f\n}' %overhead, file=json_output)
-json_output = json_output.getvalue()
-print(json_output)
-open(os.path.join(dir, 'ops-200B.json'), mode='w').write(json_output)
+if not is_partial:
+    min_ratio = 1
+    for (ratio, version_ops) in skewness_ratio_version_ops['uniform'].items():
+        min_ratio = min(min_ratio, version_ops['hotrap'] / version_ops['rocksdb-tiered'])
+    json_output = io.StringIO()
+    overhead = 1 - min_ratio
+    print('{\n\t\"OverheadUniformRocksdbTiered200B\": %f\n}' %overhead, file=json_output)
+    json_output = json_output.getvalue()
+    print(json_output)
+    open(os.path.join(dir, 'ops-200B.json'), mode='w').write(json_output)
 
 for (i, fig) in enumerate(figs):
     plt.subplot(gs[0, i])
@@ -112,7 +117,10 @@ for (i, fig) in enumerate(figs):
     for (pivot, ratio) in enumerate(rw_ratios):
         for (version_idx, version) in enumerate(fig['versions']):
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-            value = skewness_ratio_version_ops[skewness][ratio][version]
+            try:
+                value = skewness_ratio_version_ops[skewness][ratio][version]
+            except KeyError:
+                value = 0
             ax.bar(x, value, width=bar_width, hatch=versions[version]['pattern'], color=versions[version]['color'], edgecolor='black', linewidth=0.5)
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(9)

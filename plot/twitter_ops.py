@@ -77,33 +77,38 @@ if __name__ == "__main__":
     ]
     version_names = ['RocksDB-FD', 'RocksDB-tiering', 'RocksDB-CL', 'SAS-Cache', 'PrismDB', common.sysname]
 
+    is_partial = False
     workload_version_ops = {}
     for workload in workloads:
         workload_dir = os.path.join(dir, workload)
         workload_version_ops[workload] = {}
         for version in versions:
             data_dir = os.path.join(workload_dir, version['path'])
+            if not os.path.exists(os.path.join(data_dir, 'info.json')):
+                is_partial = True
+                continue
             workload_version_ops[workload][version['path']] = common.last_10p_ops(common.VersionData(data_dir))
 
-    max_speedup = 0
-    for workload in workloads:
-        version_ops = workload_version_ops[workload]
-        hotrap_ops = version_ops['hotrap']
-        other_sys_max_ops = 0
-        for version in versions:
-            version = version['path']
-            if version == 'hotrap' or version == 'rocksdb-fd':
-                continue
-            other_sys_max_ops = max(other_sys_max_ops, version_ops[version])
-        assert other_sys_max_ops > 0
-        max_speedup = max(max_speedup, hotrap_ops / other_sys_max_ops)
-    tex = io.StringIO()
-    print('% Max speedup over second best under twitter production workloads', file=tex)
-    print('\defmacro{MaxSpeedupTwitter}{%.1f}' %max_speedup, file=tex)
+    if not is_partial:
+        max_speedup = 0
+        for workload in workloads:
+            version_ops = workload_version_ops[workload]
+            hotrap_ops = version_ops['hotrap']
+            other_sys_max_ops = 0
+            for version in versions:
+                version = version['path']
+                if version == 'hotrap' or version == 'rocksdb-fd':
+                    continue
+                other_sys_max_ops = max(other_sys_max_ops, version_ops[version])
+            assert other_sys_max_ops > 0
+            max_speedup = max(max_speedup, hotrap_ops / other_sys_max_ops)
+        tex = io.StringIO()
+        print('% Max speedup over second best under twitter production workloads', file=tex)
+        print('\defmacro{MaxSpeedupTwitter}{%.1f}' %max_speedup, file=tex)
 
-    tex = tex.getvalue()
-    print(tex)
-    open(os.path.join(dir, 'twitter.tex'), mode='w').write(tex)
+        tex = tex.getvalue()
+        print(tex)
+        open(os.path.join(dir, 'twitter.tex'), mode='w').write(tex)
 
     bar_width = 1 / (len(versions) + 1)
     cluster_width = bar_width * len(versions)
@@ -116,7 +121,10 @@ if __name__ == "__main__":
         ids.append(workload.split('-')[0][7:])
         for (version_idx, version) in enumerate(versions):
             x = pivot - cluster_width / 2 + bar_width / 2 + version_idx * bar_width
-            value = workload_version_ops[workload][version['path']]
+            try:
+                value = workload_version_ops[workload][version['path']]
+            except KeyError:
+                value = 0
             ax.bar(x, value, width=bar_width, hatch=version['pattern'], color=version['color'], edgecolor='black', linewidth=0.5)
     ax.ticklabel_format(style='sci', scilimits=(4, 4), useMathText=True)
     ax.yaxis.get_offset_text().set_fontsize(9)
