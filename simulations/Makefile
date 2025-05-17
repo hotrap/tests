@@ -15,5 +15,11 @@ all: ${RUSTTARGETS}
 
 clean:
 	${RM} ${RUSTTARGETS}
+	rm -rf src/lru/target
+	rm -rf src/promote-when-get/target
+	rm -rf src/promote-when-second-get
+	rm -rf src/promote-when-get-demote-when-full
+	rm -rf src/promote-when-second-get-demote-when-full
+	rm -rf src/promote-stable-hot
 
 .PHONY: all

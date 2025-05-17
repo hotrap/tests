@@ -15,5 +15,10 @@ all: ${RUSTTARGETS}
 
 clean:
 	${RM} ${RUSTTARGETS}
+	rm -rf src/hit/target
+	rm -rf src/latency-after/target
+	rm -rf src/read-keys-from-dump/target
+	rm -rf src/twitter-to-plain/target
+	rm -rf src/analyze-plain/target
 
 .PHONY: all
