@@ -7,7 +7,7 @@ build_rocksdb_common() {
 	cd ..
 }
 build_rocksdb() {
-	build_rocksdb_common -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g"
+	build_rocksdb_common -DCMAKE_BUILD_TYPE=None -DCMAKE_C_FLAGS="$CFLAGS -Wall -O2 -g" -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wall -O2 -g" -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS"
 }
 build_rocksdb_portable() {
 	build_rocksdb -DPORTABLE=ON
