@@ -35,13 +35,16 @@ git submodule update --init
 cd ../SAS-Cache
 echo SAS-Cache
 git pull origin
+cd ..
 
-cd ../prismdb
-echo prismdb
-git pull origin
+if [ -d prismdb ]; then
+	cd prismdb
+	echo prismdb
+	git pull origin
+	cd ..
+fi
 
-
-cd ../kvexe-rocksdb
+cd kvexe-rocksdb
 echo kvexe rocksdb
 git checkout rocksdb
 git pull origin
