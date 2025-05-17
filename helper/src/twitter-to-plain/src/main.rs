@@ -2,6 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::env;
 use std::error::Error;
 use std::fs::File;
+use std::hash::{BuildHasherDefault, DefaultHasher};
 use std::io::{self, BufRead, BufReader, BufWriter, Write};
 
 use serde::{Deserialize, Serialize};
@@ -54,12 +55,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     ]);
 
     let mut run = SerdeQueue::new();
-    let mut load = HashMap::<String, (usize, usize)>::new();
+    let mut load: HashMap<
+        String,
+        (usize, usize),
+        BuildHasherDefault<DefaultHasher>,
+    > = HashMap::with_hasher(BuildHasherDefault::default());
     let mut timestamp = 0;
     fn add_to_load(
         op: Operation,
         timestamp: &mut usize,
-        load: &mut HashMap<String, (usize, usize)>,
+        load: &mut HashMap<
+            String,
+            (usize, usize),
+            BuildHasherDefault<DefaultHasher>,
+        >,
     ) {
         match op {
             Operation::Insert(key, value_size) => {
@@ -86,7 +95,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         op: Operation<'b>,
         max_num_run_op: usize,
         timestamp: &mut usize,
-        load: &mut HashMap<String, (usize, usize)>,
+        load: &mut HashMap<
+            String,
+            (usize, usize),
+            BuildHasherDefault<DefaultHasher>,
+        >,
     ) {
         if run.len() == max_num_run_op {
             add_to_load(run.pop().unwrap().unwrap(), timestamp, load);
@@ -98,7 +111,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         value_size: usize,
         augment: usize,
     }
-    let mut keys = HashMap::<String, KeyInfo>::new();
+    let mut keys: HashMap<String, KeyInfo, BuildHasherDefault<DefaultHasher>> =
+        HashMap::with_hasher(BuildHasherDefault::default());
     let mut db_size = 0;
 
     let mut reader = BufReader::new(io::stdin());
