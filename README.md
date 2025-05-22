@@ -199,9 +199,18 @@ for workload in "${workloads[@]}"; do
 done
 ```
 
-## Run tests on a local machine
+## Environment variables
 
-You may want to comment out systems or workloads that you don't want to test.
+### twitter_delete_uncompressed
+
+Uncompressed Twitter traces can consume a large amount of local disk capacity. Therefore, we recommend telling the scripts to delete uncompressed trace files after the workload is finished:
+
+```shell
+export twitter_delete_uncompressed=1
+echo "export twitter_delete_uncompressed=1" >> ~/.profile
+```
+
+## Run tests on a local machine
 
 ```shell
 cd workloads
