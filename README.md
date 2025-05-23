@@ -218,7 +218,7 @@ cd workloads
 bash twitter.sh
 # Figure 6, Figure 11, Figure 12. About 9 days.
 bash 200B.sh
-# Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5. About 11 days.
+# Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5, Table 6. About 11 days.
 bash 110GB.sh
 # Figure 15. About a month.
 bash 1.1TB.sh
@@ -293,7 +293,7 @@ cd $workspace/tests/cloud
 bash twitter.sh $workspace/config.json $workspace/data 16
 # Figure 6, Figure 11, Figure 12
 bash 200B.sh $workspace/config.json $workspace/data 16
-# Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5
+# Figure 5, Figure 7, Figure 13, Figure 14, Table 4, Table 5, Table 6
 bash 110GB.sh $workspace/config.json $workspace/data 16
 # Figure 15
 bash 1.1TB.sh $workspace/config.json $workspace/data 16
