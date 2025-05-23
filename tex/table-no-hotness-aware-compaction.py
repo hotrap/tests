@@ -48,4 +48,4 @@ print('\tno-hot-aware & %.1fGB & %.1fGB & %.1f\\%% & %.1fGB \\\\\n\t\hline' %(pr
 print('\\end{tabular}', file=tex)
 tex = tex.getvalue()
 print(tex)
-open('table-no-hotness-aware-compaction.tex', mode='w').write(tex)
+open('table4-no-hotness-aware-compaction.tex', mode='w').write(tex)

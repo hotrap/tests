@@ -133,7 +133,7 @@ if __name__ == "__main__":
     plt.xlabel('Cluster ID', labelpad=1, fontsize=9)
     plt.ylabel('Operations per second', fontsize=9, y=0.45)
     fig.legend(version_names, fontsize=9, ncol=3, loc='center', bbox_to_anchor=(0.5, 1.14), handletextpad=0.5, columnspacing=1)
-    pdf_path = dir + '/twitter-ops.pdf'
+    pdf_path = os.path.join(dir, 'fig10-twitter-ops.pdf')
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
     print('Plot saved to ' + pdf_path)
     if 'DISPLAY' in os.environ:

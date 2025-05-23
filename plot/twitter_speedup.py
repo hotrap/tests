@@ -156,7 +156,7 @@ if __name__ == '__main__':
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1], fontsize=9)
     plt.xlabel('# of reads on hot records / # of reads', fontsize=9)
     plt.ylabel('# of reads on sunk records / # of reads', fontsize=9, y=0.45)
-    pdf_path = dir + '/twitter-speedup.pdf'
+    pdf_path = os.path.join(dir, 'fig9-twitter-speedup.pdf')
     plt.savefig(pdf_path, bbox_inches='tight', pad_inches=0.01, metadata={'CreationDate': None})
     print('Plot saved to ' + pdf_path)
     if 'DISPLAY' in os.environ:

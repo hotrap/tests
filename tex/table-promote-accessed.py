@@ -41,7 +41,7 @@ print('\tno-hotness-check & %.1fGB & %.1fGB & %.1fGB \\\\\n\t\hline' %(pa_promot
 print('\\end{tabular}', file=tex)
 tex = tex.getvalue()
 print(tex)
-open('table-promote-accessed.tex', mode='w').write(tex)
+open('table5-promote-accessed.tex', mode='w').write(tex)
 
 tex = io.StringIO()
 print('\defmacro{PromoteAccessedPromotedMore}{%.1f$\\times$}' %(pa_promoted / hotrap_promoted - 1), file=tex)
