@@ -320,6 +320,12 @@ $workspace/tests/tools/draw-twitter-ops.sh
 $workspace/tests/tools/draw-200B.sh
 ```
 
+You may save figures and tables to another directory, e.g., `~/results`:
+
+```shell
+$workspace/tests/tools/save-ATC25-results.sh ~/results
+```
+
 ## Notes
 
 - The `du` warnings like `du: cannot access 'fd/003409.sst': No such file or directory` are expected and can be safely ignored.
