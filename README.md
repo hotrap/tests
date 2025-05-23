@@ -326,6 +326,29 @@ You may save figures and tables to another directory, e.g., `~/results`:
 $workspace/tests/tools/save-ATC25-results.sh ~/results
 ```
 
+## Handle incomplete results
+
+When an experiment is interrupted (e.g., by `ctrl-c` ) or fails, incomplete results are left in the output directory. You may list incomplete results under the current directory by:
+
+```shell
+$workspace/tests/tools/list-incomplete-results.sh
+```
+
+Our scripts are not allowed to delete the incomplete results for safety. When they detect that the directory where it intends to output results is not empty, they just print the error:
+
+```text
+../../data/cluster02-283x/hotrap is not empty! 
+```
+
+Then the script will skip that experiment and run the next experiment. To move incomplete results to another directory, e.g., `~/incomplete-results`:
+
+```shell
+cd $workspace/data
+$workspace/tests/tools/move-incomplete-results.sh ~/incomplete-results
+# If you want to delete them
+rm -r ~/incomplete-results
+```
+
 ## Notes
 
 - The `du` warnings like `du: cannot access 'fd/003409.sst': No such file or directory` are expected and can be safely ignored.
