@@ -340,7 +340,7 @@ Our scripts are not allowed to delete the incomplete results for safety. When th
 ../../data/cluster02-283x/hotrap is not empty! 
 ```
 
-Then the script will skip that experiment and run the next experiment. To move incomplete results to another directory, e.g., `~/incomplete-results`:
+Then the script will skip that experiment and run the next experiment. To move incomplete results to another directory, e.g., `~/incomplete-results`, first ensure that no experiments are currently running, as their results will be identified as incomplete. Then, execute the following commands:
 
 ```shell
 cd $workspace/data
